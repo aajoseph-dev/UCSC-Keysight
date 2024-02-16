@@ -4,7 +4,7 @@ Use generative AI to automate plugin generation for Keysight test equipment.
 ## Getting started
 
 ```
-git clone https://github.com/fercevik729/UCSC-Course-Planner
+git@github.com:aajoseph-dev/UCSC-Keysight.git
 ```
 
 ## Authors
