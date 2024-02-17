@@ -1,0 +1,42 @@
+﻿<Window x:Class="client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0">
+            <Label>Enter device information</Label>
+            <TextBox x:Name="txtName" />
+            <Label>Serial Number</Label>
+            <TextBox x:Name="serial" Margin="0,5,0,0"/>
+            
+            <ComboBox Margin="0,5,0,0" Name="ComboBox1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="194" Height="30">
+                <ComboBoxItem Content="Network Analyzer"></ComboBoxItem>
+                <ComboBoxItem Content="Logic Analyzer"></ComboBoxItem>
+                <ComboBoxItem Content="AAAAAAA"></ComboBoxItem>
+                <ComboBoxItem Content="AAk"></ComboBoxItem>
+                <ComboBoxItem Content="AAAAA"></ComboBoxItem>
+                <ComboBoxItem Content="AAAe"></ComboBoxItem>
+            </ComboBox>
+            <Button x:Name="btnAdd" Margin="0,5,0,0">Generate Plugin</Button>
+        </StackPanel>
+
+        
+
+    </Grid>
+
+</Window>
