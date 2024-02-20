@@ -32,10 +32,16 @@
                 <ComboBoxItem Content="AAAAA"></ComboBoxItem>
                 <ComboBoxItem Content="AAAe"></ComboBoxItem>
             </ComboBox>
+            
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Orientation="Horizontal">
+                <RadioButton Content="C#" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="92"/>
+                <RadioButton Content="Python" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80"/>
+            </StackPanel>
             <Button x:Name="btnAdd" Margin="0,5,0,0">Generate Plugin</Button>
         </StackPanel>
 
-        
+           
+
 
     </Grid>
 
