@@ -20,7 +20,7 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0">
             <Label>Enter device information</Label>
-            <TextBox x:Name="txtName" />
+            <TextBox x:Name="deviceInfo" />
             <Label>Serial Number</Label>
             <TextBox x:Name="serial" Margin="0,5,0,0"/>
             
@@ -37,7 +37,7 @@
                 <RadioButton Content="C#" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="92"/>
                 <RadioButton Content="Python" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80"/>
             </StackPanel>
-            <Button x:Name="btnAdd" Margin="0,5,0,0">Generate Plugin</Button>
+            <Button x:Name="btnAdd" Margin="0,5,0,0" Click="ButtonGeneratePlugin_Click">Generate Plugin</Button>
         </StackPanel>
 
            
