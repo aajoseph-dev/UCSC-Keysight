@@ -1,11 +1,12 @@
 # UCSC-Keysight
-Use generative AI to automate plugin generation for Keysight test equipment.
+Use generative AI to automate plugin generation for Opentap.
 
 ## Getting started
 
 ```
 git@github.com:aajoseph-dev/UCSC-Keysight.git
 ```
+
 
 ## Authors
 
