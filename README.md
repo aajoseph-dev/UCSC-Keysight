@@ -1,5 +1,5 @@
 # UCSC-Keysight
-Use generative AI to automate plugin generation for Opentap.
+Use generative AI to automate plugin generation for OpenTAP.
 
 ## Getting started
 
