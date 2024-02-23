@@ -6,43 +6,56 @@
         xmlns:local="clr-namespace:client"
         mc:Ignorable="d"
         Title="Keysight Plugin Generator" Height="450" Width="800">
-    <Grid Margin="10">
+    <ScrollViewer>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Grid.Column="0"  Width="Auto" HorizontalAlignment="Stretch" Margin="5,0,0,0">
+                <Label Style="{StaticResource FieldLabelStyle}">Plugin Name:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="PluginName" Style="{StaticResource InputFieldStyle}"/>
+                <Label Style="{StaticResource FieldLabelStyle}">Device Name:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="deviceInfo" Style="{StaticResource InputFieldStyle}"/>
+                <Label Style="{StaticResource FieldLabelStyle}">Serial Number:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="serial" Style="{StaticResource InputFieldStyle}" Margin="0,5,0,0"/>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+                <Label Style="{StaticResource FieldLabelStyle}">Category:</Label>
+                <ComboBox 
+                Margin="0,5,0,0" 
+                Name="ComboBox1" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Top"
+                Width="Auto"
+                Height="30"
+                Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="Generators"/>
+                    <ComboBoxItem Content="Sources"/>
+                    <ComboBoxItem Content="Power Products"/>
+                    <ComboBoxItem Content="Oscilloscopes"/>
+                    <ComboBoxItem Content="Analyzer"/>
+                    <ComboBoxItem Content="Meters"/>
+                    <ComboBoxItem Content="Modular Instruments"/>
+                    <ComboBoxItem Content="Software"/>
+                    <ComboBoxItem Content="Common Commands"/>
+                    <ComboBoxItem Content="Power Supplies"/>
+                    <ComboBoxItem Content="Other"/>
+                </ComboBox>
 
+                <Label Style="{StaticResource FieldLabelStyle}">Description:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="desc" Style="{StaticResource InputFieldStyle}" Margin="0,5,0,0"/>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0">
-            <Label>Enter device information</Label>
-            <TextBox x:Name="deviceInfo" />
-            <Label>Serial Number</Label>
-            <TextBox x:Name="serial" Margin="0,5,0,0"/>
-            
-            <ComboBox Margin="0,5,0,0" Name="ComboBox1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="194" Height="30">
-                <ComboBoxItem Content="Network Analyzer"></ComboBoxItem>
-                <ComboBoxItem Content="Logic Analyzer"></ComboBoxItem>
-                <ComboBoxItem Content="AAAAAAA"></ComboBoxItem>
-                <ComboBoxItem Content="AAk"></ComboBoxItem>
-                <ComboBoxItem Content="AAAAA"></ComboBoxItem>
-                <ComboBoxItem Content="AAAe"></ComboBoxItem>
-            </ComboBox>
-            
-            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Orientation="Horizontal">
-                <RadioButton Content="C#" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="92"/>
-                <RadioButton Content="Python" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80"/>
+                <Label>Langauge:</Label>
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Orientation="Horizontal">
+                    <RadioButton Content="C#" Style="{StaticResource RadioButtonStyle}" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="92"/>
+                    <RadioButton Content="Python" Style="{StaticResource RadioButtonStyle}" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80"/>
+                </StackPanel>
+                <Button x:Name="btnAdd" Click="ButtonGeneratePlugin_Click" Style="{StaticResource GenerateButtonStyle}" Margin="0,5,0,0">Generate Plugin</Button>
             </StackPanel>
-            <Button x:Name="btnAdd" Margin="0,5,0,0" Click="ButtonGeneratePlugin_Click">Generate Plugin</Button>
-        </StackPanel>
-
-           
-
-
-    </Grid>
-
+        </Grid>
+    </ScrollViewer>
 </Window>

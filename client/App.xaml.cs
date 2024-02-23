@@ -9,6 +9,7 @@ namespace client
     /// </summary>
     public partial class App : Application
     {
+
     }
 
 }

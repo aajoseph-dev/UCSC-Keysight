@@ -15,9 +15,9 @@ using System.Windows.Shapes;
 //using namespace std;
 namespace client
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+    // <summary>
+    // Interaction logic for MainWindow.xaml
+    // </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
