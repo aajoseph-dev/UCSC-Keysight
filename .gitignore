@@ -5,6 +5,8 @@
 
 /client/bin/
 
+.env
+
 # User-specific files
 *.rsuser
 *.suo
