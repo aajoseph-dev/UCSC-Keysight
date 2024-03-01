@@ -14,19 +14,20 @@ namespace client
 
         private void ButtonGeneratePlugin_Click(object sender, RoutedEventArgs e)
         {
-            if (deviceInfo != null && !string.IsNullOrWhiteSpace(deviceInfo.Text))
+            if (deviceInfo != null && category != null &&
+                !string.IsNullOrWhiteSpace(deviceInfo.Text) && !string.IsNullOrWhiteSpace(category.Text))
             {
-                MessageBox.Show(deviceInfo.Text);
+                MessageBox.Show($@"C:\Users\shaun\Desktop\UCSC-Keysight\api\.py {deviceInfo.Text} {category.Text}");
 
-                ProcessStartInfo start = new ProcessStartInfo
+                System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = @"C:\Users\shaun\AppData\Local\Microsoft\WindowsApps\python3.exe",
-                    Arguments = @"C:\Users\shaun\Desktop\UCSC-Keysight\api\test.py",
+                    Arguments = $@"C:\Users\shaun\Desktop\UCSC-Keysight\api\.py {deviceInfo.Text} {category.Text}",
                     UseShellExecute = false,
                     RedirectStandardOutput = true
                 };
 
-                using (Process process = Process.Start(start))
+                using (System.Diagnostics.Process process = System.Diagnostics.Process.Start(start))
                 {
                     if (process != null)
                     {
