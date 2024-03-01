@@ -17,9 +17,9 @@ if __name__ == "__main__":
     device = sys.argv[1]
     catergory = sys.argv[2]
     message_text = [{"role":"system","content":"generate a C++ outline for a opentap plugin for the {} {}".format(device, catergory)}]
-    print(message_text)
+    # print(message_text)
     
-    ''''
+
     completion = client.chat.completions.create(
     model="OpenTap-Plugin-LLM", 
     messages = message_text,
@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
     print(completion.choices[0].message.content)
 
-    ''''
+

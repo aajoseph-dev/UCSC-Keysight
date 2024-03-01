@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -17,30 +19,29 @@ namespace client
             if (deviceInfo != null && category != null &&
                 !string.IsNullOrWhiteSpace(deviceInfo.Text) && !string.IsNullOrWhiteSpace(category.Text))
             {
-                MessageBox.Show($@"C:\Users\shaun\Desktop\UCSC-Keysight\api\.py {deviceInfo.Text} {category.Text}");
+                MessageBox.Show($@"C:\Users\xuedo\OneDrive\Desktop\UCSC-Keysight\api\orchestra.py {deviceInfo.Text} {category.Text}");
+
+                Process p = new Process();
 
                 System.Diagnostics.ProcessStartInfo start = new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = @"C:\Users\shaun\AppData\Local\Microsoft\WindowsApps\python3.exe",
-                    Arguments = $@"C:\Users\shaun\Desktop\UCSC-Keysight\api\.py {deviceInfo.Text} {category.Text}",
+                    FileName = @"C:\Python312\python.exe",
+                    Arguments = $@"-u C:\Users\xuedo\OneDrive\Desktop\UCSC-Keysight\api\orchestrator.py {deviceInfo.Text} {category.Text}",
                     UseShellExecute = false,
-                    RedirectStandardOutput = true
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    RedirectStandardInput = true
                 };
 
-                using (System.Diagnostics.Process process = System.Diagnostics.Process.Start(start))
-                {
-                    if (process != null)
-                    {
-                        using (StreamReader reader = process.StandardOutput)
-                        {
-                            if (reader != null)
-                            {
-                                string result = reader.ReadToEnd();
-                                MessageBox.Show(result);
-                            }
-                        }
-                    }
-                }
+                p.StartInfo = start;
+                p.EnableRaisingEvents = true;
+
+                StringBuilder outputBuilder;
+
+                p.Start();
+                //p.BeginOutputReadLine();
+                MessageBox.Show(p.StandardOutput.ReadToEnd());
+                p.WaitForExit();
             }
         }
     }

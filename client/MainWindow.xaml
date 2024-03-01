@@ -27,7 +27,7 @@
                 <Label Style="{StaticResource FieldLabelStyle}">Category:</Label>
                 <ComboBox 
                 Margin="0,5,0,0" 
-                Name="ComboBox1" 
+                x:Name="category" 
                 HorizontalAlignment="Stretch" 
                 VerticalAlignment="Top"
                 Width="Auto"
