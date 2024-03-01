@@ -1,23 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-//#include <iostream>
-//#include <fstream>
-//using namespace std;
+
 namespace client
 {
-    // <summary>
-    // Interaction logic for MainWindow.xaml
-    // </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -27,38 +14,33 @@ namespace client
 
         private void ButtonGeneratePlugin_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(deviceInfo.Text))
+            if (deviceInfo != null && !string.IsNullOrWhiteSpace(deviceInfo.Text))
             {
-                Stream myStream;
-                UnicodeEncoding uniEncoding = new UnicodeEncoding();
-                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                saveFileDialog1.Filter = "All files (*.*)|*.*";
-                saveFileDialog1.Title = "Save an Image File";
-                saveFileDialog1.ShowDialog();
+                MessageBox.Show(deviceInfo.Text);
 
-
-                if ((myStream = saveFileDialog1.OpenFile()) != null)
+                ProcessStartInfo start = new ProcessStartInfo
                 {
-                    // code to write the stream goes here.
-                    var sw = new StreamWriter(myStream, uniEncoding);
-                    string message = deviceInfo.Text;
-                    try
+                    FileName = @"C:\Users\shaun\AppData\Local\Microsoft\WindowsApps\python3.exe",
+                    Arguments = @"C:\Users\shaun\Desktop\UCSC-Keysight\api\test.py",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
+                };
+
+                using (Process process = Process.Start(start))
+                {
+                    if (process != null)
                     {
-                        sw.Write(message);
-                        sw.Flush();
+                        using (StreamReader reader = process.StandardOutput)
+                        {
+                            if (reader != null)
+                            {
+                                string result = reader.ReadToEnd();
+                                MessageBox.Show(result);
+                            }
+                        }
                     }
-                    finally
-                    {
-                        sw.Dispose();
-                    }
-                    myStream.Seek(0, SeekOrigin.Begin);   
-                    myStream.Close();
- 
                 }
-
-
             }
-
         }
     }
 }
