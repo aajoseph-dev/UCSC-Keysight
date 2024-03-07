@@ -1,15 +1,21 @@
 import requests
+#This allows you to send requests to the python api
+#I used python for this as it would require the use of visual studio and a windows computer 
+#could be run from our macs for testing
 
-api_url = "http://127.0.0.1:5000/generate_plugin"  # Update with your API endpoint
-question = "Give me a full list of front panel controls for E364xA power supply"  # Update with your question
+ #api_url specific the request
+api_url = "http://127.0.0.1:5000/generate_plugin" 
 
-# Define the payload
+#this question is passed to the chatbot, modify to change request
+question = "Give me a full list of front panel controls for E364xA power supply"  
+
+# Since the api takes in a json request the question is formatted to accordingly 
 payload = {"question": question}
 
-# Make the POST request
+# The response is sent to the specificed url, in our case its the generate plugin function
 response = requests.post(api_url, json=payload)
 
-# Check the response
+#checks if a valid response was returned, printing the output if valid otherwise printing error code
 if response.status_code == 200:
     result = response.json()
     generated_plugin = result.get("generated_plugin", "")
