@@ -65,17 +65,28 @@ def generate_py():
     print("name: ", name, "data: ", data)
 
     # Create a new BytesIO, prep for generaing python file
-    file_py = BytesIO()
+    file_py = BytesIO() # It creates a binary stream that operates on an in-memory byte buffer.
     file_py.write(data.encode())
     file_py.seek(0)
     response = make_response(file_py.read())
     response.headers['Content-Type'] = 'text/x-python'
     return response
 
-
 @app.route('/generate_xml', methods=['POST'])
-def generate_xml(name, py_file):
+def generate_xml():
+    try:
+        data = request.get_json() 
+    except:
+        return jsonify({'error': 'Invalid JSON format'}), 400  
 
+    if not data:
+        return jsonify({'error': 'No data found in request'}), 400  
+    name = data.get('name')
+    py_file = data.get('py_file')
+
+    print("name: ", name, "py_file: ", py_file)
+    # needs name of python file, and py_file = path to python file
+    
     # Initialize document called doc
     doc = minidom.Document() 
     
@@ -117,16 +128,17 @@ def generate_xml(name, py_file):
     py.appendChild(end_project_file) 
 
     # Generate the xml string
-    # xml_str = doc.toprettyxml(indent ="\t", encoding="UTF-8")  
+    xml_str = doc.toprettyxml(indent ="\t", encoding="UTF-8")  
 
     # TODO: Write to file
   
     # XML file name created in the same direction as where the create_xml.py is ran
-    # save_path_file = "new_xml.xml"
+    save_path_file = "new_xml.xml"
     
     # Save the xml file in binary
-    # with open(save_path_file, "wb") as f: 
-    #     f.write(xml_str)
+    with open(save_path_file, "wb") as f: 
+         f.write(xml_str)
 
 if __name__ == '__main__':
     app.run(debug=True)
+    generate_xml()
