@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response, send_file
 from xml.dom import minidom 
 import os
+from io import StringIO, BytesIO
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 
@@ -12,13 +13,6 @@ from azure.search.documents import SearchClient
 #This files serves as our backend and is responsible for making calls to azure
 
 app = Flask(__name__)
-
-#Example call
-#The route specifics the call to reach this function
-#if you wanted to use this call you would call http://127.0.0.1:5000/helloworld" 
-@app.route('/helloworld')
-def hello():
-    return 'Hello, World!'
 
 
 #This function configures chat bot and gets response
@@ -52,11 +46,32 @@ def generate_plugin():
     )
 
     #grabbing just the response and leaving our unnecessary data(i.e. token used, filters, etc.)
-    response = {
-            "generated_plugin": completion.choices[0].message.content
-        }
+    response = {"generated_plugin": completion.choices[0].message.content}
     #returns response in json format to client
     return jsonify(response)
+
+@app.route('/generate_py', methods=['POST'])
+def generate_py():
+    try:
+        data = request.get_json() 
+    except:
+        return jsonify({'error': 'Invalid JSON format'}), 400  
+
+    if not data:
+        return jsonify({'error': 'No data found in request'}), 400  
+
+    name = data.get('name')
+    data = data.get('data')
+    print("name: ", name, "data: ", data)
+
+    # Create a new BytesIO, prep for generaing python file
+    file_py = BytesIO()
+    file_py.write(data.encode())
+    file_py.seek(0)
+    response = make_response(file_py.read())
+    response.headers['Content-Type'] = 'text/x-python'
+    return response
+
 
 @app.route('/generate_xml', methods=['POST'])
 def generate_xml(name, py_file):
