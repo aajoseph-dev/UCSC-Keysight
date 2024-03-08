@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package Name="TEST" xmlns="http://keysight.com/Schemas/tap" Version="$(GitVersion)" OS="Windows,Linux,MacOS">
+	<Description>
+		TEST
+		<Prerequisites> Python (&gt;3.7) </Prerequisites>
+	</Description>
+	<Files>
+		<File Path="C:/Projects/TEST/TEST/*.py">
+			<ProjectFile/>
+		</File>
+	</Files>
+</Package>
