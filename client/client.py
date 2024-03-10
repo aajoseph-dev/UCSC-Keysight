@@ -7,7 +7,7 @@ import requests
 api_url = "http://127.0.0.1:5000/generate_plugin" 
 
 #this question is passed to the chatbot, modify to change request
-question = "Write python code for an opentap plugin for the E364xA power supply.\n Keep in mind, the .xml file, and init py has already been created. Please only return Python code (no comments)."  
+question = "Write python code for an opentap plugin for the E364xA power supply.\n Keep in mind, the .xml file, and init py has already been created. Please only return Python code (put any English text in comments using #)."  
 
 xml_string = {'name' : "download_file.py", 
               'py_file' : '/Users/shaun/Desktop/115b/UCSC-Keysight/api/download_file.py',

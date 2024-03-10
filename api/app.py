@@ -5,7 +5,6 @@ import requests
 from io import BytesIO
 import zipfile
 from pathlib import Path
-# from openai import AzureOpenAI
 from dotenv import load_dotenv
 import openai
 
@@ -80,7 +79,7 @@ def generate_plugin():
                     "queryType": "simple",
                     "fieldsMapping": {},
                     "inScope": True,
-                    "roleInformation": "You are an AI assistant that takes in a user-specified device and writes Python code yourself for OpenTAP plugins.",
+                    "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text.",
                     "filter": None,
                     "strictness": 3,
                     "topNDocuments": 5,
@@ -149,7 +148,6 @@ def generate_xml(name, folder_path):
     package.appendChild(files)
 
     py = doc.createElement('File')
-    #py.setAttribute('Path', 'my_file.txt')  # assuming the Python file is named my_file.txt
     py.setAttribute('Path', folder_path)  
     files.appendChild(py)
 
