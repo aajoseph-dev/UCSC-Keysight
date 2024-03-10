@@ -8,7 +8,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 
-
 #This files serves as our backend and is responsible for making calls to azure
 
 app = Flask(__name__)
