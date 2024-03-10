@@ -29,52 +29,12 @@ def generate_plugin():
     openai.api_base = os.getenv('OPENAI_ENDPOINT')
     openai.api_key = os.getenv("OPENAI_KEY1")
     deployment_id = "OpenTap-Plugin-LLM"
-
-    search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
-    search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
-    search_index_name = "pdf_data"; 
-
    
-
     #get data sent from client.py
     data = request.get_json()
     user_prompt = data.get('question')
     name = data.get('plugin_name')
 
-    #formatting message based on azure requirments
-    # message_text = [{"role": "user", "content": user_prompt}]
-
-
-    #message is sent to chatbot and response is returned
-    # completion = llm.chat.completions.create(
-    # completion = llm.chatCompletion.create(
-    #     model="OpenTap-Plugin-LLM", 
-    #     messages = message_text,
-    #     temperature=0.7,
-    #     max_tokens=800,
-    #     top_p=0.95,
-    #     frequency_penalty=0,
-    #     presence_penalty=0,
-    #     stop=None,
-    #     dataSources=[  # camelCase is intentional, as this is the format the API expects
-    #         {
-    #             "type": "AzureCognitiveSearch",
-    #             "parameters": {
-    #                 "endpoint": ai_search_endpoint,
-    #                 "indexName": search_index_name,
-    #                 "semanticConfiguration": "default",
-    #                 "queryType": "simple",
-    #                 "fieldsMapping": {},
-    #                 "inScope": True,
-    #                 "roleInformation": "You are an AI assistant that helps people find information.",
-    #                 "filter": None,
-    #                 "strictness": 4,
-    #                 "topNDocuments": 5,
-    #                 "key": ai_search_key 
-    #                     }
-    #             }
-    #     ],
-    # )
     def setup_byod(deployment_id: str) -> None:
         """Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
 
@@ -100,36 +60,40 @@ def generate_plugin():
         openai.requestssession = session
 
     setup_byod(deployment_id)
-
+    
+    search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
+    search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
+    search_index_name = "pdf_data"; 
     message_text = [{"role": "user", "content": user_prompt}]
 
     completion = openai.ChatCompletion.create(
         messages=message_text,
         deployment_id=deployment_id,
         dataSources=[  # camelCase is intentional, as this is the format the API expects
-        {
-    "type": "AzureCognitiveSearch",
-    "parameters": {
-        "endpoint": "'$search_endpoint'",
-        "indexName": "'$search_index'",
-        "semanticConfiguration": "default",
-        "queryType": "simple",
-        "fieldsMapping": {},
-        "inScope": True,
-        "roleInformation": "You are an AI assistant that helps people find information.",
-        "filter": None,
-        "strictness": 3,
-        "topNDocuments": 5,
-        "key": "'$search_key'"
-    }
-    }
+            {
+                "type": "AzureCognitiveSearch",
+                "parameters": {
+                    # "endpoint": "'$search_endpoint'",
+                    "endpoint": search_endpoint,
+                    "indexName": search_index_name,
+                    "semanticConfiguration": "default",
+                    "queryType": "simple",
+                    "fieldsMapping": {},
+                    "inScope": True,
+                    "roleInformation": "You are an AI assistant that takes in a user-specified device and writes Python code yourself for OpenTAP plugins.",
+                    "filter": None,
+                    "strictness": 3,
+                    "topNDocuments": 5,
+                    "key": search_key
+                }
+            }
         ],
         temperature=0,
         top_p=1,
         max_tokens=800,
     )
     #grabbing just the response and leaving our unnecessary data(i.e. token used, filters, etc.)
-    response = {completion.choices[0].message.content}
+    response = completion.choices[0].message.content
     print(response)
     #returns response in json format to client
     file_path = generate_zipfolder(name, response)
@@ -157,7 +121,7 @@ def generate_py(name, code, file_path):
     # Create a file inside the directory
     name += '.py'
     file_path = Path(file_path) / name
-    file_path.write_text(str(code))
+    file_path.write_text(code)
     return file_path
 
 def generate_xml(name, folder_path):
