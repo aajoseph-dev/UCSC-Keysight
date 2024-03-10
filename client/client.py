@@ -7,7 +7,7 @@ import requests
 api_url = "http://127.0.0.1:5000/generate_plugin" 
 
 #this question is passed to the chatbot, modify to change request
-question = "Give me a full list of front panel controls for E364xA power supply"  
+question = "create a python opentap plugin for the E364xA power supply"  
 
 xml_string = {'name' : "download_file.py", 
               'py_file' : '/Users/shaun/Desktop/115b/UCSC-Keysight/api/download_file.py',
