@@ -8,15 +8,15 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 
-#This files serves as our backend and is responsible for making calls to azure
+# This file serves as our backend and is responsible for making calls to Azure
 
 app = Flask(__name__)
 
-#This function configures chat bot and gets response
+# This function configures chat bot and gets response
 @app.route('/generate_plugin', methods=['POST'])
 def generate_plugin():
 
-    #loading api keys from .env folder
+    # Loading api keys from .env folder
     load_dotenv()
     openai.api_type = "azure"
     openai.api_version = "2023-08-01-preview"
@@ -29,13 +29,10 @@ def generate_plugin():
     user_prompt = data.get('question')
     name = data.get('plugin_name')
 
+    # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
+    # :param deployment_id: The deployment ID for the model to use with your own data.
+    # To remove this configuration, simply set openai.requestssession to None.
     def setup_byod(deployment_id: str) -> None:
-        """Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
-
-        :param deployment_id: The deployment ID for the model to use with your own data.
-
-        To remove this configuration, simply set openai.requestssession to None.
-        """
 
         class BringYourOwnDataAdapter(requests.adapters.HTTPAdapter):
 
@@ -60,6 +57,7 @@ def generate_plugin():
     search_index_name = "pdf_data"; 
     message_text = [{"role": "user", "content": user_prompt}]
 
+    # Ask the chat bot
     completion = openai.ChatCompletion.create(
         messages=message_text,
         deployment_id=deployment_id,
@@ -67,7 +65,6 @@ def generate_plugin():
             {
                 "type": "AzureCognitiveSearch",
                 "parameters": {
-                    # "endpoint": "'$search_endpoint'",
                     "endpoint": search_endpoint,
                     "indexName": search_index_name,
                     "semanticConfiguration": "default",
@@ -86,20 +83,20 @@ def generate_plugin():
         top_p=1,
         max_tokens=800,
     )
-    #grabbing just the response and leaving our unnecessary data(i.e. token used, filters, etc.)
+
+    # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
     response = completion.choices[0].message.content
     print(response)
     #returns response in json format to client
     file_path = generate_zipfolder(name, response)
     return send_zip_file(file_path,name)
 
-
+# Generating zip file
 def generate_zipfolder(plugin_name, data):
     file_path = plugin_name
     os.makedirs(file_path, exist_ok=True)
     os.chmod(file_path, 0o700)
 
-    # print("DATA TYPE:", type(data))
     py_file = generate_py(plugin_name, data, file_path)
     xml_file = generate_xml(plugin_name, file_path)
 
@@ -109,6 +106,7 @@ def generate_zipfolder(plugin_name, data):
 
     return file_path
 
+# Generating python file that eventually gets populated with the LLM's generated plugin
 def generate_py(name, code, file_path):
     Path(file_path).mkdir(parents=True, exist_ok=True)
 
@@ -118,6 +116,7 @@ def generate_py(name, code, file_path):
     file_path.write_text(code)
     return file_path
 
+# Generating .xml file that contains info about which .py file the plugin was made for
 def generate_xml(name, folder_path):
     doc = minidom.Document()
     package = doc.createElement('Package')
@@ -157,6 +156,7 @@ def generate_xml(name, folder_path):
     
     return save_path_file
 
+# Send back the zip file to the user's directory
 def send_zip_file(file_path, plugin_name):
     return send_from_directory('.', f"{plugin_name}.zip", as_attachment=True)
 
