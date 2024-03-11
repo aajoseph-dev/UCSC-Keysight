@@ -99,7 +99,7 @@ def generate_zipfolder(plugin_name, data):
     os.makedirs(file_path, exist_ok=True)
     os.chmod(file_path, 0o700)
 
-    print("DATA TYPE:", type(data))
+    # print("DATA TYPE:", type(data))
     py_file = generate_py(plugin_name, data, file_path)
     xml_file = generate_xml(plugin_name, file_path)
 

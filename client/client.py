@@ -94,6 +94,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
                     with open('files.zip', 'wb') as f:
                         f.write(response.content)
                     print("Downloaded successfully")
+                    self.close()
                 except Exception as e:
                     print("error", e)
         else:
