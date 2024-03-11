@@ -91,7 +91,7 @@ def generate_plugin():
     print(response)
     #returns response in json format to client
     file_path = generate_zipfolder(name, response)
-    return send_zip_file(file_path)
+    return send_zip_file(file_path,name)
 
 
 def generate_zipfolder(plugin_name, data):
@@ -103,7 +103,7 @@ def generate_zipfolder(plugin_name, data):
     py_file = generate_py(plugin_name, data, file_path)
     xml_file = generate_xml(plugin_name, file_path)
 
-    with zipfile.ZipFile('files.zip', 'w', zipfile.ZIP_DEFLATED) as zip:
+    with zipfile.ZipFile(f"{plugin_name}.zip", 'w', zipfile.ZIP_DEFLATED) as zip:
         zip.write(xml_file)
         zip.write(py_file)
 
@@ -157,8 +157,8 @@ def generate_xml(name, folder_path):
     
     return save_path_file
 
-def send_zip_file(file_path):
-    return send_from_directory('.', 'files.zip', as_attachment=True)
+def send_zip_file(file_path, plugin_name):
+    return send_from_directory('.', f"{plugin_name}.zip", as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

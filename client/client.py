@@ -83,6 +83,8 @@ class PluginGeneratorApp(QtWidgets.QWidget):
 
         payload = {"plugin_name" : self.device_name_input.text(), "question": question}
 
+        print("NAME:", self.device_name_input.text())
+
         api_url = "http://127.0.0.1:5000/generate_plugin" 
         response = requests.post(api_url, json=payload)
 
@@ -91,7 +93,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
                 result = response.json()
             else:
                 try:
-                    with open('files.zip', 'wb') as f:
+                    with open(f"{self.device_name_input.text()}.zip", 'wb') as f:
                         f.write(response.content)
                     print("Downloaded successfully")
                     self.close()
