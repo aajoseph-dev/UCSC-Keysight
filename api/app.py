@@ -8,11 +8,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-
 #This files serves as our backend and is responsible for making calls to azure
 
 app = Flask(__name__)
