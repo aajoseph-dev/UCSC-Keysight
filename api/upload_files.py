@@ -25,7 +25,7 @@ def upload_doc(document_path):
 
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size = 5000,
-        chunk_overlap  = 20,
+        chunk_overlap  = 300,
         length_function = len
     )
 
@@ -38,6 +38,7 @@ def upload_doc(document_path):
             "data" : chunk.page_content,
             "source": chunk.metadata["source"]
         }
+        print("data:", data)
 
     result = client.upload_documents(documents=[data])
 
