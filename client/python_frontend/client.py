@@ -70,11 +70,11 @@ class PluginGeneratorApp(QtWidgets.QWidget):
             Description: {self.description_input.toPlainText()}
             Language: {self.button_group.checkedButton().text()}
         """
-
+        print(message)
         question = f"""
                     Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
                     Keep in mind, the .xml file, and init py has already been created. 
-                    Also, adhere to these constraints: 
+                    Using SCPI commands implement these functions:
                     - {self.description_input.toPlainText()}.
                     - Please only return the code (put any English text in comments using #)."""
         question = f"""Using the scpi commands avaible to you can you create plugin for {self.device_name_input.text()}. Implement the startup, charge, and discharge functions in python"""
