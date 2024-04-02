@@ -7,6 +7,9 @@
 
 .env
 
+/api/.venv/
+/client/python_frontend/.venv/
+
 # User-specific files
 *.rsuser
 *.suo

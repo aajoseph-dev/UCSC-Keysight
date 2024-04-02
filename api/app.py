@@ -1,144 +1,164 @@
-from flask import Flask, jsonify, request, make_response, send_file
-from xml.dom import minidom 
+from flask import Flask, jsonify, request, send_from_directory
+from xml.dom import minidom
 import os
-from io import StringIO, BytesIO
-from openai import AzureOpenAI
+import requests
+from io import BytesIO
+import zipfile
+from pathlib import Path
 from dotenv import load_dotenv
+import openai
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-
-#This files serves as our backend and is responsible for making calls to azure
+# This file serves as our backend and is responsible for making calls to Azure
 
 app = Flask(__name__)
 
-
-#This function configures chat bot and gets response
+# This function configures chat bot and gets response
 @app.route('/generate_plugin', methods=['POST'])
 def generate_plugin():
-    #loading api keys from .env folder
-    load_dotenv()
-    #configures Azure chatbot with our specified keys
-    llm = AzureOpenAI(
-        azure_endpoint=os.getenv("OPENAI_ENDPOINT"),
-        api_key=os.getenv("OPENAI_KEY1"),  
-        api_version=os.getenv("OPENAI_API_VERSION_ENV")
-    )
 
+    # Loading api keys from .env folder
+    load_dotenv()
+    openai.api_type = "azure"
+    openai.api_version = "2023-08-01-preview"
+    openai.api_base = os.getenv('OPENAI_ENDPOINT')
+    openai.api_key = os.getenv("OPENAI_KEY1")
+    deployment_id = "OpenTap-Plugin-LLM"
+   
     #get data sent from client.py
     data = request.get_json()
-    user_input = data.get('user_input', '')
-    #formatting message based on azure requirments
-    message_text = [{"role": "user", "content": user_input}]
+    user_prompt = data.get('question')
+    name = data.get('plugin_name')
 
-    #message is sent to chatbot and response is returned
-    completion = llm.chat.completions.create(
-        model="OpenTap-Plugin-LLM", 
-        messages = message_text,
-        temperature=0.7,
+    # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
+    # :param deployment_id: The deployment ID for the model to use with your own data.
+    # To remove this configuration, simply set openai.requestssession to None.
+    def setup_byod(deployment_id: str) -> None:
+
+        class BringYourOwnDataAdapter(requests.adapters.HTTPAdapter):
+
+            def send(self, request, **kwargs):
+                request.url = f"{openai.api_base}/openai/deployments/{deployment_id}/extensions/chat/completions?api-version={openai.api_version}"
+                return super().send(request, **kwargs)
+
+        session = requests.Session()
+
+        # Mount a custom adapter which will use the extensions endpoint for any call using the given `deployment_id`
+        session.mount(
+            prefix=f"{openai.api_base}/openai/deployments/{deployment_id}",
+            adapter=BringYourOwnDataAdapter()
+        )
+
+        openai.requestssession = session
+
+    setup_byod(deployment_id)
+    
+    search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
+    search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
+    search_index_name = "pdf_data"; 
+    message_text = [{"role": "user", "content": user_prompt}]
+
+    # Ask the chat bot
+    completion = openai.ChatCompletion.create(
+        messages=message_text,
+        deployment_id=deployment_id,
+        dataSources=[  # camelCase is intentional, as this is the format the API expects
+            {
+                "type": "AzureCognitiveSearch",
+                "parameters": {
+                    "endpoint": search_endpoint,
+                    "indexName": search_index_name,
+                    "semanticConfiguration": "default",
+                    "queryType": "simple",
+                    "fieldsMapping": {},
+                    "inScope": True,
+                    "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text.",
+                    "filter": None,
+                    "strictness": 3,
+                    "topNDocuments": 5,
+                    "key": search_key
+                }
+            }
+        ],
+        temperature=0,
+        top_p=1,
         max_tokens=800,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None
     )
 
-    #grabbing just the response and leaving our unnecessary data(i.e. token used, filters, etc.)
-    response = {"generated_plugin": completion.choices[0].message.content}
+    # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
+    response = completion.choices[0].message.content
+    print(response)
     #returns response in json format to client
-    return jsonify(response)
+    file_path = generate_zipfolder(name, response)
+    return send_zip_file(file_path,name)
 
-@app.route('/generate_py', methods=['POST'])
-def generate_py():
-    try:
-        data = request.get_json() 
-    except:
-        return jsonify({'error': 'Invalid JSON format'}), 400  
+# Generating zip file
+def generate_zipfolder(plugin_name, data):
+    file_path = plugin_name
+    os.makedirs(file_path, exist_ok=True)
+    os.chmod(file_path, 0o700)
 
-    if not data:
-        return jsonify({'error': 'No data found in request'}), 400  
+    py_file = generate_py(plugin_name, data, file_path)
+    xml_file = generate_xml(plugin_name, file_path)
 
-    name = data.get('name')
-    data = data.get('data')
-    print("name: ", name, "data: ", data)
+    with zipfile.ZipFile(f"{plugin_name}.zip", 'w', zipfile.ZIP_DEFLATED) as zip:
+        zip.write(xml_file)
+        zip.write(py_file)
 
-    # Create a new BytesIO, prep for generaing python file
-    file_py = BytesIO() # It creates a binary stream that operates on an in-memory byte buffer.
-    file_py.write(data.encode())
-    file_py.seek(0)
-    response = make_response(file_py.read())
-    response.headers['Content-Type'] = 'text/x-python'
-    return response
+    return file_path
 
-@app.route('/generate_xml', methods=['POST'])
-def generate_xml():
-    try:
-        data = request.get_json() 
-    except:
-        return jsonify({'error': 'Invalid JSON format'}), 400  
+# Generating python file that eventually gets populated with the LLM's generated plugin
+def generate_py(name, code, file_path):
+    Path(file_path).mkdir(parents=True, exist_ok=True)
 
-    if not data:
-        return jsonify({'error': 'No data found in request'}), 400  
-    name = data.get('name')
-    py_file = data.get('py_file')
+    # Create a file inside the directory
+    name += '.py'
+    file_path = Path(file_path) / name
+    file_path.write_text(code)
+    return file_path
 
-    print("name: ", name, "py_file: ", py_file)
-    # needs name of python file, and py_file = path to python file
-    
-    # Initialize document called doc
-    doc = minidom.Document() 
-    
-    # Create root element <Package>
-    package = doc.createElement('Package')  
+# Generating .xml file that contains info about which .py file the plugin was made for
+def generate_xml(name, folder_path):
+    doc = minidom.Document()
+    package = doc.createElement('Package')
     doc.appendChild(package)
 
-    # Set attributes for <Package>
-    package.setAttribute('Name', name) 
-    package.setAttribute('xmlns', "http://keysight.com/Schemas/tap") 
-    package.setAttribute('Version', "$(GitVersion)") 
-    package.setAttribute('OS', "Windows,Linux,MacOS") 
+    package.setAttribute('Name', name)
+    package.setAttribute('xmlns', "http://keysight.com/Schemas/tap")
+    package.setAttribute('Version', "$(GitVersion)")
+    package.setAttribute('OS', "Windows,Linux,MacOS")
 
-    # Create child element <Description>
     des = doc.createElement('Description')
     package.appendChild(des)
-    
-    # Add text to description
+
     des_text = doc.createTextNode('TEST')
     des.appendChild(des_text)
 
-    # Create child element <Prerequisites>
     prereq = doc.createElement('Prerequisites')
     des.appendChild(prereq)
     prereq_text = doc.createTextNode(' Python (>3.7) ')
     prereq.appendChild(prereq_text)
 
-    # Create child element <Files>
     files = doc.createElement('Files')
     package.appendChild(files)
 
-    # Create child element <File>
     py = doc.createElement('File')
-    py.setAttribute('Path', py_file)
+    py.setAttribute('Path', folder_path)  
     files.appendChild(py)
 
-    # Create end tag for project file
     end_project_file = doc.createElement('ProjectFile')
-    py.appendChild(end_project_file) 
+    py.appendChild(end_project_file)
 
-    # Generate the xml string
-    xml_str = doc.toprettyxml(indent ="\t", encoding="UTF-8")  
+    xml_str = doc.toprettyxml(indent="\t", encoding="UTF-8")
 
-    # TODO: Write to file
-  
-    # XML file name created in the same direction as where the create_xml.py is ran
-    save_path_file = "new_xml.xml"
+    save_path_file = folder_path + '/' + name + ".xml"
+    with open(save_path_file, "wb") as f:
+        f.write(xml_str)
     
-    # Save the xml file in binary
-    with open(save_path_file, "wb") as f: 
-         f.write(xml_str)
+    return save_path_file
+
+# Send back the zip file to the user's directory
+def send_zip_file(file_path, plugin_name):
+    return send_from_directory('.', f"{plugin_name}.zip", as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
-    generate_xml()

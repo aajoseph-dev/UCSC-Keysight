@@ -1,0 +1,61 @@
+﻿<Window x:Class="client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="Keysight Plugin Generator" Height="450" Width="800">
+    <ScrollViewer>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0"  Width="Auto" HorizontalAlignment="Stretch" Margin="5,0,0,0">
+                <Label Style="{StaticResource FieldLabelStyle}">Plugin Name:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="PluginName" Style="{StaticResource InputFieldStyle}"/>
+                <Label Style="{StaticResource FieldLabelStyle}">Device Name:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="deviceInfo" Style="{StaticResource InputFieldStyle}"/>
+                <Label Style="{StaticResource FieldLabelStyle}">Serial Number:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="serial" Style="{StaticResource InputFieldStyle}" Margin="0,5,0,0"/>
+
+                <Label Style="{StaticResource FieldLabelStyle}">Category:</Label>
+                <ComboBox 
+                Margin="0,5,0,0" 
+                x:Name="category" 
+                HorizontalAlignment="Stretch" 
+                VerticalAlignment="Top"
+                Width="Auto"
+                Height="30"
+                Style="{StaticResource ComboBoxStyle}">
+                    <ComboBoxItem Content="Generators"/>
+                    <ComboBoxItem Content="Sources"/>
+                    <ComboBoxItem Content="Power Products"/>
+                    <ComboBoxItem Content="Oscilloscopes"/>
+                    <ComboBoxItem Content="Analyzer"/>
+                    <ComboBoxItem Content="Meters"/>
+                    <ComboBoxItem Content="Modular Instruments"/>
+                    <ComboBoxItem Content="Software"/>
+                    <ComboBoxItem Content="Common Commands"/>
+                    <ComboBoxItem Content="Power Supplies"/>
+                    <ComboBoxItem Content="Other"/>
+                </ComboBox>
+
+                <Label Style="{StaticResource FieldLabelStyle}">Description:</Label>
+                <TextBox  Padding="0,5,0,5" x:Name="desc" Style="{StaticResource InputFieldStyle}" Margin="0,5,0,0"/>
+
+                <Label>Langauge:</Label>
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,0" Orientation="Horizontal">
+                    <RadioButton Content="C#" Style="{StaticResource RadioButtonStyle}" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="92"/>
+                    <RadioButton Content="Python" Style="{StaticResource RadioButtonStyle}" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="80"/>
+                </StackPanel>
+                <Button x:Name="btnAdd" Click="ButtonGeneratePlugin_Click" Style="{StaticResource GenerateButtonStyle}" Margin="0,5,0,0">Generate Plugin</Button>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>
