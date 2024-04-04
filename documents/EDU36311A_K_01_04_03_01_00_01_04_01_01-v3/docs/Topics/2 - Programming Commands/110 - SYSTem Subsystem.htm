@@ -1,0 +1,953 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="Programming Commands" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" /><title>SYSTem Subsystem</title>
+        <link href="../../css/NoteTable.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">SYSTem Subsystem</h2>
+        <div>
+            <h3><a name="SystBeep"></a>SYSTem:BEEPer[:IMMediate]</h3>
+            <p>The command issues a single beep immediately. </p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2"> Issues a single beep immediately:&#160;<span style="background-color: #dcdcdc;">SYST:BEEP</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight">You can issue a beep with this command regardless of the current beeper state (<a href="#SystBeepStat">SYSTem:BEEPer:STATe</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="SystBeepStat"></a>SYSTem:BEEPer:STATe ON | OFF | 1 | 0</h3>
+            <h3 style="margin-top: 0;">SYSTem:BEEPer:STATe?</h3>
+            <p>The command enables or disables the beeper.</p>
+            <p> The query returns 0 (OFF) or 1 (ON).</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>ON | OFF | 1 | 0</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">0 or 1</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Turns on the beeper:&#160;<span style="background-color: #dcdcdc;">SYST:BEEP:STAT ON</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight">A beep is always emitted (even with beeper state OFF) when <a href="#SystBeep">SYSTem:BEEPer</a> is done. </li>
+                <li class="IndentTight">This setting will not affect the front panel key click.</li>
+                <li class="IndentTight">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3><a name="SYST:COMM:LAN:CONTrol?"></a>SYSTem:COMMunicate:LAN:CONTrol?<br /></h3>
+            <p>The query reads and returns the control connection port number for Socket communications. Connection is used to send and receive commands and queries. If 0 is returned, the interface does not support a Socket Control connection.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">+5000 (0 if sockets are not suported)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Returns the control connection port number:&#160;<span style="background-color: #dcdcdc;">SYST:COMM:LAN:CONT?</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight">This query is only used when programming over Sockets.</li>
+                <li class="IndentTight"> You can use the Socket Control connection to send a Device Clear to the instrument or to detect pending Service Request (SRQ) events.</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="SYST:COMM:LAN:DHCP"></a>SYSTem:COMMunicate:LAN:DHCP ON | OFF | 1 | 0</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:DHCP?</h3>
+            <p>The command enables (On) or disables (Off) the use of the Dynamic 
+ Host Configuration Protocol (DHCP) for the instrument.</p>
+            <p style="font-family: 'Keysight Sans Light';">ON: The instrument will try to obtain an IP address 
+ from a DHCP server. If a DHCP server is found, it will assign a dynamic 
+ IP address, Subnet Mask, and Default Gateway to the instrument. If a DHCP server is not found, the instrument uses AutoIP to automatically configure its IP&#160;setting in the Automatic Private IP Addressing range (169.254.xxx.xxx).</p>
+            <p style="font-family: 'Keysight Sans Light';">OFF: The instrument will use the static IP address, 
+ Subnet Mask, and Default Gateway during power-on.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 896px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;">
+                            </img>
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">If you change this setting, you must execute a <a href="#SYSTem:LAN:UPDate" style="text-decoration: none;">SYSTem:COMMunicate:LAN:UPDate</a> command to activate the setting.<br></br></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-family: 'Keysight Sans Light';margin-top: 0;margin-bottom: 0;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">ON | OFF | 1 | 0</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">0 or 1</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Disables DHCP:<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:DHCP&#160;OFF</span><br />SYST:COMM:LAN:UPD<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul type="disc" class="EnDash">
+                <li class="IndentTight">Most site LANs have a DHCP server. </li>
+                <li class="IndentTight">If a DHCP LAN address is not assigned by a DHCP server, then an AutoIP address static IP will be assumed after approximately two minutes.</li>
+                <li class="IndentTight">This setting is stored in non-volatile memory, and does not change when power has been off, or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a>).</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:DNS[1 | 2] "&lt;address&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:DNS[1 | 2]? [CURRent | STATic]</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command assigns static IP addresses of Domain Name System (DNS) servers. A primary and a secondary server
+address may be assigned. If DHCP is available and enabled, DHCP will auto-assign these server addresses.
+These auto-assigned server addresses take precedence over the static addresses assigned with this command.
+Contact your LAN administrator for details.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 896px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;">
+                            </img>
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">If you change this setting, you must execute a <a href="#SYSTem:LAN:UPDate" style="text-decoration: none;">SYSTem:COMMunicate:LAN:UPDate</a> command to activate the setting.<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 0;margin-bottom: 0;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">&lt;address&gt;: Four-byte dot notation ("nnn.nnn.nnn.nnn"), where "nnn" in each case is a byte value in the range of 0 through 255.<br /><br />[CURRent | STATic]<br />Default:  CURRent</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"198.105.232.4"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Set a static primary DNS address:
+<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:DNS "198.105.232.4"
+</span><br />SYST:COMM:LAN:UPD<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="IndentTight"><b>CURRent</b> - Returns address currently being used by the instrument.</li>
+                <li class="IndentTight"><b>STATic</b> - Returns address from non-volatile memory. This address is used if DHCP is disabled or
+unavailable.</li>
+                <li class="IndentTight">The assigned 
+ DNS address is used for the DNS server if DHCP is disabled. 
+ Otherwise, the DNS server address is auto-assigned by DHCP. </li>
+                <li class="IndentTight">This setting is stored in non-volatile memory, and does not change when power has been off, or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a>)</li>
+            </ul>
+        </div>
+        <div>
+            <h3>SYSTem:COMMunicate:LAN:DOMain?</h3>
+            <p style="font-family: 'Keysight Sans Light';"> The query reads the 
+ current network domain name and returns an ASCII string enclosed in double quotes. </p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">(none)</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"example.com"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Returns the domain name 
+ being used by the instrument: <span style="background-color: #f5f5f5;">SYST:COMM:LAN:DOM?</span><br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul type="disc" class="EnDash">
+                <li class="IndentTight">If Dynamic Domain Name System (DNS) is available on your network and your instrument uses DHCP,
+the domain name is assigned by the Dynamic DNS service at power-on. </li>
+                <li class="IndentTight">If 
+ a domain name has not been assigned, a null string (&#160;"&#160;"&#160;) 
+ is returned. </li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:GATeway "&lt;address&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:GATeway? [CURRent | STATic]</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command assigns a default gateway for the instrument. The specified IP Address sets the default gateway, which
+allows the instrument to communicate with systems that are not on the local subnet. Thus, this is the
+default gateway where packets are sent that are destined for a device not on the local subnet, as determined
+by the Subnet Mask setting. Contact your LAN administrator for details.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 896px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;" />
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">If you change this setting, you must execute a <a href="#SYSTem:LAN:UPDate" style="text-decoration: none;">SYSTem:COMMunicate:LAN:UPDate</a> command to activate the setting.<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 5pt;margin-bottom: 5pt;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 5pt;margin-bottom: 5pt;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 5pt;margin-bottom: 5pt;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 5pt;margin-bottom: 5pt;">&lt;address&gt;: Four-byte dot notation ("nnn.nnn.nnn.nnn"), where "nnn" in each case is a byte value in the range of 0 through 255.<br /><br />[CURRent | STATic]<br />Default:  CURRent</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 5pt;margin-bottom: 5pt;">"198.105.232.4"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 5pt;margin-bottom: 5pt;">Set a default gateway address:
+<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:GAT "198.105.232.4"
+</span><br />SYST:COMM:LAN:UPD<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;"><b>CURRent</b> - Returns address currently being used by the instrument.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;"><b>STATic</b> - Returns address from non-volatile memory. This address is used if DHCP is disabled or
+unavailable.</li>
+            </ul>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;">If DHCP is enabled (<a href="#SYST:COMM:LAN:DHCP">SYSTem:COMMunicate:LAN:DHCP ON</a> command), the specified default gateway is not used.
+However, if the DHCP server fails to assign a valid IP address, the currently configured default gateway
+is used.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light'; margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light'; margin-bottom: 10pt;">A gateway value of "0.0.0.0" indicates that subnetting is not being used.</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:HOSTname "&lt;name&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:HOSTname? [CURRent | STATic]</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command assigns a hostname to the instrument. A hostname is the host portion of the domain name, which is translated
+into an IP address. If Dynamic Domain Name System (Dynamic DNS) is available on your network
+and your instrument uses DHCP, the hostname is registered with the Dynamic DNS service at power-on. If
+DHCP is enabled (<a href="#SYST:COMM:LAN:DHCP"><a href="#SYST:COMM:LAN:DHCP">SYSTem:COMMunicate:LAN:DHCP ON</a></a>), the DHCP server can change the specified hostname.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 896px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;">
+                            </img>
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">If you change this setting, you must execute a <a href="#SYSTem:LAN:UPDate" style="text-decoration: none;">SYSTem:COMMunicate:LAN:UPDate</a> command to activate the setting.<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 0;margin-bottom: 0;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">&lt;name&gt;: A string of up to 15 characters.
+Must start with letter (A-Z)
+May contain letters, numbers (0-9), or dashes ("-")
+<br />Default: "K-&lt;<i>instrument model number</i>&gt;-nnnnn", where "nnnnn" is the last five digits of the
+instrument's serial number.<br /><br />[CURRent | STATic]<br />Default: CURRent</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"LAB1-EDU36311A"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Define a hostname:
+<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:HOST "LAB1-EDU36311A"
+</span><br />SYST:COMM:LAN:UPD<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;"><b>CURRent</b> - Returns hostname currently being used by the instrument.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;"><b>STATic</b> - Returns desired hostname from non-volatile memory, that may not be the actual name used by the instrument if DHCP is enabled.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">If host name has not been assigned, the query returns a null string ("").</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:IPADdress "&lt;address&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:IPADdress? [CURRent | STATic]</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command assigns a static Internet Protocol (IP) address for the instrument. If DHCP is enabled (<a href="#SYST:COMM:LAN:DHCP"><a href="#SYST:COMM:LAN:DHCP">SYSTem:COMMunicate:LAN:DHCP ON</a></a>), the specified static IP address is not used. Contact your LAN administrator for
+details.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 896px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;">
+                            </img>
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">If you change this setting, you must execute a <a href="#SYSTem:LAN:UPDate" style="text-decoration: none;">SYSTem:COMMunicate:LAN:UPDate</a> command to activate the setting.<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 5pt;margin-bottom: 5pt;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 5pt;margin-bottom: 5pt;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 5pt;margin-bottom: 5pt;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 5pt;margin-bottom: 5pt;">&lt;address&gt;: Four-byte dot notation ("nnn.nnn.nnn.nnn"), where "nnn" in each case is a byte value in the range 0 through 255.<br /><br />[CURRent | STATic]<br />Default: CURRent</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 5pt;margin-bottom: 5pt;">"198.105.232.4"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 5pt;margin-bottom: 5pt;">Sets a static IP&#160;address:<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:IPAD "198.105.232.4"
+</span><br />SYST:COMM:LAN:UPD<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;"><b>CURRent</b> - Returns address currently being used by the instrument.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;"><b>STATic</b> - Returns static address from non-volatile memory. This address is used if DHCP is disabled or
+unavailable.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light'; margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3>SYSTem:COMMunicate:LAN:MAC?</h3>
+            <p style="font-family: 'Keysight Sans Light';">The query returns the instrument's Media Access Control (MAC) address as an ASCII string of 12 hexadecimal characters
+(0-9 and A-F) enclosed in quotation marks.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 705px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;" />
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">Your network administrator may need the instrument's MAC address in order to assign a static IP address for this device.<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 0;margin-bottom: 0;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">(none)</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"00:30:D3:00:10:41"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Returns the MAC&#160;address: <span style="background-color: #f5f5f5;">SYST:COMM:LAN:MAC?</span><br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">Query reads the MAC address 
+ and returns an ASCII string enclosed in double quotes.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">The instrument's MAC 
+ address is unique to the instrument. It is set at the factory and cannot be changed.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">MAC&#160;address also known as the link-layer address, 
+ the Ethernet (station) address, LANIC ID, or Hardware Address. This is 
+ an unchangeable 48-bit address assigned by the manufacturer to each unique 
+ Internet device.</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:SMASk "&lt;mask&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:SMASk? [CURRent | STATic]</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command assigns a subnet mask for the instrument to use in determining whether a client IP address is on the same
+local subnet. When a client IP address is on a different subnet, all packets must be sent to the Default Gateway.
+Contact your LAN administrator for details.</p>
+            <table style="caption-side: top;margin-left: 0;margin-right: auto;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col style="width: 100px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col style="width: 896px;" class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">
+                            <img src="../../Graphics/03-NOTE_112x31.jpg" style="width: 112;height: 31;" />
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">If you change this setting, you must execute a <a href="#SYSTem:LAN:UPDate" style="text-decoration: none;">SYSTem:COMMunicate:LAN:UPDate</a> command to activate the setting.<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="margin-top: 0;margin-bottom: 0;">&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">&lt;mask&gt;: Four-byte dot notation ("nnn.nnn.nnn.nnn"), where "nnn" in each case is a byte value in the range 0 through 255.<br />Default: "255.255.0.0"<br /><br />[CURRent | STATic]<br />Default: CURRent</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"198.105.232.4"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Sets the subnet mask:<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:SMAS "255.255.254.0"</span><br />SYST:COMM:LAN:UPDate<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;"><b>CURRent</b> - Returns subnet mask currently being used by the instrument.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;"><b>STATic</b> - Returns subnet mask from non-volatile memory. This address is used if DHCP is disabled or
+unavailable.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">A 
+ value of "0.0.0.0" or "255.255.255.255" indicates 
+ that subnetting is not being used.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:TELNet:PROMpt "&lt;string&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:TELNet:PROMpt?</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command sets the command prompt displayed when communicating the instrument with Telnet.</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">&lt;string&gt;: A string of up to 15 characters</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"Command"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Defines the command prompt: <span style="background-color: #f5f5f5;">SYST:COMM:LAN:TELN:PROM "Command"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;">Query returns the command prompt as ASCII strings enclosed in double quotes.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light'; margin-bottom: 10pt;">Instrument uses LAN port 5024 for SCPI Telnet sessions, and port 5025 for SCPI Socket sessions.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;">Telnet port is an alternate way to send SCPI commands to the instrument.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;">Telnet session can typically be started as follows from a host computer shell:<br /><br /><span class="Indented2">&#160;&#160;&#160;&#160;&#160;<span style="font-family: 'Keysight Sans Light';">telnet &lt;</span><i style="font-family: 'Keysight Sans Light'; font-style: normal;">IP_address</i><span style="font-family: 'Keysight Sans Light';">&gt; 
+ &lt;</span><i style="font-family: 'Keysight Sans Light'; font-style: normal;">port</i><span style="font-family: 'Keysight Sans Light';">&gt;</span></span><br style="font-family: 'Keysight Sans Light';" /><br style="font-family: 'Keysight Sans Light';" /><span class="Indented2"><span style="font-family: 'Keysight Sans Light';">For example: </span></span><br style="font-family: 'Keysight Sans Light';" /><br style="font-family: 'Keysight Sans Light';" /><span class="Indented2"><span style="font-family: 'Keysight Sans Light';">&#160;&#160;&#160;&#160;&#160;telnet 169.254.4.10 
+ 5024</span></span><br style="font-family: 'Keysight Sans Light';" /><br style="font-family: 'Keysight Sans Light';" /><span class="Indented2"><span style="font-family: 'Keysight Sans Light';">To exit a Telnet session, press </span></span><span style="font-family: 'Keysight Sans Light';">&lt;</span><b style="font-family: 'Keysight Sans Light';">Ctrl-D</b><span style="font-family: 'Keysight Sans Light';">&gt;.</span><![CDATA[ 
+ ]]></li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:COMMunicate:LAN:TELNet:WMESsage "&lt;string&gt;"</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:LAN:TELNet:WMESsage?</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command sets the welcome message displayed when communicating the instrument with Telnet.</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">&lt;string&gt;: A string of up to 63 characters<br />Default: "Welcome to Keysight's EDU36311A Triple Output DC Power supply"</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">"Welcome to the Telnet Session"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Define a welcome message:
+<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:TELN:WMES "Welcome to the Telnet Session"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-bottom: 10pt;">Query returns the command prompt as ASCII strings enclosed in double quotes.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light'; margin-bottom: 10pt;">Instrument uses LAN port 5024 for SCPI Telnet sessions and port 5025 for SCPI Socket sessions.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3><a name="SYSTem:LAN:UPDate"></a>SYSTem:COMMunicate:LAN:UPDate</h3>
+            <p style="font-family: 'Keysight Sans Light';">The command stores any changes made to the LAN settings into non-volatile memory and restarts the LAN driver with
+the updated settings.</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;">
+                </col>
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;">
+                </col>
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="margin-top: 0;margin-bottom: 0;">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">(none)</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="margin-top: 0;margin-bottom: 0;">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2" style="margin-top: 0;margin-bottom: 0;">Configures the instrument to use statically assigned LAN settings (disables DHCP):<br />SYST:COMM:LAN:DHCP OFF<br />SYST:COMM:LAN:DNS "198.105.232.4"<br />SYST:COMM:LAN:DNS2 "198.105.232.5"<br />SYST:COMM:LAN:GAT "198.105.232.1"<br />SYST:COMM:LAN:HOST "LAB1-EDU36311A"<br />SYST:COMM:LAN:IPAD "198.105.232.101"<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN:UPD</span><p>Configures the instrument back to use DHCP (enables DHCP):<br />SYST:COMM:LAN:DHCP ON<br /><span style="background-color: #f5f5f5;">SYST:COMM:LAN.UPD</span></p></td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul type="disc" class="EnDash">
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">Be very careful when you execute this command, because your instrument may not work on the LAN if you update the instrument with invalid LAN settings.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light';margin-top: 10pt;margin-bottom: 10pt;">If your instrument does not work after you execute this command, perform the LAN Reset through instrument's front panel softkey to restore the settings to reset values and reset the LAN, or use another I/O interface, such as USB, to correct the settings.</li>
+                <li class="Indented1" style="font-family: 'Keysight Sans Light'; margin-top: 10pt; margin-bottom: 10pt;">This command must be sent after changing the settings for DHCP, DNS, gateway, hostname, IP address, or subnet
+mask.</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="SYST:COMM:RLST"></a>SYSTem:COMMunicate:RLSTate LOCal | REMote | RWLock</h3>
+            <h3 style="margin-top: 0;">SYSTem:COMMunicate:RLSTate?<br /></h3>
+            <p>The command sets the power supply to remote or local mode.  The REMote parameter is the same as SYSTem:REMote and the RWLock parameter is the same as SYSTem:RWLock. The LOCal parameter will set the power supply to local mode and maintain in this mode for all incoming remote operations.</p>
+            <p>The query returns LOC, REM, or RWL.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>LOC | REM | RWL</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LOC, REM, or RWL</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the power supply to remote:&#160;<span style="background-color: #dcdcdc;">SYST:COMM:RLST REM</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3><a name="SYST:COMM:RLST"></a>SYSTem:COMMunicate:TCPip:CONTrol?</h3>
+            <p>The command returns the initial socket control connection port number. After the control port number is obtained, a control socket connection can be opened.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">+5000 (0 if sockets are not suported)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Queries the Control connection port number:&#160;<span style="background-color: #dcdcdc;">SYST:COMM:TCP:CONT?</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>&#160;</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <col class="TableStyle-NoteTable-Column-Column1">
+                </col>
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyH-Column1-">
+                            <img src="../../Graphics/03-NOTE_100x27.jpg" style="width: 100;height: 27;">
+                            </img>
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyG-Column1-">The control socket connection can only be used by a client to send a device clear to the instrument
+or to detect Service Request (SRQ) events.</td>
+                    </tr>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">&#160;</td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">Refer to "Using Sockets" in the <i>User's Guide</i> for more information.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;">SYSTem:DATE &lt;yyyy&gt;,&lt;mm&gt;,&lt;dd&gt;</h3>
+            <h3 style="margin-top: 0;">SYSTem:DATE?</h3>
+            <p>This command sets the date of the power supply's real-time clock. The range of values for the year is from 2000 � 2099.</p>
+            <p>The query returns the date in the form +2017,+7,+26.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 673px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>&lt;yyyy&gt;,&lt;mm&gt;,&lt;dd&gt;</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">&lt;yyyy,mm,dd&gt;</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the date to April 1, 2020: <span class="GrayHighlighter">SYST:DATE 2020,4,1</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <h4>Remarks</h4>
+                <ul class="EnDash">
+                    <li class="IndentTight">The real-time clock is battery-backed and retains the date and time when power is off. </li>
+                    <li class="IndentTight">The real-time clock does not adjust itself for time zone changes or daylight savings time. Be sure to set the date and time when you first receive your instrument. </li>
+                    <li class="IndentTight">This setting is non-volatile. It will not be changed by power cycling or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <h3>SYSTem:ERRor[:NEXT]?</h3>
+            <p>The query returns the power supply's error queue of up to 20 errors. The power supply beeps once (unless disabled by <a href="#SystBeepStat">SYSTem:BEEPer:STATe OFF</a>) and turns on the front-panel error annunciator when an error has been detected. Up to 20 errors can be stored in the error queue. See <a href="../1%20-%20Remote%20Operation/40%20-%20SCPI%20Error%20Messages.htm">Error Messages</a>.</p>
+            <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/NoteTable.css');" class="TableStyle-NoteTable" cellspacing="0">
+                <col class="TableStyle-NoteTable-Column-Column1" />
+                <col class="TableStyle-NoteTable-Column-Column1" />
+                <tbody>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyH-Column1-">
+                            <img src="../../Graphics/03-NOTE_100x27.jpg" style="width: 100;height: 27;" />
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyG-Column1-">Errors are retrieved in first-in-first-out (FIFO) order. The error annunciator turns off after the last error is read. The power supply beeps once (unless disabled by <a href="#SystBeepStat">SYSTem:BEEPer:STATe OFF</a>) each time an error is generated.</td>
+                    </tr>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyG-Column1-">If more than 20 errors have occurred, the last error stored in the queue (the most recent error) is replaced with -350, �Queue overflow�. No additional errors are stored until you remove errors from the queue. If no errors have occurred, the SYST:ERR? query returns +0, �No error�.</td>
+                    </tr>
+                    <tr>
+                        <td class="TableStyle-NoteTable-BodyB-Column1-">&#160;</td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;" class="TableStyle-NoteTable-BodyA-Column1-">The error queue is cleared when power has been off or after a <a href="60%20-%20IEEE-488%20Subsystem.htm#CLS">*CLS</a> (clear status) command has been executed. The <a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> (reset) command does not clear the error queue.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>&#160;</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">&lt;+0,"No error"&gt;</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Reads and clears the first error in error queue:&#160;<span style="background-color: #dcdcdc;">SYST:ERR?</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3><a name="SystLoc"></a>SYSTem:LOCal</h3>
+            <p>The command places the power supply in  the local  mode. All front-panel keys are fully functional.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the power supply in  the local  mode:&#160;<span style="background-color: #dcdcdc;">SYST:LOC</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3><a name="SystRem"></a>SYSTem:REMote</h3>
+            <p>The command places  the power supply into remote mode for remote operation. All front-panel keys are disabled except for <b>Lock/Unlock</b> key. You can place the power supply in local mode and unlock the front panel keys by pressing the <b>Lock/Unlock</b> key.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets to remote mode:&#160;<span style="background-color: #dcdcdc;">SYST:REM</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3><a name="SystRwl"></a>SYSTem:RWLock </h3>
+            <p>The command places  the power supply in  the remote mode. This  command is  the same  as  SYSTem:REMote except that all front-panel keys  are  disabled including the <b>Lock/Unlock</b> key. You can unlock the front-panel keys by using SYSTem:LOCal.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets to remote mode disabling all front-panel keys:&#160;<span style="background-color: #dcdcdc;">SYST:RWL</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="SYST:SET"></a>SYSTem:SET &lt;arbitrary_block_data&gt;</h3>
+            <h3 style="margin-top: 0;">SYSTem:SET?</h3>
+            <p>The command sets the instrument state as defined by the data returned by SYSTem:SET? query. </p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows">
+                            <p>&lt;arbitrary_block_data&gt;: The block data returned by SYSTem:SET? query.</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">#nN&lt;instrument state&gt;
+<br />where the first digit after the # indicates the number
+of following digits. The following digits indicate
+the length of the data.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="SYST:TIME"></a>SYSTem:TIME &lt;hh&gt;,&lt;mm&gt;,&lt;ss&gt;</h3>
+            <h3 style="margin-top: 0;">SYSTem:TIME?</h3>
+            <p>The command sets the real time clock in hours (hh), minutes (mm), and seconds (ss). The values may range from 0,0,0 (midnight) to 23,59,59 (one second before midnight).</p>
+            <p>The query returns the real time clock in hours (hh), minutes (mm), and seconds (ss).</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>&lt;0 - 23&gt;,&lt;0 - 59&gt;,&lt;0 - 59&gt;</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">+&lt;hh&gt;,+&lt;mm&gt;,+&lt;ss&gt;</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the real time clock to 13:30:15:&#160;<span style="background-color: #dcdcdc;">SYST:TIME 13,30,15 </span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <h4>Remarks</h4>
+                <ul class="EnDash">
+                    <li class="IndentTight">The real-time clock is battery-backed and retains the date and time when power is off. </li>
+                    <li class="IndentTight">The real-time clock does not adjust itself for time zone changes or daylight savings time. Be sure to set the date and time when you first receive your instrument. </li>
+                    <li class="IndentTight">The setting is non-volatile, and does not change when power has been off or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <h3><a name="SystVers"></a>SYSTem:VERSion?</h3>
+            <p>The query returns the present SCPI version of the power supply. The returned value is a string in the form of YYYY.V where �YYYY� represent the year of the version, and the �V� represents the current version number of the SCPI.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">1990.0</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Returns the SCPI version:&#160;<span style="background-color: #dcdcdc;">SYST:VERS?</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

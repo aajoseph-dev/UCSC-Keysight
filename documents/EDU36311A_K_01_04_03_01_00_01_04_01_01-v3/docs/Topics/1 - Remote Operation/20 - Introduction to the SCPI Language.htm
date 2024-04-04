@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" /><title>Introduction to the SCPI Language</title>
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/NoteTable.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">Introduction to the SCPI Language</h2>
+        <p>Standard  Commands for Programmable Instruments (SCPI) is an ASCII- based instrument command language designed for test and  measurement instruments.  </p>
+        <p>SCPI  commands are  based   on  a  hierarchical structure, also known as  a  tree  system. In  this system, associated commands are  grouped together under a  common node  or root, thus  forming subsystems. A portion of the  SOURce subsystem is  shown below  to illustrate the tree system.</p>
+        <table class="TableStyle-NoteTable" style="mc-table-style: url('../../css/NoteTable.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+            <col class="TableStyle-NoteTable-Column-Column1" style="width: 50px;" />
+            <col class="TableStyle-NoteTable-Column-Column1" style="width: 50px;" />
+            <col class="TableStyle-NoteTable-Column-Column1" style="width: 790px;" />
+            <tbody>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyG-Column1-" colspan="3">
+                        <p>[SOURce:]</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyG-Column1-" colspan="2">
+                        <p>CURRent &lt;current&gt; | MIN | MAX<br />CURRent? MIN | MAX</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyG-Column1-" colspan="2">
+                        <p>CURRent:</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyG-Column1-">
+                        <p>TRIGgered &lt;current&gt; | MIN | MAX<br />TRIGgered? MIN | MAX</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyG-Column1-" colspan="2">
+                        <p>VOLTage &lt;voltage&gt; | MIN | MAX<br />VOLTage? MIN|MAX</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyH-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyG-Column1-" colspan="2">
+                        <p>VOLTage:</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="TableStyle-NoteTable-BodyB-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyB-Column1-">&#160;</td>
+                    <td class="TableStyle-NoteTable-BodyA-Column1-">
+                        <p>TRIGgered &lt;voltage&gt; | MIN | MAX<br />TRIGgered? MIN | MAX</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>SOURce is  the root keyword of the command, CURRent and VOLTage are  second-level  keywords, and  TRIGgered is  the third-level  keyword. A colon  (:)  separates a  command keyword from  a  lower-level  keyword.</p>
+        <div>
+            <h3>Command Format Used in this Manual</h3>
+            <p>The format used  to show  commands in  this manual is shown below:</p>
+            <p class="Shaded">CURRent &lt;current&gt; | MINimum | MAXimum</p>
+            <p>The command syntax shows most commands (and  some parameters) as  a  mixture of upper- case  and  lower- case letters. The  upper- case  letters indicate the  abbreviated spelling for the command. For shorter  program lines,  send the abbreviated form. For better program readability, send the  long  form.</p>
+            <p>For example, in  the above  syntax statement, CURR and CURRENT are  both  acceptable forms. You can  use  upper- case or  lower- case  letters. Therefore, CURRENT, curr, and  Curr are  all  acceptable. Other  forms, such  as  CUR and  CURREN, will  generate an  error.</p>
+            <p>A vertical bar  (|) separates multiple parameter choices  for a given  command string.</p>
+            <p>Angle brackets (&lt;&gt;) indicate that you  must  specify  a value for the enclosed parameter.  For example, the above  syntax statement shows  the current parameter enclosed in  angle brackets. The  brackets are  not  sent  with  the command string. You must  specify  a  value  for the parameter (such  as CURR 0.1).</p>
+            <p>Some parameters are  enclosed in square brackets ([]). The brackets indicate that the  parameter is  optional and  can  be omitted. The  brackets are  not sent with  the command string. If you  do  not  specify  a  value  for an  optional parameter, the power supply chooses a  default value.</p>
+            <p>A colon  (:)  separates a  command keyword from  a lower-level  keyword. You must  insert a  blank  space  to separate a  parameter from  a  command keyword. If a command requires more  than one  parameter, you  must separate adjacent parameters using  a  comma  as  shown below:</p>
+            <p class="Shaded">APPLy P6V,3.5,1.5</p>
+        </div>
+        <div>
+            <h3>Command Separators</h3>
+            <p>A colon  (:)  separates a  command keyword from  a lower- level  keyword as  shown below:</p>
+            <p class="Shaded">SOURce:CURRent:TRIGgered</p>
+            <p>A semicolon (;)  is  used  to  separate  two commands within the same  subsystem, and  can  also  minimize typing.  For example, sending the following  command string:</p>
+            <p class="Shaded">SOUR:VOLT MIN;CURR MAX</p>
+            <p>is  the same  as  sending the following  two  commands:</p>
+            <p class="Shaded">SOUR:VOLT MIN<br />SOUR:CURR MAX</p>
+            <p>Use  a  colon  and  a  semicolon to link  commands from different subsystems. For example, in the following  command string, an  error is generated if you  do  not  use  the colon  and semicolon:</p>
+            <p class="Shaded">DISP:TEXT:CLE;:SOUR:CURR MIN</p>
+        </div>
+        <div>
+            <h4>Using the MIN and MAX parameters</h4>
+            <p>You can  substitute MINimum or  MAXimum in  place  of  a parameter  for many  commands. For example, consider the following  command:</p>
+            <p class="Shaded">CURRent &lt;current&gt; | MIN | MAX</p>
+            <p>Instead of  selecting a  specific current,  you  can  substitute MINimum to set  the current to its  minimum value  or MAXimum to set  the current to its  maximum value.</p>
+        </div>
+        <div>
+            <h3>Querying Parameter Settings</h3>
+            <p>You can  query  the value  of most  parameters by  adding a question mark  (?)  to the command. For example, the following  command sets  the output current to 5 A:</p>
+            <p class="Shaded">CURR 5</p>
+            <p>You can  query the value  by  executing:</p>
+            <p class="Shaded">CURR?</p>
+            <p>You can  also  query  the maximum or  minimum value  allowed with  the present function as  follows:</p>
+            <p class="Shaded">CURR? MAX; CURR? MIN</p>
+            <table style="border-bottom-style: none;border-bottom-width: 0px;border-bottom-color: #e90029;margin-left: 0;margin-right: auto;">
+                <col />
+                <col />
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="../../Graphics/02-CAUTION_100x28.jpg" style="width: 100;height: 28;" />
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #fdc206;padding-bottom: 9px;">If you send two query commands without reading the response from the first, and then attempt to read the second response, you may
+receive some data from the first response followed by the complete second response. To avoid this, do not send a query command without reading the response. When you cannot avoid this situation, send a device clear before sending the second query command.
+<br /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3>SCPI Command Terminators</h3>
+        <p>A command string sent to the power supply must  terminate with  a  &lt;new line&gt; character. The  IEEE- 488  EOI (end-or-identify) message is  interpreted as  a  &lt;new line&gt; character and  can  be used  to terminate a command string in place  of a  &lt;new line&gt; character. A &lt;carriage return&gt; followed  by a &lt;new line&gt; is also  accepted. Command string termination will  always  reset the current SCPI  command path to the root level.  The  &lt;new line&gt; character has  the ASCII decimal code  of 10.</p>
+        <h3>IEEE-488.2 Common Commands</h3>
+        <p>The  IEEE- 488.2  standard  defines a  set  of common commands that perform functions like  reset, self- test, and status operations. Common  commands always  begin  with  an asterisk (*),  are four to five  characters in  length, and  may include one  or  more  parameters. The  command keyword is separated from  the first parameter by  a  blank  space.  Use  a semicolon (;)  to separate  multiple commands as  shown below:</p>
+        <p class="Shaded">*RST; *CLS; *ESE 32; *OPC?</p>
+        <div>
+            <h3>SCPI Parameter Types</h3>
+            <p>The  SCPI  language defines several different data  formats to be  used  in  program messages and  response messages.</p>
+            <div>
+                <h4>Numeric parameters</h4>
+                <p>Commands that require numeric parameters will  accept all commonly used  decimal representations  of numbers including optional signs,  decimal points, and  scientific notation. Special  values  for numeric parameters  like MINimum, MAXimum, and  DEFault are  also  accepted.</p>
+                <p>You can  also  send  engineering unit  suffixes (V, A, or  SEC) with  numeric parameters. If only  specific numeric values  are accepted, the power supply will  automatically round the input numeric parameters. The  following  command uses  a numeric parameter:</p>
+                <p class="Shaded">&#160;&#160;&#160;&#160;CURR &lt;current&gt; | MIN | MAX</p>
+            </div>
+        </div>
+        <div>
+            <h4>Discrete parameters</h4>
+            <p>Discrete parameters are  used  to program settings that have  a limited number of values  such  as  BUS and  IMM. Query responses will  always  return  the short form in  all upper- case  letters. The  following  command uses  discrete parameters:</p>
+            <p class="Shaded">TRIG:SOUR BUS | IMM</p>
+        </div>
+        <div>
+            <h4>Boolean parameters</h4>
+            <p>Boolean parameters represent a  single  binary condition that is  either true or false.  For a  false  condition, the power supply will  accept OFF or  0. For a true condition, the power supply will  accept ON or  1. When  you  query  a  boolean setting, the power supply will  always  return 0 or  1. The following  command uses  a  boolean parameter:</p>
+            <p class="Shaded">DISP OFF | ON</p>
+        </div>
+        <div>
+            <h4>String parameters</h4>
+            <p>String parameters  can  contain virtually any  set  of  ASCII characters. A string must  begin  and  end  with  matching quotes; either with  a  single  quote  or  with  a  double   quote. You can  include the  quote delimiter as  part of the  string by typing  it  twice without any  characters in  between. The following  command uses  a  string parameter:</p>
+            <p class="Shaded">DISP:TEXT &lt;quoted string&gt;</p>
+        </div>
+        <div>
+            <h3>Using Device Clear</h3>
+            <p>Device Clear is an IEEE-488 low-level bus message that you can use to return the instrument to a
+responsive state. Different programming languages and IEEE-488 interface cards provide access to this
+capability through their own unique commands. The status registers, the error queue, and all configuration
+states are left unchanged when a Device Clear message is received.</p>
+            <p>Device Clear performs the following actions:</p>
+            <ul class="EnDash">
+                <li class="IndentTight">The instrument returns to the trigger "idle" state.</li>
+                <li class="IndentTight">The instrument's input and output buffers are cleared.</li>
+                <li class="IndentTight">The instrument is prepared to accept a new command string.</li>
+            </ul>
+        </div>
+        <h2><a name="Programm"></a>Programming Ranges and Output Identifiers</h2>
+        <p>Output setting commands require a parameter for programming ranges and an output name or an output number as the identifier of each output. Most queries will return a parameter. The programming range for a parameter varies according to the selected output of the power supply. The following table lists the programming ranges, output names, and output numbers for each output.</p>
+        <table style="margin-left: 0;margin-right: auto;caption-side: top;">
+            <col>
+            </col>
+            <col style="width: 875px;">
+            </col>
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="../../Graphics/03-NOTE_100x27.jpg" style="width: 100;height: 27;">
+                        </img>
+                    </td>
+                    <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;">Refer to this table to identify parameters when programming the power supply.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>&#160;</p>
+        <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 116px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 160px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 100px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 98px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 98px;" />
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">&#160;</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="text-align: center;">&#160;</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="text-align: center;">6 V output</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1" style="text-align: center;">30 V output</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1" style="text-align: center;">30 V output</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows"><b>Output identifier</b>
+                    </td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">&#160;</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">P6V (CH1)</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">P30V (CH2)</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">N30V (CH3)</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows"><b>Output number</b>
+                    </td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">&#160;</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">1</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">2</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">3</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" rowspan="4"><b>Voltage
+</b>
+                    </td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">Programming
+range</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 to 6.18 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 to 30.9 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">0 to 30.9 V</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">MAX&#160;value</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">6.18 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">30.9 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">30.9 V</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">MIN&#160;value</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">0 V</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">*RST value
+(default value)</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 V</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">0 V</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" rowspan="4"><b>Current</b>
+                    </td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">Programming
+range</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 to 5.15 A</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0 to 1.03 A</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">0 to 1.03 A</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">MAX&#160;value</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">5.15 A<br /></td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">1.03 A<br /></td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">1.03 A<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="font-weight: bold;text-align: left;">MIN&#160;value</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0.002 A</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0.001 A</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: center;">0.001 A</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="font-weight: bold;text-align: left;">*RST value
+(default value)</td>
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">5 A<br /></td>
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">1 A<br /></td>
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" style="text-align: center;">1 A<br /></td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

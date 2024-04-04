@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="Programming Commands" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" /><title>CALibration Subsystem</title>
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">CALibration Subsystem</h2>
+        <p MadCap:conditions="Default.ScreenOnly">For a  detailed discussion on  the calibration procedures, refer to the calibration section in the EDU36311A Programmable DC Power Supplies User Guide.</p>
+        <table style="margin-left: 0;margin-right: auto;caption-side: top;">
+            <col>
+            </col>
+            <col>
+            </col>
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="../../Graphics/03-NOTE_100x27.jpg" style="width: 100;height: 27;">
+                        </img>
+                    </td>
+                    <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #9c9c9c;padding-bottom: 9px;">
+                        The calibration can only be done one channel at a time, hence the channel list for all calibration commands will only accept one channel.</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="CAL:ASAVE"></a>CALibration:ASAVE ON | OFF | 1 | 0</h3>
+            <h3 style="margin-top: 0;">CALibration:ASAVE?</h3>
+            <p>The command enables or disables automatic saving of calibration constants. If auto save is enabled, the calibration data will automatically save into the non-volatile memory whenever a point is successfully calibrated.</p>
+            <p>The query returns 0 (OFF) or 1 (ON).</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>ON | OFF | 1 | 0</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">0 or 1</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Enables the CAL auto save feature:&#160;<span style="background-color: #dcdcdc;">CAL:ASAVE 1</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> System date will be used as calibration date and automatically store into the non-volatile memory when calibration constants are stored. You can overwrite the calibration date using <a href="#CAL:DATE">CAL:DATE</a>.</li>
+                <li class="IndentTight">This setting is non-volatile. It will not be changed by power cycling, or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3><a name="CAL:COUN"></a>CALibration:COUNt?</h3>
+            <p>The query returns the number of times the power supply has been calibrated. Your power supply was calibrated before it left the factory. When you receive your power supply, read the count to determine its initial value. If auto save is enabled, the value increments by one for each calibration point, a complete calibration for all points will increase the value by six counts.</p>
+            <p>If CAL:SAVE is used, the value increments by one for each channel calibration, a complete calibration for three outputs will increase the value by three counts.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">&lt;count&gt;</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Returns the calibration count:&#160;<span style="background-color: #dcdcdc;">CAL:COUN?</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h4>Remarks</h4>
+        <ul class="EnDash">
+            <li class="IndentTight"> The calibration count is stored in non-volatile memory. It will not be changed by power cycling, or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+        </ul>
+        <div>
+            <h3><a name="CAL:CURR"></a>CALibration:CURRent[:DATA][:HIGH] &lt;current&gt;[, (@&lt;chanlist&gt;)]</h3>
+            <p>The command allows you to enter an output current value that you obtained by reading a digital multimeter (DMM). Select a calibration level (CAL:CURR:LEV) for the value being entered. This command can only be used when calibration is unsecured. </p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>&lt;current&gt;</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the output current value obtained by reading a DMM for example 5 A:&#160;<span style="background-color: #dcdcdc;">CAL:CURR 5</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h4>Remarks</h4>
+        <ul class="EnDash">
+            <li class="IndentTight"> If channel list is not specified, the output to be calibrated is based on <a href="70%20-%20INSTrument%20Subsystem.htm">INSTrument</a> command.</li>
+        </ul>
+        <div>
+            <h3><a name="CAL:CURR:LEV"></a>CALibration:CURRent:LEVel[:HIGH] MINimum | MAXimum[, (@&lt;chanlist&gt;)]</h3>
+            <p> This command can only be used after calibration is unsecured. It sets the power supply to a calibration point that is entered with CALibration:CURRent [:DATA] command. During calibration, two points must be entered and the low-end point (MIN) must be selected and entered first.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 272px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>MINimum | MAXimum</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Calibrates the output current for channel 1 to the minimum range:&#160;<span style="background-color: #dcdcdc;">CAL:CURR:LEV MIN, (@1)</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h4>Remarks</h4>
+        <ul class="EnDash">
+            <li class="IndentTight"> If channel list is not specified, the output to be calibrated is based on <a href="70%20-%20INSTrument%20Subsystem.htm">INSTrument</a> command.</li>
+        </ul>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="CAL:DATE"></a>CALibration:DATE ["&lt;string&gt;"] </h3>
+            <h3 style="margin-top: 0;">CALibration:DATE?</h3>
+            <p>The command stores the date that the power supply was last calibrated in non-volatile memory. If the input string parameter is not specified, the system date will be stored. This command can saves up to 20 characters.</p>
+            <p>The query returns the date. If no date is stored, an empty quoted string ("") is returned.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>"&lt;string&gt;"</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">"01/01/2020"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Enters the calibration date: <span style="background-color: #dcdcdc;">CAL:DATE "10/10/2020"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h4>Remarks</h4>
+        <ul class="EnDash">
+            <li class="IndentTight"> This setting is non-volatile. It will not be changed by power cycling, or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+        </ul>
+        <div>
+            <h3><a name="CAL:SAVE"></a>CALibration:SAVE</h3>
+            <p>The command saves calibration constants in non-volatile memory after the calibration procedure has been completed. When you exit (CALibration:SECure:STATe OFF) without saving, the previous constants are restored. If the Auto Save feature is not enabled, you need to send CAL:SAVE command to store the new calibration data to non-volatile memory.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>(none)</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2"> Saves calibration constants:&#160;<span style="background-color: #dcdcdc;">CAL:SAVE</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> System date will be used as calibration date and automatically store into the non-volatile memory when calibration constants are stored. You can overwrite the calibration date using <a href="#CAL:DATE">CAL:DATE</a>.</li>
+            </ul>
+        </div>
+        <div>
+            <h3><a name="CAL:SEC:CODE"></a>CALibration:SECure:CODE &lt;new code&gt;</h3>
+            <p>The command enters a new security passcode. To change the passcode, first unsecure the power supply using the old passcode. Then, enter the new passcode. The passcode can be set up to 12 characters. The first character must be a letter (A-Z), remaining may contains letters, numbers (0-9), or underscore "_". Blank spaces are not allowed.</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>&lt;new code&gt;</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the new security passcode to EDU36311A: <span style="background-color: #dcdcdc;">CAL:SEC:CODE EDU36311A</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> When you first receive your instrument, it is secured, and the default security code is set to "EDU36311A".</li>
+                <li class="IndentTight">This setting is non-volatile; it will not be changed by power cycling, or after a factory reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+                <li class="IndentTight">If you forget your security code, you can override the security feature. For more information, see <i>EDU36311A Service Guide</i>.</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="CAL:SEC:STAT"></a>CALibration:SECure:STATe ON | OFF | 1 | 0, &lt;code&gt;</h3>
+            <h3 style="margin-top: 0;">CALibration:SECure:STATe?</h3>
+            <p>The command unsecures or secures the power supply for calibration, using the code specified by CALibration SECure:CODE. </p>
+            <p>The query returns 0 (calibration unsecured) or 1 (calibration secured).</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>ON | OFF | 1 | 0, &lt;code&gt;</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">1 or 0</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2"> Unsecures the power supply for calibration: <span style="background-color: #dcdcdc;">CAL:SEC:STAT OFF, EDU36311A</span> </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> When you first receive your instrument, it is secured, and the default security code is set to "EDU36311A".</li>
+                <li class="IndentTight"> This setting is non-volatile. It will not be changed by power cycling or after a Factory Reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="margin-bottom: 2pt;"><a name="CAL:STR"></a>CALibration:STRing "&lt;string&gt;"</h3>
+            <h3 style="margin-top: 0;">CALibration:STRing?<br /></h3>
+            <p>The command saves up to 40 characters of information, such as the calibration message, the next calibration due date, or the power supply�s serial number. You must unsecure the  instrument before  saving the string, but you can read the string regardless of the security status. </p>
+            <p>The query returns a quoted string. </p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>"&lt;string&gt;"</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">"&lt;string&gt;"</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the string to "4/22/17": <span style="background-color: #dcdcdc;"> CAL:STR "4/22/17"</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> If no calibration message has been specified, an empty quoted string ("") is returned. </li>
+                <li class="IndentTight">Storing a calibration message will overwrite any message previously stored in calibration memory.</li>
+                <li class="IndentTight"> This setting is non-volatile; it will not be changed by power cycling, or after a factory reset (<a href="60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a> command).</li>
+            </ul>
+        </div>
+        <div>
+            <h3><a name="CAL:VOLT"></a>CALibration:VOLTage[:DATA] &lt;voltage&gt;[, (@&lt;chanlist&gt;)] <br /></h3>
+            <p>The command enters a voltage value of a selected output that you obtained by reading an external meter. Before using this command, you must first unsecure calibration and select a calibration level (CAL:VOLT:LEV) for the value being entered. Two successive values (one for each end of the calibration range) must be selected and entered. </p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>&lt;voltage&gt;</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the output voltage value obtained by reading a DMM for example 5 V: <span style="background-color: #dcdcdc;">CAL:VOLT 5</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> If channel list is not specified, the output to be calibrated is based on <a href="70%20-%20INSTrument%20Subsystem.htm">INSTrument</a> command.</li>
+            </ul>
+        </div>
+        <div>
+            <h3><a name="CAL:VOLT:LEV"></a>CALibration:VOLTage:LEVel MINimum | MAXimum[, (@&lt;chanlist&gt;)]<br /></h3>
+            <p>The command sets the power supply to a calibration point that is entered with CAL:VOLT[:DATA] command. Before using this command, you must first unsecure calibration. During calibration, the low-end point (MIN) must be selected and entered first, followed by the high-end point (MAX).</p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                            <p>MINimum | MAXimum</p>
+                        </td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(none)</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Calibrates the minimum voltage: <span style="background-color: #dcdcdc;">CAL:VOLT:LEV MIN</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Remarks</h4>
+            <ul class="EnDash">
+                <li class="IndentTight"> If channel list is not specified, the output to be calibrated is based on <a href="70%20-%20INSTrument%20Subsystem.htm">INSTrument</a> command.</li>
+            </ul>
+        </div>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

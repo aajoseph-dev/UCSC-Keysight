@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" /><title>SCPI&#160;Error Messages</title>
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">SCPI&#160;Error Messages</h2>
+        <p>The instrument returns error messages in accordance with 
+ the SCPI standard.</p>
+        <ul class="EnDash">
+            <li class="IndentTight">Up to 20 errors can be stored in the instrument's error queue, and the <img src="../../Graphics/Error%20logo_35x29.png" style="width: 35;height: 29;" /> annunciator turns on when one or more errors are in the error queue.</li>
+            <li class="IndentTight">Error retrieval is first-in-first-out (FIFO), and errors are cleared as you read them. When you have read all errors from the error queue, the <b>ERR</b> annunciator turns off.</li>
+            <li class="IndentTight">If more than 20 errors have occurred, the last error stored in the queue (the most recent error) is replaced with -350,"Queue overflow". No additional errors are stored until you remove errors from the queue. If no errors have occurred when you read the error queue, the instrument responds with +0,"No error".</li>
+            <li class="IndentTight"> Send SYSTem:ERRor? to read the most recent error. Each error is in the format: -104,"Data type error".</li>
+            <li class="IndentTight">To read the error queue from the front panel, press <b>Utilities</b> &gt; <b>Help</b> &gt; <b>Error</b>. </li>
+            <li class="IndentTight">The error queue is cleared by power cycles and *CLS, but not <a href="../2%20-%20Programming%20Commands/60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a>.</li>
+        </ul>
+        <h3>Execution error codes</h3>
+        <p>The instrument's error codes are listed below:</p>
+        <table style="mc-table-style: url('../../css/Kt_Basic.css');border-left-style: solid;border-left-width: 0px;border-left-color: #58595b;border-right-style: solid;border-right-width: 0px;border-right-color: #58595b;border-top-style: solid;border-top-width: 2px;border-top-color: #58595b;border-bottom-style: solid;border-bottom-width: 1.0px;border-bottom-color: #58595b;margin-left: 0;margin-right: auto;" class="TableStyle-Kt_Basic" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 80px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 400px;" />
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Code</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">0000</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">No error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-100</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Command error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-101</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Invalid character<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-102</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Syntax error
+<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-103</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid separator<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-104</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Data type error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-105</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">GET not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-108</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Parameter not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-109</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Missing parameter<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-112</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Program mnemonic too long<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-113</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Undefined header<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-114</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Header suffix out of range<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-121</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid character in number<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-123</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Exponent too large<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-124</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Too many digits<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-128</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Numeric data not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-131</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid suffix<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-134</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Suffix too long<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-138</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Suffix not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-141</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid character data<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-148</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Character data not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-150</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">String data error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-151</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid string data<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-158</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	String data not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-161</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid block data<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-168</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Block data not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-170</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Expression error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-171</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid expression<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-178</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Expression data not allowed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-181</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid outside macro definition</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-183</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid inside macro definition</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-200</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Execution error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-211</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Trigger ignored</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-213</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Init ignored</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-221	</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Settings conflict<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-222</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Data out of range<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-223</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Too much data<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-224</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Illegal parameter value<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-225</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Out of memory<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-230</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Data corrupt or stale</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-241</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Hardware missing<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-270</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Macro error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-272</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Macro execution error<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-273</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Illegal macro label</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-276</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Macro recursion error</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-277</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Macro redefinition not allowed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-310</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">System error</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-330</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Self-test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-350</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Queue overflow</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-363</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Input buffer overrun</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-400	</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Query Error
+<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-410	</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Query INTERRUPTED<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-420</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Query UNTERMINATED<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-430	</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Query DEADLOCKED<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">-440</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Query UNTERMINATED after indefinite response<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">513</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN invalid IP address</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">514	</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN duplicate IP address</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">515</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	LAN failed to renew DHCP lease</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">516</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	LAN failed to configure</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">517</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN failed to initialize</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">518</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN VXI-11 fault</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">519</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN invalid subnet mask or gateway</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">520</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN invalid DNS address 1</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">521</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">LAN invalid DNS address 2</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">550</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">3.3V power lost</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">551</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">5.0V power lost</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">552</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">12V power lost</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">553</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Real time clock failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">560</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board firmware version mismatched</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">561</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH1) does not respond</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">562</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH2) does not respond</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">563</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH3) does not respond</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">564</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH1) over temperature</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">565</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH2) over temperature</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">566</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH3) over temperature</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">567</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH1) command timed out</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">568</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH2) command timed out</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">569</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH3) command timed out</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">600</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH1) failed to enter boot loader</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">601</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH2) failed to enter boot loader</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">602</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH3) failed to enter boot loader</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">610</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">EEPROM test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">611</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">EEPROM load failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">612</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">EEPROM checksum failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">613</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">EEPROM save failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">722</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Multiple channel not allowed during calibration<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">735</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Cannot change while trigger is initiated<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">750</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">USB not connected<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">751</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">USB host access failed<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">752</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Insufficient space in USB drive<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows">900</td>
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">Firmware update failed</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <h3>Calibration error codes</h3>
+            <p>The following errors indicate failures that may occur during a calibration. </p>
+            <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 80px;" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 400px;" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Code</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Text</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">577</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH1) calibration failed</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">578</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">	Analog board (CH2) calibration failed</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">579</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Analog board (CH3) calibration failed</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">581</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid state. Cal secured</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">582</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid secure code</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">583</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Secure code too long</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">584</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Failed to calibrate voltage DAC</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">585</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Failed to calibrate voltage ADC</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">586</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Failed to calibrate OVP</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">587</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Failed to calibrate current DAC</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">588</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Failed to calibrate current ADC</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">590</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Invalid Calibration sequence</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows">592</td>
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">This action is not allowed as calibration has not completed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <h3>Self-test error codes</h3>
+        <p>The following errors indicate failures that may occur during a self-test. </p>
+        <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 80px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 400px;" />
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Code</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">530</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH1) Analog bias output 12V test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">531</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH2) Analog bias output 12V test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">532</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH3) Analog bias output 12V test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">533</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH1) System ADC test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">534</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH2) System ADC test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">535</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH3) System ADC test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">536</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH1) System DAC test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">537</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">(CH2) System DAC test failed</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows">538</td>
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">(CH3) System DAC test failed</td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>
