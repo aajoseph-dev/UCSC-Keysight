@@ -5,7 +5,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from azure.search.documents import SearchClient
 from azure.core.credentials import AzureKeyCredential
 
-def upload_doc(document_path):
+def upload_doc(document_path, device_type):
 
     # Load in all keys and endpoints
     load_dotenv()
@@ -36,12 +36,12 @@ def upload_doc(document_path):
         data = {
             "id" : str(index + 1),
             "data" : chunk.page_content,
-            "source": chunk.metadata["source"]
+            "source": chunk.metadata["source"],
+            "device_type": device_type
         }
-        print("data:", data)
-
-    result = client.upload_documents(documents=[data])
+        client.upload_documents(documents=[data])
 
 if __name__ == "__main__":
     document_path = input("Path to File:")
-    upload_doc(document_path)
+    device_type = input("Device Type:")
+    upload_doc(document_path, device_type)
