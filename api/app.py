@@ -54,7 +54,7 @@ def generate_plugin():
     
     search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
     search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
-    search_index_name = "pdf_data"; 
+    search_index_name = "plugin-pdf-vector"; 
     message_text = [{"role": "user", "content": user_prompt}]
 
     # Ask the chat bot
