@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" /><title>SCPI Status Registers </title>
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">SCPI Status Registers </h2>
+        <p>All SCPI instruments implement status registers in  the same way.  The  status system records various instrument conditions in  three register groups: the Status Byte  register, the Standard Event  register, and  the Questionable Status register groups. The  Status Byte  register records high-level summary information reported  in  the other register groups. The figure below illustrates the SCPI status system used by the power supply.</p>
+        <p>
+            <img src="../../Graphics/SCPI%20status%20system%20used%20by%20the%20power%20supply_709x646.png" style="width: 709;height: 646;" />
+        </p>
+        <h3 style="page-break-before: always;">What is an event register?</h3>
+        <p>An event  register is a read-only  register that reports defined conditions within the instrument. Bits  in  an  event  register are  latched. Once  an  event  bit  is  set,  subsequent state changes are  ignored. Bits  in  an  event  register are automatically cleared by  a  query  of  that register (such  as *ESR? or  STAT:QUES:EVEN?) or  by sending the *CLS (clear status) command. A reset (<a href="../2%20-%20Programming%20Commands/60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a>)  or  device  clear  will  not clear  bits  in  event  registers.  Querying an  event  register returns a  decimal value of the binary-weighted sum  of all  bits  set in  the register.</p>
+        <h3>What is an enable register?</h3>
+        <p>An  enable register defines which  bits  in  the corresponding event  register are  logically  ORed  together to form a  single summary bit.  Enable registers are  both  readable and writable.  Querying an  enable register will  not  clear  it.  The *CLS (clear  status) command does  not  clear  enable registers but it  does  clear  the bits  in  the event  registers. To enable bits  in  an  enable register, you  must  write  a  decimal value which  corresponds to the binary-weighted sum  of the bits you  wish  to enable in  the register.</p>
+        <div>
+            <h3>What is a multiple logical output? </h3>
+            <p>The three logical outputs of the power supply include an INSTrument summary status register and an individual instrument ISUMmary register for each logical output. The ISUMmary registers report to the INSTrument register, which in turn reports to bit 13 of the Questionable status register, as shown in the diagram below.</p>
+            <p>This status register configuration allows a status event to be cross-referenced by output and type of event. The INSTrument register indicates which output(s) have generated an event. The ISUMmary register is a pseudo-questionable status register for a particular logical output.</p>
+            <p>
+                <img src="../../Graphics/Quest_Stat_Summary_Registers_718x699.png" style="width: 718;height: 699;" /> </p>
+        </div>
+        <div>
+            <h3>The Questionable Status register</h3>
+            <p>The Questionable Status register provides information about unexpected instrument operation. Bit 13 summarizes questionable outputs. For example, if one output is in constant voltage mode and loses regulation due to an overload, bit 13 is set (latched). Send the  STAT:QUES? query to read the register. To make use of bit 13, you must first enable the registers you wish to summarize with bit 13. Send STAT:QUES:INST:ENAB 14 to enable the Questionable Instrument register. Then send STAT:QUES:INST:ISUM&lt;n&gt;:ENAB 3 for each supply to enable the Questionable Instrument Summary register, where n is 1, 2, or 3.</p>
+            <table style="caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" class="TableStyle-Kt_Basic" cellspacing="0">
+                <col class="TableStyle-Kt_Basic-Column-Column1" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" />
+                <col class="TableStyle-Kt_Basic-Column-Column1" />
+                <thead>
+                    <tr class="TableStyle-Kt_Basic-Head-Header1">
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Bit</th>
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Value</th>
+                        <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Name</th>
+                        <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0-3</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Always set to 0.</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">4</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">16</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Always set to 0.</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">5-12</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Always set to 0.</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">13</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">8192</td>
+                        <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">ISUM</td>
+                        <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Summary of QUES:INST and QUES:INST:ISUM registers.</td>
+                    </tr>
+                    <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                        <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">14-15</td>
+                        <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">0</td>
+                        <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                        <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">Always set to 0.</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>The Questionable Instrument register</h3>
+            <p>The Questionable Instrument register provides information about unexpected operations for each of the three supplies. For example if the +6 V supply is in the constant voltage mode and loses regulation, then bit 1 set indicating a possible overload in the output 1 supply. The output 2 supply is reported as bit 2, and the output 3 supply as bit 3. Send the command STAT QUES:INST? to read the register. The STAT:QUES:INST:ISUM&lt;n&gt; registers must be enabled to make use of the Questionable Instrument register. Send STAT:QUES:INST:ISUM&lt;n&gt;:ENAB 3 to enable output n.</p>
+            <h3>The Questionable Instrument Summary register</h3>
+            <p>There are three Questionable Instrument Summary registers, one for each supply output. These registers provide information about voltage and current regulation. Bit 0 is set when the voltage becomes unregulated, and bit 1 is set if the current becomes unregulated. For example if a supply which is operating as a voltage source (constant voltage mode) momentarily goes to constant current mode, bit 0 is set to indicate that the voltage output is not regulated. To read the register for each supply, send  STAT:QUES:INST:ISUM&lt;n&gt;?, where n is 1, 2, or 3.</p>
+            <p>To determine the operating mode (CV or CC) for the power supply send STAT:QUES:INST:ISUM&lt;n&gt;:COND?, where n is 1, 2, or 3 depending on the output. Bit 1 true indicates the output is in constant voltage mode, bit 0 true indicates constant current mode, both bits true indicates neither the voltage nor the current is regulated, and both bits false indicates the outputs of the power supply are off.</p>
+            <p>The Questionable Status Event register is cleared when you execute the *CLS (clear status) command or query the event register using the STATus:QUEStionable[:EVENt]? query.</p>
+            <p>The Questionable Status Enable register is cleared by the STATus:QUEStionable:ENABle 0 command.</p>
+        </div>
+        <h3>The Standard Event register</h3>
+        <p>The Standard Event register reports the following types of instrument events: power-on detected, command syntax errors, command execution errors, self-test or calibration errors, query errors, or when an *OPC command is executed. Any or all of these conditions can be reported in the Standard Event Summary bit (ESB, bit 5) of Status Byte register through the enable register. To set the enable register mask, you write a decimal value to the register using the *ESE (Event Status Enable) command.</p>
+        <p>An error condition (Standard Event register bits 2, 3, 4, or 5) will always record one or more errors in the power supply's error queue. Read the error queue using the SYSTem:ERRor? command.</p>
+        <table style="caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" class="TableStyle-Kt_Basic" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" />
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Bit</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Value</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Name</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">1</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">OPC</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Operation Complete. All commands prior to and including an
+*OPC command have been executed.<![CDATA[
+]]></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">1</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Always set to 0.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">2</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">4</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">QYE</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Query Error. The power supply tried to read the output buffer but it was empty. Or, a new command line was received before a previous query had been read. Or, both the input and output buffers are full.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">3</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">8</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">DDE</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Device Error. A self-test or calibration error occurred.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">4</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">16</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">EXE</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Execution Error. An execution error occurred.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">5</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">32</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">CME</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Command Error. A command syntax error occurred.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">6</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows"><![CDATA[
+]]>Always set to 0.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">7</td>
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">128</td>
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">PON</td>
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">
+
+ 
+Power On. Power has been turned off and on since the last 
+time the event register was read or cleared</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>The Standard Event register is cleared when you execute the *CLS (clear status) command or you query the event register using the *ESR? (Event Status register) command.</p>
+        <p>The Standard Event Enable register is cleared when you execute the *ESE 0 command or you turn on the power and have previously configured the power supply using the *PSC 1 command.</p>
+        <p>For example, you must send the *ESE 24 (8 + 16) to enable DDE and EXE bits. Similarly, 24 is returned when you have queried the status of the Standard Event register and the DDE and EXE conditions have occurred.</p>
+        <h3>The Status Byte summary register</h3>
+        <p>The Status Byte summary register reports conditions from the other status registers. Query data waiting in the output buffer is immediately reported through the �Message Available� bit (bit 4) of Status Byte register. Bits in the summary register are not latched.  Clearing an event register clears the corresponding Status Byte summary register bits. Reading all messages in the output buffer, including pending queries, clears the message available bit.</p>
+        <table style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;caption-side: top;" class="TableStyle-Kt_Basic" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 39px;">
+            </col>
+            <col class="TableStyle-Kt_Basic-Column-Column1">
+            </col>
+            <col class="TableStyle-Kt_Basic-Column-Column1">
+            </col>
+            <col class="TableStyle-Kt_Basic-Column-Column1">
+            </col>
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Bit</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Value</th>
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Name</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0-1</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">0</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">(unused)</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">
+                        <p>Always set to 0.</p>
+                    </td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">2</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">4</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">ERR</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">One or more errors have been stored in the Error Queue. </td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">3</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">8</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">QUES</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">One or more bits are set in the questionable status
+register (bits must be �enabled� in the enable register).
+</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">4</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">16</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">MAV</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">Data is available in the power supply output buffer.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">5</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">32</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">ESB</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">One or more bits are set in the standard event register
+(bits must be �enabled� in the enable register).
+</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">6</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">64</td>
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows" style="text-align: center;">RQS</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">The power supply is requesting service (serial poll).</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">7</td>
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">128</td>
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows" style="text-align: center;">OPER</td>
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">One or more bits are set in the operation status register (bits must be �enabled� in the enable register).</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>The *CLS&#160;(clear status) command clears the Status Byte Summary Register. Querying the Standard Event register (*ESR?) clears only bit 5 in the Status Byte summary register. For example, 24 (8 + 16) is returned when you query the Status Byte register and the QUES and MAV conditions have occurred.</p>
+        <p>The Status Byte Enable register (Request Service) is cleared when   you execute the *SRE 0 command or you turn on the power and have previously configured the power supply using the *PSC 1 command. For example, you must send the *SRE 96 (32 + 64) to enable ESB and RQS bits.</p>
+        <div>
+            <h3>Using Service Request (SRQ) and serial POLL</h3>
+            <p>You must configure your bus controller to respond to the IEEE-488 service request (SRQ) interrupt to use this capability. Use the Status Byte enable register (*SRE command) to select which summary bits will set the low-level IEEE-488 service request signal. When bit 6 (request service) is set in the Status Byte, an IEEE-488 service request interrupt message is automatically sent to the bus controller. The bus controller may then poll the instruments on the bus to identify which one requested service (the instrument with bit 6 set in its Status Byte).</p>
+            <p>The request service bit is cleared only by reading the Status Byte using an IEEE-488 serial poll or by reading the event register whose summary bit is causing the service request.</p>
+            <p>To read the Status Byte summary register, send the IEEE-488 serial poll message. Querying the summary register will return a decimal value which corresponds to the binary-weighted sum of the bits set in the register. Serial poll will automatically clear the �request service� bit in the Status Byte summary register. No other bits are affected. Performing a serial poll will not affect instrument throughput.</p>
+            <table style="margin-left: 0;margin-right: auto;">
+                <col />
+                <col />
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="../../Graphics/02-CAUTION_102x27.jpg" style="width: 102;height: 27;" />
+                        </td>
+                        <td style="border-bottom-style: solid;border-bottom-width: 2px;border-bottom-color: #fdc206; padding-bottom: 9px;">The IEEE-488 standard does not ensure synchronization between your bus controller program and the instrument. Use the *OPC? command to guarantee that commands previously sent to the instrument have completed. Executing a serial poll before a
+<a href="../2%20-%20Programming%20Commands/60%20-%20IEEE-488%20Subsystem.htm#*RST">*RST</a>, *CLS, or other commands have completed can cause previous conditions to be reported.
+</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <h3>Using *STB? to read the Status Byte</h3>
+            <p>The *STB? (Status Byte) query is like a serial poll, but it is processed like any other query. The *STB? command returns the same result as a serial poll, but the �request service� bit (bit 6) is not cleared.</p>
+            <p>The*STB? query is not handled automatically by the IEEE-488 bus interface hardware and will be executed only after previous commands have completed. Polling is not possible using the  *STB? query. The *STB? query does not clear the Status Byte summary register.</p>
+            <h3>Using the message available bit (MAV)</h3>
+            <p>You can use the Status Byte �message available� bit (bit 4) to determine when data is available to read into your bus controller. The power supply subsequently clears bit 4 only after all messages have been read from the output buffer.</p>
+        </div>
+        <div>
+            <h3>To interrupt your bus controller using SRQ</h3>
+            <ol>
+                <li class="IndentTight" value="1"> Send a device clear message to clear the power supply's output buffer (e.g., CLEAR 705).</li>
+                <li class="IndentTight" value="2"> Clear the event registers with the *CLS (clear status) command.</li>
+                <li class="IndentTight" value="3"> Set up the enable register masks. Execute the *ESE command to set up the Standard Event register and the *SRE command for the Status Byte.</li>
+                <li class="IndentTight" value="4"> Send the *OPC? (operation complete query) command and enter the result to ensure synchronization.</li>
+                <li class="IndentTight" value="5"> Enable your bus controller's IEEE-488 SRQ interrupt.</li>
+            </ol>
+        </div>
+        <div>
+            <h3>To determine when a command sequence is completed</h3>
+            <ol>
+                <li class="IndentTight" value="1"> Send a device clear message to clear the power supply's output buffer (e.g., CLEAR 705).</li>
+                <li class="IndentTight" value="2"> Clear the event registers with the *CLS (clear status) command.</li>
+                <li class="IndentTight" value="3"> Enable the �operation complete� bit (bit 0) in the Standard Event register by executing the *ESE 1 command.</li>
+                <li class="IndentTight" value="4"> Send the *OPC? (operation complete query) command and enter the result to ensure synchronization.</li>
+                <li class="IndentTight" value="5"> Execute your command string to program the desired configuration, and then execute the *OPC (operation complete) command as the last command. When the command sequence is completed, the �operation complete� bit (bit 0) is set in the Standard Event register.</li>
+                <li class="IndentTight" value="6"> Use a serial poll to determine when bit 5 (standard event) is set in the Status Byte summary register. You could also configure the instrument for an SRQ interrupt by sending *SRE 32 (Status Byte enable register, bit 5).</li>
+            </ol>
+        </div>
+        <h3 style="page-break-before: auto;">Using *OPC to signal when data is in the output buffer</h3>
+        <p>Generally, it is best to use the �operation complete� bit (bit 0) in the Standard Event register to signal when a command sequence finishes. This bit is set in the register by an *OPC command. If you send *OPC after a command that loads a query response in the instrument's output buffer, you can use the �operation complete� bit to determine when the message is available. However, if too many messages are generated before the *OPC command executes (sequentially), the output buffer will fill and the instrument will stop processing commands.</p>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

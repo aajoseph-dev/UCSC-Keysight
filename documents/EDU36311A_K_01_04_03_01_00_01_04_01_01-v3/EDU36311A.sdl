@@ -1,0 +1,3298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ScpiDefinition xsi:schemaLocation="http://www.agilent.com/schemas/SCPIDL/2008 ScpiDefinitionLanguage.xsd" friendlyName="" documentVersion="" schemaVersion="1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.agilent.com/schemas/SCPIDL/2008">
+	<GlobalDefinitions>
+		<Enum name="Boolean" langTypeName="MIN_MAX">
+			<Member aliases="MIN" mnemonic="MINimum" value="0" />
+			<Member aliases="MAX" mnemonic="MAXimum" value="1" />
+		</Enum>
+		<Enum name="MinMax" langTypeName="ON_OFF">
+			<Member aliases="OFF" mnemonic="OFF" value="0" />
+			<Member aliases="ON" mnemonic="ON" value="1" />
+		</Enum>
+		<Enum name="MinMaxClone" langTypeName="outputName">
+			<Member aliases="P6V" mnemonic="P6V" value="0" />
+			<Member aliases="P25V" mnemonic="P30V" value="1" />
+			<Member aliases="N25V" mnemonic="N30V" value="2" />
+			<Member aliases="CH1" mnemonic="CH1" value="3" />
+			<Member aliases="CH2" mnemonic="CH2" value="4" />
+			<Member aliases="CH3" mnemonic="CH3" value="5" />
+		</Enum>
+		<Enum name="BooleanClone" langTypeName="voltageCurrent_MIN_MAX_DEF">
+			<Member aliases="DEF" mnemonic="DEFault" value="0" />
+			<Member aliases="MIN" mnemonic="MINimum" value="1" />
+			<Member aliases="MAX" mnemonic="MAXimum" value="2" />
+		</Enum>
+		<Enum name="BooleanCloneClone" langTypeName="METER1_METER3">
+			<Member aliases="METER1" mnemonic="METER1" value="0" />
+			<Member aliases="METER3" mnemonic="METER3" value="1" />
+		</Enum>
+		<Enum name="MinMaxClone_2" langTypeName="BUS_EXTERNAL_IMMEDIATE_PINX">
+			<Member aliases="BUS" mnemonic="BUS" value="0" />
+			<Member aliases="IMM" mnemonic="IMMediate" value="1" />
+		</Enum>
+		<Enum name="BooleanClone_3" langTypeName="Min_Max_Seconds">
+			<Member aliases="MIN" mnemonic="MINimum" value="0" />
+			<Member aliases="MAX" mnemonic="MAXimum" value="1" />
+		</Enum>
+		<Enum name="BooleanClone_4Clone" langTypeName="RLstate">
+			<Member aliases="LOC" mnemonic="LOCal" value="0" />
+			<Member aliases="REM" mnemonic="REMote" value="1" />
+			<Member aliases="RWL" mnemonic="RWLock" value="2" />
+		</Enum>
+		<Enum name="BooleanClone_5" langTypeName="RST_RCLX_state">
+			<Member aliases="RST" mnemonic="RST" value="0" />
+			<Member aliases="RCL0" mnemonic="RCL0" value="1" />
+			<Member aliases="RCL1" mnemonic="RCL1" value="2" />
+			<Member aliases="RCL2" mnemonic="RCL2" value="3" />
+			<Member aliases="RCL3" mnemonic="RCL3" value="4" />
+			<Member aliases="RCL4" mnemonic="RCL4" value="5" />
+			<Member aliases="RCL5" mnemonic="RCL5" value="6" />
+			<Member aliases="RCL6" mnemonic="RCL6" value="7" />
+			<Member aliases="RCL7" mnemonic="RCL7" value="8" />
+			<Member aliases="RCL8" mnemonic="RCL8" value="9" />
+			<Member aliases="RCL9" mnemonic="RCL9" value="10" />
+		</Enum>
+		<Enum name="BooleanCloneClone_3Clone" langTypeName="FIXED_STEPmode">
+			<Member aliases="FIX" mnemonic="FIXed" value="0" />
+			<Member aliases="STEP" mnemonic="STEP" value="1" />
+		</Enum>
+		<Enum name="BooleanClone_7" langTypeName="SCHANGE_CCTRANS">
+			<Member aliases="SCH" mnemonic="SCHange" value="0" />
+			<Member aliases="CCTR" mnemonic="CCTRans" value="1" />
+		</Enum>
+		<Enum name="MinMaxCloneClone" langTypeName="P6V_P25V_LOW_HIGH">
+			<Member aliases="P6V" mnemonic="P6V" value="0" />
+			<Member aliases="P25V" mnemonic="P25V" value="1" />
+			<Member aliases="LOW" mnemonic="LOW" value="2" />
+			<Member aliases="HIGH" mnemonic="HIGH" value="3" />
+		</Enum>
+		<Enum name="BooleanClone_10" langTypeName="CURR_STAT">
+			<Member aliases="CURR" mnemonic="CURRent" value="0" />
+			<Member aliases="STAT" mnemonic="STATic" value="1" />
+		</Enum>
+	</GlobalDefinitions>
+	<CommonCommands>
+		<CommonCommand mnemonic="CLS">
+			<Synopsis>The command clears all event registers, and the Status Byte register.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*CLS" endAnchor="ESE" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax />
+			</CommandSyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="ESE">
+			<Synopsis>The command enables bits in the Standard Event Enable register.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*ESE" endAnchor="Esr" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#ESE" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax>
+					<Parameters>
+						<Parameter name="enableValue" semanticType="Integer" description="Bits to enable in the Standard Event Enable register.">
+							<ParameterType>
+								<DecimalNumeric />
+							</ParameterType>
+						</Parameter>
+					</Parameters>
+				</CommandSyntax>
+			</CommandSyntaxes>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="enableValue" semanticType="Integer" description="Returns the decimal value of the binary-weighted sum of all bits in the Standard Event enable register.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="ESR">
+			<Synopsis>The query returns the decimal value of the binary-weighted sum of all bits in the Standard Event register.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*ESR" endAnchor="IDN" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#Esr" />
+			</HelpLinks>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="esr" semanticType="Integer" description="Returns the decimal value of the binary-weighted sum of all bits in the Standard Event register.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="IDN">
+			<Synopsis>The query returns the instrument's identification string.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*IDN" endAnchor="OPC" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#IDN" />
+			</HelpLinks>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="idn" semanticType="String" description="Returns the instrument's identification string.">
+							<ResponseType>
+								<ArbitraryAscii />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="OPC">
+			<Synopsis>The command sets the “Operation Complete” bit (bit 0) of the Standard Event register after the command is executed.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*OPC" endAnchor="PSC" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#OPC" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax />
+			</CommandSyntaxes>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="opc" semanticType="Integer" description="Returns 1 to the output buffer after the command is executed.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="PSC">
+			<Synopsis>The command clears the Status Byte and the Standard Event register enable masks when power is turned on (*PSC 1). </Synopsis>
+			<HelpLinks>
+				<HelpLink name="*PSC" endAnchor="RCL" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#PSC" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax>
+					<Parameters>
+						<Parameter name="psc" semanticType="Integer" description="Enable/Disable the *PSC to clear the Status Byte and Standard Event register enable masks when power is turned on.">
+							<ParameterType>
+								<DecimalNumeric />
+							</ParameterType>
+						</Parameter>
+					</Parameters>
+				</CommandSyntax>
+			</CommandSyntaxes>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="psc" semanticType="Integer" description="Returns the current value of *PSC.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="RCL">
+			<Synopsis>The command recalls a previously stored state from one of ten non-volatile storage locations.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*RCL" endAnchor="*RST" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#RCL" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax>
+					<Parameters>
+						<Parameter name="rcl" semanticType="Integer" description="A previously stored state from one of ten non-volatile storage locations.">
+							<ParameterType>
+								<DecimalNumeric />
+							</ParameterType>
+						</Parameter>
+					</Parameters>
+				</CommandSyntax>
+			</CommandSyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="RST">
+			<Synopsis>The command resets the instrument to its power-on default state.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*RST" endAnchor="SAV" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#*RST" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax />
+			</CommandSyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="SAV">
+			<Synopsis>The command saves the current instrument state using one of ten non-volatile storage locations. </Synopsis>
+			<HelpLinks>
+				<HelpLink name="*SAV" endAnchor="SRE" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#SAV" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax>
+					<Parameters>
+						<Parameter name="sav" semanticType="Integer" description="Saves the current instrument state using one of ten non-volatile storage locations.">
+							<ParameterType>
+								<DecimalNumeric />
+							</ParameterType>
+						</Parameter>
+					</Parameters>
+				</CommandSyntax>
+			</CommandSyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="SRE">
+			<Synopsis>The command enables the bits in the Status Byte Enable register.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*SRE" endAnchor="STB" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#SRE" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax>
+					<Parameters>
+						<Parameter name="enableValue" semanticType="Integer" description="Bits to enable in the Status Byte Enable register.">
+							<ParameterType>
+								<DecimalNumeric />
+							</ParameterType>
+						</Parameter>
+					</Parameters>
+				</CommandSyntax>
+			</CommandSyntaxes>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="enableValue" semanticType="Integer" description="Returns the decimal value of the binary-weighted sum of all bits set in the register.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="STB">
+			<Synopsis>The query queries the Status Byte Summary register and returns the same result as a serial poll but the “Request Service” bit (bit 6) is not cleared if a serial poll has occurred.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*STB" endAnchor="TRG" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#STB" />
+			</HelpLinks>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="stb" semanticType="Integer" description="Queries the Status Byte Summary register and returns the same result as a serial poll but the “Request Service” bit (bit 6) is not cleared if a serial poll has occurred.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="TRG">
+			<Synopsis>The command generates an event trigger to the trigger system when the trigger system has a BUS (software) trigger as its trigger source (TRIG:SOUR BUS). </Synopsis>
+			<HelpLinks>
+				<HelpLink name="*TRG" endAnchor="TST" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#TRG" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax />
+			</CommandSyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="TST">
+			<Synopsis>The query returns a 0 if the self-test passes or a non-zero value if it fails.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*TST" endAnchor="WAI" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#TST" />
+			</HelpLinks>
+			<QuerySyntaxes>
+				<QuerySyntax>
+					<Responses>
+						<Response name="tst" semanticType="Integer" description="Performs an instrument self-test and Returns a 0 if the self-test passes or a non-zero value if it fails.">
+							<ResponseType>
+								<NR1Numeric />
+							</ResponseType>
+						</Response>
+					</Responses>
+				</QuerySyntax>
+			</QuerySyntaxes>
+		</CommonCommand>
+		<CommonCommand mnemonic="WAI">
+			<Synopsis>The command waits for all pending operations to complete before executing any additional remote interface commands.</Synopsis>
+			<HelpLinks>
+				<HelpLink name="*WAI" url="Topics\2 - Programming Commands\60 - IEEE-488 Subsystem.htm#WAI" />
+			</HelpLinks>
+			<CommandSyntaxes>
+				<CommandSyntax />
+			</CommandSyntaxes>
+		</CommonCommand>
+	</CommonCommands>
+	<SubsystemCommands>
+		<RootNode aliases="ABOR" mnemonic="ABORt">
+			<SubsystemCommand>
+				<Synopsis>The command clears any pending delayed trigger and returns the trigger system to idle.</Synopsis>
+				<HelpLinks>
+					<HelpLink name=":ABORt" url="Topics\2 - Programming Commands\20 - ABORt Subsystem.htm" />
+				</HelpLinks>
+				<CommandSyntaxes>
+					<CommandSyntax>
+						<Parameters>
+							<Parameter name="chanlist" semanticType="String" description="The channel list.">
+								<ParameterType>
+									<Expression>
+										<ChannelList />
+									</Expression>
+								</ParameterType>
+							</Parameter>
+						</Parameters>
+					</CommandSyntax>
+				</CommandSyntaxes>
+			</SubsystemCommand>
+		</RootNode>
+		<RootNode aliases="APPL" mnemonic="APPLy">
+			<SubsystemCommand>
+				<Synopsis>The values of the voltage and current of the specified output will change as soon as the command is executed.</Synopsis>
+				<HelpLinks>
+					<HelpLink name=":APPLy" url="Topics\2 - Programming Commands\25 - APPLy Subsystem.htm" />
+				</HelpLinks>
+				<CommandSyntaxes>
+					<CommandSyntax>
+						<Parameters>
+							<Parameter name="outputName" semanticType="Real" description="The output name">
+								<ParameterType>
+									<Character>
+										<EnumRef name="MinMaxClone" />
+									</Character>
+								</ParameterType>
+							</Parameter>
+							<Parameter name="voltage" semanticType="Real" description="“MINimum”, “MAXimum”, or “DEFault” or a specific value  of voltage." optional="true">
+								<ParameterType>
+									<DecimalNumeric />
+									<Character>
+										<EnumRef name="BooleanClone" />
+									</Character>
+								</ParameterType>
+							</Parameter>
+							<Parameter name="current" semanticType="Real" description="“MINimum”, “MAXimum”, or “DEFault” or a specific value of current." optional="true">
+								<ParameterType>
+									<DecimalNumeric />
+									<Character>
+										<EnumRef name="BooleanClone" />
+									</Character>
+								</ParameterType>
+							</Parameter>
+						</Parameters>
+					</CommandSyntax>
+				</CommandSyntaxes>
+				<QuerySyntaxes>
+					<QuerySyntax>
+						<Parameters>
+							<Parameter name="outputName" semanticType="Real" description="The output name." optional="true">
+								<ParameterType>
+									<Character>
+										<EnumRef name="MinMaxClone" />
+									</Character>
+								</ParameterType>
+							</Parameter>
+						</Parameters>
+						<Responses>
+							<Response name="voltageCurrent" semanticType="String" description="Returns the current value of voltage and current.">
+								<ResponseType>
+									<String />
+								</ResponseType>
+							</Response>
+						</Responses>
+					</QuerySyntax>
+				</QuerySyntaxes>
+			</SubsystemCommand>
+		</RootNode>
+		<RootNode aliases="CAL" mnemonic="CALibration">
+			<Node aliases="CURR" mnemonic="CURRent">
+				<Node aliases="DATA" default="true" mnemonic="DATA">
+					<Node aliases="HIGH" default="true" mnemonic="HIGH">
+						<SubsystemCommand>
+							<Synopsis>The command allows you to enter an output current value that you obtained by reading a digital multimeter (DMM). </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":CALibration:CURRent[:DATA][:HIGH]" endAnchor="CAL:CURR:LEV" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:CURR" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="current" semanticType="Real" description=" The output current value obtained by reading a DMM.">
+											<ParameterType>
+												<DecimalNumeric />
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="LEV" mnemonic="LEVel">
+					<Node aliases="HIGH" default="true" mnemonic="HIGH">
+						<SubsystemCommand>
+							<Synopsis>It sets the power supply to a calibration point that is entered with CALibration:CURRent [:DATA] command. </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":CALibration:CURRent:LEVel:HIGH" endAnchor="CAL:DATE" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:CURR:LEV" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="level" semanticType="String" description="The output current range.">
+											<ParameterType>
+												<Character>
+													<EnumRef name="Boolean" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+			</Node>
+			<Node aliases="SEC" mnemonic="SECure">
+				<Node aliases="CODE" mnemonic="CODE">
+					<SubsystemCommand>
+						<Synopsis>The command enters a new security passcode.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":CALibration:SECure:CODE" endAnchor="CAL:SEC:STAT" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:SEC:CODE" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="newCode" semanticType="String" description="A new security passcode.">
+										<ParameterType>
+											<String />
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="STAT" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command unsecures or secures the power supply for calibration, using the code specified by CALibration SECure:CODE.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":CALibration:SECure:STATe" endAnchor="CAL:STR" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:SEC:STAT" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Unsecures or secures the power supply for calibration.">
+										<ParameterType>
+											<DecimalNumeric>
+												<EnumRef name="MinMax" />
+											</DecimalNumeric>
+											<Character>
+												<EnumRef name="MinMax" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="code" semanticType="String" description="The security passcode.">
+										<ParameterType>
+											<String />
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="state" semanticType="Boolean" description="Returns 0 (calibration unsecured) or 1 (calibration secured).">
+										<ResponseType>
+											<NR1Numeric>
+												<EnumRef name="MinMax" />
+											</NR1Numeric>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="VOLT" mnemonic="VOLTage">
+				<Node aliases="DATA" default="true" mnemonic="DATA">
+					<SubsystemCommand>
+						<Synopsis>The command enters a voltage value of a selected output that you obtained by reading an external meter.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":CALibration:VOLTage:DATA" endAnchor="CAL:VOLT:LEV" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:VOLT" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="voltage" semanticType="Real" description="The output voltage value obtained by reading a DMM.">
+										<ParameterType>
+											<DecimalNumeric />
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="LEV" mnemonic="LEVel">
+					<SubsystemCommand>
+						<Synopsis>The command sets the power supply to a calibration point that is entered with CAL:VOLT[:DATA] command. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":CALibration:VOLTage:LEVel" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:VOLT:LEV" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="level" semanticType="String" description="Sets MINimum | MAXimum Voltage Calibration point of power supply.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="Boolean" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node mnemonic="ASAVe">
+				<SubsystemCommand>
+					<Synopsis>The command enables or disables automatic saving of calibration constants.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":CALibration:ASAVe" endAnchor="CAL:COUN" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="asave" semanticType="Boolean" description="Enables or disables automatic calibration save feature.">
+									<ParameterType>
+										<DecimalNumeric>
+											<EnumRef name="MinMax" />
+										</DecimalNumeric>
+										<Character />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="asave" semanticType="Boolean" description="Returns the current status of  automatic calibration save feature.">
+									<ResponseType>
+										<NR1Numeric>
+											<EnumRef name="MinMax" />
+										</NR1Numeric>
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node mnemonic="COUNt">
+				<SubsystemCommand>
+					<Synopsis>The query returns the number of times the power supply has been calibrated. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":CALibration:COUNt" endAnchor="CAL:CURR" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:COUN" />
+					</HelpLinks>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="count" semanticType="Integer" description="Returns the number of times the power supply has been calibrated.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node mnemonic="DATE">
+				<SubsystemCommand>
+					<Synopsis>The command stores the date that the power supply was last calibrated in nonvolatile memory. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":CALibration:DATE" endAnchor="CAL:SAVE" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:DATE" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="date" semanticType="String" description="The date that the power supply was last calibrated in nonvolatile memory.">
+									<ParameterType>
+										<String />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="date" semanticType="String" description="Returns the date. If no date is stored, an empty quoted string (&quot;&quot;) is returned.">
+									<ResponseType>
+										<String />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node mnemonic="SAVE">
+				<SubsystemCommand>
+					<Synopsis>The command saves calibration constants in non-volatile memory after the calibration procedure has been completed.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":CALibration:SAVE" endAnchor="CAL:SEC:CODE" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:SAVE" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node mnemonic="STRing">
+				<SubsystemCommand>
+					<Synopsis>The command saves up to 40 characters of information, such as the last calibration date, the next calibration due date, or the power supply’s serial number.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":CALibration:STRing" endAnchor="CAL:VOLT" url="Topics\2 - Programming Commands\30 - CALibration Subsystem.htm#CAL:STR" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="string" semanticType="String" description="Up to 40 characters of information, such as the last calibration date, the next calibration due date, or the power supply’s serial number.">
+									<ParameterType>
+										<String />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="string" semanticType="String" description="Returns a quoted string.">
+									<ResponseType>
+										<String />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+		</RootNode>
+		<RootNode aliases="SOUR" default="true" mnemonic="SOURce">
+			<Node aliases="CURR" mnemonic="CURRent">
+				<Node aliases="LEV" default="true" mnemonic="LEVel">
+					<Node aliases="IMM" default="true" mnemonic="IMMediate">
+						<Node aliases="AMPL" default="true" mnemonic="AMPLitude">
+							<SubsystemCommand>
+								<Synopsis>The command directly programs the immediate current level of the power supply in amperes. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:CURRent:LEVel:IMMediate:AMPLitude" endAnchor="CurrTrig" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="current" semanticType="Real" description="The immediate current level of the power supply in amperes.">
+												<ParameterType>
+													<DecimalNumeric />
+													<Character>
+														<EnumRef name="BooleanClone" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Parameters>
+											<Parameter name="level" semanticType="String" description="Current level of the power supply." optional="true">
+												<ParameterType>
+													<Character>
+														<EnumRef name="BooleanClone" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+										<Responses>
+											<Response name="currentLevel" semanticType="Real" description="Returns a number in the form +n.nnnnnnnnE+nn for each channel specified.">
+												<ResponseType>
+													<NR3Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+					<Node aliases="TRIG" mnemonic="TRIGgered">
+						<Node aliases="AMPL" default="true" mnemonic="AMPLitude">
+							<SubsystemCommand>
+								<Synopsis>The command programs the triggered current level of the specified output channel. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:CURRent:LEVel:TRIGgered:AMPLitude" endAnchor="CurrMode" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrTrig" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="current" semanticType="Real" description="The triggered current level of the specified output channel.">
+												<ParameterType>
+													<DecimalNumeric />
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Parameters>
+											<Parameter name="level" semanticType="String" description="Minimum or maximum current level." optional="true">
+												<ParameterType>
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+										<Responses>
+											<Response name="amplitude" semanticType="Real" description="Returns the programmed triggered level in the form +n.nnnnnnnnE+nn for each channel specified.">
+												<ResponseType>
+													<NR3Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+				</Node>
+				<Node aliases="MODE" mnemonic="MODE">
+					<SubsystemCommand>
+						<Synopsis>The command determines what happens to the output current when the transient system is initiated and triggered. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SOURce:CURRent:MODE" endAnchor="CurrProtCle" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrMode" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="mode" semanticType="String" description="The current mode for each channel specified.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="BooleanCloneClone_3Clone" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Parameters>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+								<Responses>
+									<Response name="mode" semanticType="String" description="Returns the current mode for each channel specified.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="BooleanCloneClone_3Clone" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="PROT" mnemonic="PROTection">
+					<Node aliases="CLE" mnemonic="CLEar">
+						<SubsystemCommand>
+							<Synopsis>The command clears an overcurrent protection event.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SOURce:CURRent:PROTection:CLEar" endAnchor="CurrProtDel" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrProtCle" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="DEL" mnemonic="DELay">
+						<Node aliases="TIME" default="true" mnemonic="TIME">
+							<SubsystemCommand>
+								<Synopsis>Sets the time in milliseconds that the overcurrent protection is temporarily disabled after a current level change. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:CURRent:PROTection:DELay:TIME" endAnchor="CurrProtDelStar" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrProtDel" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="time" semanticType="Real" description="The time in milliseconds.">
+												<ParameterType>
+													<DecimalNumeric />
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Parameters>
+											<Parameter name="tiime" semanticType="String" description="The minimum or maximum time." optional="true">
+												<ParameterType>
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+										<Responses>
+											<Response name="delayValue" semanticType="Real" description="Returns the overcurrent protection delay in milliseconds in the form +n.nnnnnnnnE+nn.">
+												<ResponseType>
+													<NR3Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+						<Node aliases="STAR" mnemonic="STARt">
+							<SubsystemCommand>
+								<Synopsis>The command specifies the conditions under which the overcurrent protection delay timer starts.
+</Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:CURRent:PROTection:DELay:STARt" endAnchor="CurrProtStat" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrProtDelStar" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="mode" semanticType="String" description="The Condition under which the overcurrent protection delay timer starts.">
+												<ParameterType>
+													<Character>
+														<EnumRef name="BooleanClone_7" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Parameters>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+										<Responses>
+											<Response name="mode" semanticType="String" description="Returns the mode SCH or CCTR.">
+												<ResponseType>
+													<Character>
+														<EnumRef name="BooleanClone_7" />
+													</Character>
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+					<Node aliases="STAT" mnemonic="STATe">
+						<SubsystemCommand>
+							<Synopsis>The command enables or disables overcurrent protection, which causes the instrument to go into a protected state when the power supply status is in constant current mode for a time longer than the OCP delay. </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SOURce:CURRent:PROTection:STATe" endAnchor="CurrProtTrip" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrProtStat" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="state" semanticType="Boolean" description="Enables or disables overcurrent protection.">
+											<ParameterType>
+												<DecimalNumeric>
+													<EnumRef name="MinMax" />
+												</DecimalNumeric>
+												<Character>
+													<EnumRef name="MinMax" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="state" semanticType="Integer" description="Query returns 1 (ON) or 0 (OFF) or the over current protection state.">
+											<ResponseType>
+												<NR1Numeric>
+													<EnumRef name="MinMax" />
+												</NR1Numeric>
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="TRIP" mnemonic="TRIPped">
+						<SubsystemCommand>
+							<Synopsis>The query indicates whether an overcurrent protection occurred (1) or not (0). </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SOURce:CURRent:PROTection:TRIPped" url="Topics\2 - Programming Commands\35 - CURRent Subsystem.htm#CurrProtTrip" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="chanList" semanticType="String" description="The Channel List." optional="true">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="tripped" semanticType="Boolean" description="Returns the Current Protection state as 1 (ON) or 0 (OFF).">
+											<ResponseType>
+												<NR1Numeric>
+													<EnumRef name="MinMax" />
+												</NR1Numeric>
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+			</Node>
+			<Node aliases="VOLT" mnemonic="VOLTage">
+				<Node aliases="LEV" default="true" mnemonic="LEVel">
+					<Node aliases="IMM" default="true" mnemonic="IMMediate">
+						<Node aliases="AMPL" default="true" mnemonic="AMPLitude">
+							<SubsystemCommand>
+								<Synopsis>The command programs the immediate output voltage level of the output in volts. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:VOLTage:LEVel:IMMediate:AMPLitude" endAnchor="VoltTrig" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="voltage" semanticType="Real" description="The immediate output voltage level of the output in volts.">
+												<ParameterType>
+													<DecimalNumeric />
+													<Character>
+														<EnumRef name="BooleanClone" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Parameters>
+											<Parameter name="voltage" semanticType="Real" description="The minimum or maximum or default voltage level." optional="true">
+												<ParameterType>
+													<Character>
+														<EnumRef name="BooleanClone" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+										<Responses>
+											<Response name="voltageLevel" semanticType="Real" description="Returns the output voltage level of the output in volts.">
+												<ResponseType>
+													<NR3Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+					<Node aliases="TRIG" mnemonic="TRIGgered">
+						<Node aliases="AMPL" default="true" mnemonic="AMPLitude">
+							<SubsystemCommand>
+								<Synopsis>The command programs the triggered voltage level of the specified output channel in volts. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:VOLTage:LEVel:TRIGgered:AMPLitude" endAnchor="VoltProt" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltTrig" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="voltage" semanticType="Real" description="The triggered voltage level of the specified output channel in volts.">
+												<ParameterType>
+													<DecimalNumeric />
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Parameters>
+											<Parameter name="voltage" semanticType="Real" description="The triggered voltage level." optional="true">
+												<ParameterType>
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+										<Responses>
+											<Response name="voltageLevel" semanticType="Real" description="Returns the programmed triggered level in the form +n.nnnnnnnnE+nn for each channel specified.">
+												<ResponseType>
+													<NR3Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+				</Node>
+				<Node aliases="MODE" mnemonic="MODE">
+					<SubsystemCommand>
+						<Synopsis>The command determines what happens to the output voltage when the transient system is initiated and triggered.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SOURce:VOLTage:MODE" endAnchor="VoltProt" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltTrig" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="mode" semanticType="String" description="The voltage mode.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="BooleanCloneClone_3Clone" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Parameters>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+								<Responses>
+									<Response name="mode" semanticType="String" description="Returns the voltage mode for each channel specified.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="BooleanCloneClone_3Clone" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="PROT" mnemonic="PROTection">
+					<Node aliases="LEV" default="true" mnemonic="LEVel">
+						<Node aliases="AMPL" default="true" mnemonic="AMPLitude">
+							<SubsystemCommand>
+								<Synopsis>The command sets the level at which overvoltage protection trips, in volts. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SOURce:VOLTage:PROTection:LEVel:AMPLitude" endAnchor="VoltProtCle" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltProt" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="voltage" semanticType="Real" description="The level at which overvoltage protection trips, in volts.">
+												<ParameterType>
+													<DecimalNumeric />
+													<Character>
+														<EnumRef name="Boolean" />
+													</Character>
+												</ParameterType>
+											</Parameter>
+											<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+												<ParameterType>
+													<Expression>
+														<ChannelList />
+													</Expression>
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+					<Node aliases="LEV" default="true" mnemonic="LEVel">
+						<SubsystemCommand>
+							<Synopsis>The query returns +n.nnnnnnnnE+nn in volts.
+</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SOURce:VOLTage:PROTection:LEVel" endAnchor="VoltProtCle" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltProt" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="voltage" semanticType="String" description="The level at which overvoltage protection trips, in volts.">
+											<ParameterType>
+												<Character>
+													<EnumRef name="Boolean" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="level" semanticType="Real" description="Returns +n.nnnnnnnnE+nn in volts.">
+											<ResponseType>
+												<NR3Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="CLE" mnemonic="CLEar">
+						<SubsystemCommand>
+							<Synopsis>The command sets the output voltage range on models that have multiple ranges.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SOURce:VOLTage:PROTection:CLEar" endAnchor="VoltProtTrip" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltProtCle" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="chalist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="TRIP" mnemonic="TRIPped">
+						<SubsystemCommand>
+							<Synopsis>The query indicates whether an overvoltage protection occurred (1) or not (0). </Synopsis>
+							<HelpLinks>
+								<HelpLink name="[:SOURce]:VOLTage:PROTection:TRIPped" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltProtTrip" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="tripped" semanticType="Integer" description="Indicates whether an overvoltage protection occurred (1) or not (0).">
+											<ResponseType>
+												<NR1Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="RANG" mnemonic="RANGe">
+					<SubsystemCommand>
+						<Synopsis>The command sets the output voltage range on models that have multiple ranges.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SOURce:VOLTage:RANGe" endAnchor="VoltProtTrip" url="Topics\2 - Programming Commands\125 - VOLTage Subsystem.htm#VoltProtCle" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="range" semanticType="String" description="The output voltage range.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="MinMaxCloneClone" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list.">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Parameters>
+									<Parameter name="chanlist" semanticType="String" description="The channel list.">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+								<Responses>
+									<Response name="range" semanticType="String" description="Returns the presently selected voltage range.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="MinMaxCloneClone" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+		</RootNode>
+		<RootNode aliases="DISP" mnemonic="DISPlay">
+			<Node aliases="WIND" default="true" mnemonic="WINDow">
+				<Node aliases="STAT" default="true" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command turns the front-panel display off or on.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":DISPlay[:WINDow][:STATe]" endAnchor="DispView" url="Topics\2 - Programming Commands\50 - DISPlay Subsystem.htm" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Enable/Disable the front-panel display.">
+										<ParameterType>
+											<DecimalNumeric>
+												<EnumRef name="MinMax" />
+											</DecimalNumeric>
+											<Character>
+												<EnumRef name="MinMax" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="state" semanticType="Boolean" description="Returns the current value of the front-panel display.">
+										<ResponseType>
+											<NR1Numeric>
+												<EnumRef name="MinMax" />
+											</NR1Numeric>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="VIEW" mnemonic="VIEW">
+					<SubsystemCommand>
+						<Synopsis>The command selects 1- or 3-channel meter view. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":DISPlay:WINDow:VIEW" url="Topics\2 - Programming Commands\50 - DISPlay Subsystem.htm#DispView" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="view" semanticType="String" description="Selects 1- or 3-channel meter view.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="BooleanCloneClone" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="view" semanticType="String" description="Returns METER1 or METER3.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="BooleanCloneClone" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+		</RootNode>
+		<RootNode aliases="HCOP" mnemonic="HCOPy">
+			<Node aliases="SDUM" mnemonic="SDUMp">
+				<Node aliases="DATA" mnemonic="DATA">
+					<Node aliases="FORM" mnemonic="FORMat">
+						<SubsystemCommand>
+							<Synopsis>The command specifies the image format for images returned by HCOPy:SDUMp:DATA?.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":HCOPy:SDUMp:DATA:FORMat" url="Topics\2 - Programming Commands\55 - Hcopy Subsystem.htm#HCOPy_SDUMp_DATA_FORMat" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="format" semanticType="String" description="Specifies image format type.">
+											<ParameterType>
+												<Character />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="format" semanticType="String" description="Returns image format.">
+											<ResponseType>
+												<Character />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="DATA" mnemonic="DATA">
+					<SubsystemCommand>
+						<Synopsis>The query returns the front panel display image ("screen shot"). </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":HCOPy:SDUMp:DATA" url="Topics\2 - Programming Commands\55 - Hcopy Subsystem.htm" />
+						</HelpLinks>
+						<QuerySyntaxes>
+							<QuerySyntax timeout="50000">
+								<Responses>
+									<Response name="data" semanticType="1-D Array" description="Returns the display image data.">
+										<ResponseType>
+											<DefiniteLengthArbitraryBlock>
+												<Element format="Ascii" type="String" separator="newline" />
+											</DefiniteLengthArbitraryBlock>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+		</RootNode>
+		<RootNode aliases="INIT" mnemonic="INITiate">
+			<Node aliases="IMM" default="true" mnemonic="IMMediate">
+				<SubsystemCommand>
+					<Synopsis>The command enables the output trigger system.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":INITiate:IMMediate:DLOG" url="Topics\2 - Programming Commands\65 - INITiate Subsystem.htm#INI:IMM:DLOG" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="chanList" semanticType="String" description="The filename in which to save the data should be the full path and filename with .csv extension." optional="true">
+									<ParameterType>
+										<String />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="CONT" mnemonic="CONTinuous">
+				<SubsystemCommand>
+					<Synopsis>The command continuously initiates the output trigger system.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":INITiate:CONTinuous" url="Topics\2 - Programming Commands\65 - INITiate Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="continuous" semanticType="Boolean" description="Enable/disable the output trigger system.">
+									<ParameterType>
+										<DecimalNumeric>
+											<EnumRef name="MinMax" />
+										</DecimalNumeric>
+										<Character>
+											<EnumRef name="MinMax" />
+										</Character>
+									</ParameterType>
+								</Parameter>
+								<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+									<ParameterType>
+										<Expression>
+											<ChannelList />
+										</Expression>
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Parameters>
+								<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+									<ParameterType>
+										<Expression>
+											<ChannelList />
+										</Expression>
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+							<Responses>
+								<Response name="continuous" semanticType="Boolean" description="Returns the status of the Output trigger system.">
+									<ResponseType>
+										<NR1Numeric>
+											<EnumRef name="MinMax" />
+										</NR1Numeric>
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+		</RootNode>
+		<RootNode aliases="INST" mnemonic="INSTrument">
+			<Node aliases="SEL" default="true" mnemonic="SELect">
+				<SubsystemCommand>
+					<Synopsis>The command selects the output to be programmed.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":INSTrument[:SELect]" endAnchor="InstNsel" url="Topics\2 - Programming Commands\70 - INSTrument Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="outputname" semanticType="String" description="The output to be programmed.">
+									<ParameterType>
+										<Character>
+											<EnumRef name="MinMaxClone" />
+										</Character>
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="outputname" semanticType="String" description="Returns the output currently selected by INSTrument [:SELect] or INSTrument:NSELect as either “P6V”, “P25V”, or “N25V”.">
+									<ResponseType>
+										<Character>
+											<EnumRef name="MinMaxClone" />
+										</Character>
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="NSEL" mnemonic="NSELect">
+				<SubsystemCommand>
+					<Synopsis>The command selects the output to be programmed by a numeric value, as opposed to the output identifier used in the INSTrument [:SELect] command. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":INSTrument:NSELect" url="Topics\2 - Programming Commands\70 - INSTrument Subsystem.htm#InstNsel" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="nselect" semanticType="Integer" description="The output to be programmed by a numeric value as 1,2, or 3.">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="nselect" semanticType="Integer" description="Returns the output currently selected by INSTrument:NSELect or INSTrument[:SELect] as either 1, 2, or 3.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+		</RootNode>
+		<RootNode aliases="LXI" mnemonic="LXI">
+			<Node aliases="RES" mnemonic="RESet">
+				<SubsystemCommand>
+					<Synopsis>The command resets LAN interface to a known operating state, beginning with DHCP, and clears the Web Interface password.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":LXI:RESet" endAnchor="LXI:IDEN" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="REST" mnemonic="RESTart">
+				<SubsystemCommand>
+					<Synopsis>The command restarts the LAN interface with the current settings as specified by the SYSTem:COMMunicate:LAN commands.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":LXI:RESTart" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="IDEN" mnemonic="IDENtify">
+				<Node aliases="STAT" default="true" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command allows you to set the property to ON to change the LXI status indicator to the "Identify" state. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":LXI:IDENtify[:STATe]" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Enable/Disable the property to change the LXI status indicator.">
+										<ParameterType>
+											<DecimalNumeric>
+												<EnumRef name="MinMax" />
+											</DecimalNumeric>
+											<Character>
+												<EnumRef name="MinMax" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="indicator" semanticType="Boolean" description="Returns the state of the LXI status indicator.">
+										<ResponseType>
+											<NR1Numeric>
+												<EnumRef name="MinMax" />
+											</NR1Numeric>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="MDNS" mnemonic="MDNS">
+				<Node aliases="HNAM" mnemonic="HNAMe">
+					<Node aliases="RES" default="true" mnemonic="RESolved">
+						<SubsystemCommand>
+							<Synopsis>The query returns the resolved (unique) mDNS hostname .</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":LXI:MDNS:HNAMe:RESolved" endAnchor="LXI:IDEN" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="hostName" semanticType="String" description="Returns the host name.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="SNAM" mnemonic="SNAMe">
+					<Node aliases="RES" default="true" mnemonic="RESolved">
+						<SubsystemCommand>
+							<Synopsis>The resolved mDNS service name will be the desired service name , possibly with "(&lt;N&gt;)" appended. The N is an integer appended if necessary to make the name unique.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":LXI:MDNS:SNAMe:RESolved" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="serviceName" semanticType="String" description="Returns the resolved mDNS service.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="DES" mnemonic="DESired">
+						<SubsystemCommand>
+							<Synopsis>The command sets the desired mDNS service name.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":LXI:MDNS:SNAMe:DESired" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="serviceName" semanticType="String" description="Desired mDNS service name.">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="serviceName" semanticType="String" description="Returns the mDNS service name.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="STAT" default="true" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command allows you to control the mDNS service.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":LXI:MDNS[:STATe]" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Controls the mDNS service.">
+										<ParameterType>
+											<DecimalNumeric>
+												<EnumRef name="MinMax" />
+											</DecimalNumeric>
+											<Character>
+												<EnumRef name="MinMax" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="indicator" semanticType="Boolean" description="Returns the control of the mDNS service.">
+										<ResponseType>
+											<NR1Numeric>
+												<EnumRef name="MinMax" />
+											</NR1Numeric>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="ENAB" mnemonic="ENABle">
+					<SubsystemCommand>
+						<Synopsis>The command enables (On) or disables (Off) the multicast Domain Name System (mDNS).</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":LXI:MDNS:ENABle" url="Topics\2 - Programming Commands\80 - LXI Subsystem.htm" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Enables/Disables the multicast Domain Name System.">
+										<ParameterType>
+											<Character />
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="state" semanticType="Boolean" description="Returns the state of the mDNS service.">
+										<ResponseType>
+											<Character />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+		</RootNode>
+		<RootNode aliases="MEAS" mnemonic="MEASure">
+			<Node aliases="SCAL" default="true" mnemonic="SCALar">
+				<Node aliases="CURR" mnemonic="CURRent">
+					<Node aliases="DC" default="true" mnemonic="DC">
+						<SubsystemCommand>
+							<Synopsis>The query returns the current measured at the specified output.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":MEASure:SCALar:CURRent:DC" endAnchor="Meas" url="Topics\2 - Programming Commands\85 - MEASure Subsystem.htm" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="outputname" semanticType="String" description="Either the output name or channellist." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="MinMaxClone" />
+												</Character>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="dc" semanticType="Real" description="Returns the current measured at the specified output.">
+											<ResponseType>
+												<NR3Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="VOLT" mnemonic="VOLTage">
+					<Node aliases="DC" default="true" mnemonic="DC">
+						<SubsystemCommand>
+							<Synopsis>The query returns the voltage measured at the specified output. </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":MEASure:SCALar:VOLTage:DC" url="Topics\2 - Programming Commands\85 - MEASure Subsystem.htm#Meas" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="outputName" semanticType="String" description="Either the output name or channelList." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="MinMaxClone" />
+												</Character>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="dc" semanticType="Real" description="Returns the voltage measured at the specified output.">
+											<ResponseType>
+												<NR3Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+			</Node>
+		</RootNode>
+		<RootNode aliases="OUTP" mnemonic="OUTPut">
+			<Node aliases="STAT" default="true" mnemonic="STATe">
+				<SubsystemCommand>
+					<Synopsis>The command enables or disables the specified output. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":OUTPut[:STATe]" endAnchor="OutpDelFall" url="Topics\2 - Programming Commands\95 - OUTPut Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="state" semanticType="Boolean" description="Enables or disables the specified output.">
+									<ParameterType>
+										<DecimalNumeric>
+											<EnumRef name="MinMax" />
+										</DecimalNumeric>
+										<Character>
+											<EnumRef name="MinMax" />
+										</Character>
+									</ParameterType>
+								</Parameter>
+								<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+									<ParameterType>
+										<Expression>
+											<ChannelList />
+										</Expression>
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Parameters>
+								<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+									<ParameterType>
+										<Expression>
+											<ChannelList />
+										</Expression>
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+							<Responses>
+								<Response name="state" semanticType="Integer" description="Returns the output state of the power supply.">
+									<ResponseType>
+										<NR1Numeric>
+											<EnumRef name="MinMax" />
+										</NR1Numeric>
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+				<Node aliases="DEL" mnemonic="DELay">
+					<Node aliases="FALL" mnemonic="FALL">
+						<SubsystemCommand>
+							<Synopsis>The command sets the delay in seconds that the power supply waits before disabling the specified output. </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":OUTPut:STATe:DELay:FALL" endAnchor="OutpDelRise" url="Topics\2 - Programming Commands\95 - OUTPut Subsystem.htm#OutpDelFall" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="delay" semanticType="Real" description="The delay in seconds that the power supply waits before disabling the specified output.">
+											<ParameterType>
+												<DecimalNumeric />
+												<Character>
+													<EnumRef name="Boolean" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="state" semanticType="Real" description="Minimum or Maximum time delay state." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="Boolean" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="delayValue" semanticType="Real" description="Returns the programmed delay time parameter in the form +n.nnnnnnnnE+nn.">
+											<ResponseType>
+												<NR3Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="RISE" mnemonic="RISE">
+						<SubsystemCommand>
+							<Synopsis>The command sets the delay in seconds that the power supply waits before enabling the specified output.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":OUTPut[:STATe]:DELay:RISE" endAnchor="OutpPonStat" url="Topics\2 - Programming Commands\95 - OUTPut Subsystem.htm#OutpDelRise" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="delay" semanticType="Real" description="The delay in seconds that the power supply waits before enabling the specified output.">
+											<ParameterType>
+												<DecimalNumeric />
+												<Character>
+													<EnumRef name="Boolean" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="state" semanticType="Real" description="Minimum or Maximum delay state." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="Boolean" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+										<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+											<ParameterType>
+												<Expression>
+													<ChannelList />
+												</Expression>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="delayValue" semanticType="Real" description="Returns the programmed delay time parameter in the form +n.nnnnnnnnE+nn.">
+											<ResponseType>
+												<NR3Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+			</Node>
+			<Node aliases="PON" mnemonic="PON">
+				<Node aliases="STAT" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command specifies whether the power supply's power-on state is the *RST state (default) or the state stored in one of ten memory locations. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":OUTPut:PON:STATe" endAnchor="OUTProClr" url="Topics\2 - Programming Commands\95 - OUTPut Subsystem.htm#OutpPonStat" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="String" description="The power supply's power-on state.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="BooleanClone_5" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="state" semanticType="String" description="Returns the power supply's power-on state.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="BooleanClone_5" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="PROT" mnemonic="PROTection">
+				<Node aliases="CLE" mnemonic="CLEar">
+					<SubsystemCommand>
+						<Synopsis>The command clears the latch that disables the output due to an overvoltage or overcurrent condition.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":OUTPut:PROTection:CLEar" endAnchor="OUTPut:TRACk[:STATe]_" url="Topics\2 - Programming Commands\95 - OUTPut Subsystem.htm#OUTProClr" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="TRAC" mnemonic="TRACk">
+				<Node aliases="STAT" default="true" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command enables or disables the power supply to operate in the track mode.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":OUTPut:TRACk:STATe" url="Topics\2 - Programming Commands\95 - OUTPut Subsystem.htm#OUTPut:TRACk[:STATe]_" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Enables or disables the power supply to operate in the track mode.">
+										<ParameterType>
+											<DecimalNumeric>
+												<EnumRef name="MinMax" />
+											</DecimalNumeric>
+											<Character>
+												<EnumRef name="MinMax" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="state" semanticType="Boolean" description="Returns the track mode state of the power supply.">
+										<ResponseType>
+											<NR1Numeric>
+												<EnumRef name="MinMax" />
+											</NR1Numeric>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+		</RootNode>
+		<RootNode aliases="STAT" mnemonic="STATus">
+			<Node aliases="OPER" mnemonic="OPERation">
+				<Node aliases="ENAB" mnemonic="ENABle">
+					<SubsystemCommand>
+						<Synopsis>The command enables bits in the Operation Status enable register. The selected bits are then reported to the Status Byte. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":STATus:OPERation:ENABle" endAnchor="StatPres" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesEnab" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="enable" semanticType="Integer" description="Sets the bits in the Operation Status enable register.">
+										<ParameterType>
+											<DecimalNumeric />
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="bitValue" semanticType="Integer" description="Returns decimal value that corresponds to the binary-weighted sum of all bits set in the register.">
+										<ResponseType>
+											<NR1Numeric />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="COND" mnemonic="CONDition">
+					<SubsystemCommand>
+						<Synopsis>Queries the condition register for the Standard Operation Register group. This is a read-only register and the bits are not cleared when you read the register.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":STATus:OPERation:CONDition" endAnchor="StatQuesEnab" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm" />
+						</HelpLinks>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="condition" semanticType="Integer" description="Reads the condition register.">
+										<ResponseType>
+											<NR1Numeric />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="EVEN" default="true" mnemonic="EVENt">
+					<SubsystemCommand>
+						<Synopsis>&lt;highlight the desired synopsis in the viewer below&gt;</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":STATus:OPERation:EVENt" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInst" />
+						</HelpLinks>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="bitValue" semanticType="Integer" description="Returns a decimal value which corresponds to the binary-weighted sum of all bits in the register.&#xD;&#xA;">
+										<ResponseType>
+											<NR1Numeric />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="QUES" mnemonic="QUEStionable">
+				<Node aliases="EVEN" default="true" mnemonic="EVENt">
+					<SubsystemCommand>
+						<Synopsis>The query returns a decimal value which corresponds to the binary-weighted sum of all bits in the register.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":STATus:QUEStionable:EVENt" endAnchor="StatQuesEnab" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInst" />
+						</HelpLinks>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="event" semanticType="Integer" description="Returns a decimal value which corresponds to the binary-weighted sum of all bits in the register.">
+										<ResponseType>
+											<NR1Numeric />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="ENAB" mnemonic="ENABle">
+					<SubsystemCommand>
+						<Synopsis>The command enables bits in the Questionable Status enable register.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":STATus:QUEStionable:ENABle" endAnchor="StatQuesInstEnab" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesEnab" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="enableValue" semanticType="Integer" description="The binary-weighted decimal representing the bits set in the enable register.">
+										<ParameterType>
+											<DecimalNumeric />
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="enablevalue" semanticType="Integer" description="Returns a binary-weighted decimal representing the bits set in the enable register.">
+										<ResponseType>
+											<NR1Numeric />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="INST" mnemonic="INSTrument">
+					<Node aliases="EVEN" default="true" mnemonic="EVENt">
+						<SubsystemCommand>
+							<Synopsis>The query queries the Questionable Instrument event register and returns the decimal value of the binary-weighted sum of all bits in the Questionable Instrument event register and clears the register.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":STATus:QUEStionable:INSTrument:EVENt" endAnchor="StatQuesInstEnab" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInst" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="enableValue" semanticType="Integer" description="Returns the decimal value of the binary-weighted sum of all bits in the Questionable Instrument event register and clears the register.">
+											<ResponseType>
+												<NR1Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="ENAB" mnemonic="ENABle">
+						<SubsystemCommand>
+							<Synopsis>The command sets the value of the Questionable Instrument enable register. </Synopsis>
+							<HelpLinks>
+								<HelpLink name=":STATus:QUEStionable:INSTrument:ENABle" endAnchor="StatQuesInstIsum" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInstEnab" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="enableValue" semanticType="Integer" description="Sets the decimat value of the Questionable Instrument enable register.">
+											<ParameterType>
+												<DecimalNumeric />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="enableValue" semanticType="Integer" description="Returns the value of the Questionable Instrument enable register.">
+											<ResponseType>
+												<NR1Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="ISUM" mnemonic="ISUMmary">
+						<NodeSuffixes name="n" description="The specified output.&#xD;&#xA;" required="true">
+							<NodeSuffixRange min="1" max="3" />
+						</NodeSuffixes>
+						<Node aliases="EVEN" default="true" mnemonic="EVENt">
+							<SubsystemCommand>
+								<Synopsis>The query returns the value of the Questionable Instrument Isummary event register for a specific output of the power supply. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":STATus:QUEStionable:INSTrument:ISUMmary:EVENt" endAnchor="StatQuesInstIsumCond" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInstIsum" />
+								</HelpLinks>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Responses>
+											<Response name="event" semanticType="Integer" description="Returns the value of the Questionable Instrument Isummary event register for a specific output of the power supply.">
+												<ResponseType>
+													<NR1Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+						<Node aliases="COND" mnemonic="CONDition">
+							<SubsystemCommand>
+								<Synopsis>The query returns the CV or CC condition of the specified output (&lt;n&gt;=1, 2, or 3).
+</Synopsis>
+								<HelpLinks>
+									<HelpLink name=":STATus:QUEStionable:INSTrument:ISUMmary:CONDition" endAnchor="StatQuesInstIsumEnab" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInstIsumCond" />
+								</HelpLinks>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Responses>
+											<Response name="condition" semanticType="Integer" description="Returns the CV or CC condition of the specified output (&lt;n&gt;=1, 2, or 3).">
+												<ResponseType>
+													<NR1Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+						<Node aliases="ENAB" mnemonic="ENABle">
+							<SubsystemCommand>
+								<Synopsis>The command sets the value of the Questionable Instrument Isummary enable register for a specific output of the three-output power supply. </Synopsis>
+								<HelpLinks>
+									<HelpLink name=":STATus:QUEStionable:INSTrument:ISUMmary:ENABle" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm#StatQuesInstIsumEnab" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="enableValue" semanticType="Integer" description="The value of the Questionable Instrument Isummary enable register.">
+												<ParameterType>
+													<DecimalNumeric />
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Responses>
+											<Response name="enableValue" semanticType="Integer" description="Returns the value of the Questionable Instrument Isummary enable register (&lt;n&gt;=1, 2, or 3).">
+												<ResponseType>
+													<NR1Numeric />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+				</Node>
+			</Node>
+			<Node aliases="PRES" mnemonic="PRESet">
+				<SubsystemCommand>
+					<Synopsis>The command sets the questionable enable registers to their power-on values.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":STATus:PRESet" endAnchor="StatQuesInst" url="Topics\2 - Programming Commands\105 - STATus Subsystem.htm" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+		</RootNode>
+		<RootNode aliases="SYST" mnemonic="SYSTem">
+			<Node aliases="ERR" mnemonic="ERRor">
+				<Node aliases="NEXT" default="true" mnemonic="NEXT">
+					<SubsystemCommand>
+						<Synopsis>The query returns the power supply's error queue of up to 20 errors. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SYSTem:ERRor[:NEXT]" endAnchor="SystLoc" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:RLST" />
+						</HelpLinks>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="errorNumber" semanticType="Integer" description="The error number.">
+										<ResponseType>
+											<NR1Numeric />
+										</ResponseType>
+									</Response>
+									<Response name="errorMessage" semanticType="String" description="The error message.">
+										<ResponseType>
+											<String />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="BEEP" mnemonic="BEEPer">
+				<Node aliases="IMM" default="true" mnemonic="IMMediate">
+					<SubsystemCommand>
+						<Synopsis>The command issues a single beep immediately.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SYSTem:BEEPer:IMMediate" endAnchor="SystBeepStat" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax />
+						</CommandSyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="STAT" mnemonic="STATe">
+					<SubsystemCommand>
+						<Synopsis>The command enables or disables the beeper.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SYSTem:BEEPer:STATe" endAnchor="SYST:COMM:RLST" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SystBeepStat" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="state" semanticType="Boolean" description="Enables or disables the beeper.">
+										<ParameterType>
+											<DecimalNumeric>
+												<EnumRef name="MinMax" />
+											</DecimalNumeric>
+											<Character>
+												<EnumRef name="MinMax" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="state" semanticType="Boolean" description="Returns 0 (OFF) or 1 (ON) state of beeper.">
+										<ResponseType>
+											<NR1Numeric>
+												<EnumRef name="MinMax" />
+											</NR1Numeric>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node aliases="COMM" mnemonic="COMMunicate">
+				<Node aliases="TCP" mnemonic="TCPip">
+					<Node aliases="CONT" mnemonic="CONTrol">
+						<SubsystemCommand>
+							<Synopsis>The command returns the initial socket control connection port number.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:TCPip:CONTrol" endAnchor="SystLoc" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:RLST" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="portNumber" semanticType="Integer" description="Returns the Control connection port number.">
+											<ResponseType>
+												<NR1Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="LAN" mnemonic="LAN">
+					<Node aliases="UPD" mnemonic="UPDate">
+						<SubsystemCommand>
+							<Synopsis>The command stores any changes made to the LAN settings into non-volatile memory and restarts the LAN driver with the updated settings.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:UPDate" endAnchor="SYST:COMM:RLST" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYSTem:LAN:UPDate" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax />
+							</CommandSyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="TELN" mnemonic="TELNet">
+						<Node aliases="WMES" mnemonic="WMESsage">
+							<SubsystemCommand>
+								<Synopsis>The command sets the welcome message displayed when communicating the instrument with Telnet.</Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SYSTem:COMMunicate:LAN:TELNet:WMESsage" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="message" semanticType="String" description="Sets the welcome message displayed when communicating the instrument with Telnet.&#xD;&#xA;">
+												<ParameterType>
+													<String />
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Responses>
+											<Response name="message" semanticType="String" description="Returns the welcome message displayed when communicating the instrument with Telnet.&#xD;&#xA;">
+												<ResponseType>
+													<String />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+						<Node aliases="PROM" mnemonic="PROMpt">
+							<SubsystemCommand>
+								<Synopsis>The command sets the command prompt displayed when communicating the instrument with Telnet.</Synopsis>
+								<HelpLinks>
+									<HelpLink name=":SYSTem:COMMunicate:LAN:TELNet:PROMpt" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+								</HelpLinks>
+								<CommandSyntaxes>
+									<CommandSyntax>
+										<Parameters>
+											<Parameter name="prompt" semanticType="String" description="Sets the command prompt displayed when communicating the instrument with Telnet.">
+												<ParameterType>
+													<String />
+												</ParameterType>
+											</Parameter>
+										</Parameters>
+									</CommandSyntax>
+								</CommandSyntaxes>
+								<QuerySyntaxes>
+									<QuerySyntax>
+										<Responses>
+											<Response name="prompt" semanticType="String" description="Returns the command prompt as ASCII strings .">
+												<ResponseType>
+													<String />
+												</ResponseType>
+											</Response>
+										</Responses>
+									</QuerySyntax>
+								</QuerySyntaxes>
+							</SubsystemCommand>
+						</Node>
+					</Node>
+					<Node aliases="DHCP" mnemonic="DHCP">
+						<SubsystemCommand>
+							<Synopsis>The command enables (On) or disables (Off) the use of the Dynamic Host Configuration Protocol (DHCP) for the instrument.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:DHCP" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="enable" semanticType="Boolean" description="Enables/disables the use of the Dynamic Host Configuration Protocol (DHCP) for the instrument.">
+											<ParameterType />
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="enable" semanticType="Boolean" description="Returns whether DHCP ON or OFF.">
+											<ResponseType>
+												<BinaryNumeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="DNS" mnemonic="DNS">
+						<SubsystemCommand>
+							<Synopsis>The command assigns static IP addresses of Domain Name System (DNS) servers. A primary and a secondary server address may be assigned.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:DNS" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="ipAddress" semanticType="String" description="Sets the static IP address of DNS server.">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="addressType" semanticType="String" description="Shows type of address being used." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="BooleanClone_10" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="ipAddress" semanticType="String" description="Returns the IP address of DNS server.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+						<NodeSuffixes name="n" description="The DNS server.">
+							<NodeSuffixRange min="1" max="2" />
+						</NodeSuffixes>
+					</Node>
+					<Node aliases="DOM" mnemonic="DOMain">
+						<SubsystemCommand>
+							<Synopsis>The query reads the current network domain name and returns an ASCII string enclosed in double quotes.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:DOMain" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="domainName" semanticType="String" description="Returns the domain name being used by the instrument.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="GAT" mnemonic="GATeway">
+						<SubsystemCommand>
+							<Synopsis>The command assigns a default gateway for the instrument. The specified IP Address sets the default gateway, which allows the instrument to communicate with systems that are not on the local subnet.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:GATeway" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="gateway" semanticType="String" description="Sets a default gateway for the instrument.">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="gatewayType" semanticType="String" description="Shows type of gateway being used." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="BooleanClone_10" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="gateway" semanticType="String" description="Returns default gateway used by the instrument.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="HOST" mnemonic="HOSTname">
+						<SubsystemCommand>
+							<Synopsis>The command assigns a hostname to the instrument.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:HOSTname" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="hostName" semanticType="String" description="Assigns a hostname to the instrument.">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="hostNameType" semanticType="String" description="Shows which type of hostname being used" optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="BooleanClone_10" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="hostName" semanticType="String" description="Returns the host name assigned to instrument.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="IPAD" mnemonic="IPADdress">
+						<SubsystemCommand>
+							<Synopsis>The command assigns a static Internet Protocol (IP) address for the instrument.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:IPADdress" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="ipAddress" semanticType="String" description="Sets a static Internet Protocol (IP) address for the instrument.">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="addressType" semanticType="String" description="Shows type of address being used." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="BooleanClone_10" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="ipAddress" semanticType="String" description="Returns the IP address of instrument.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="MAC" mnemonic="MAC">
+						<SubsystemCommand>
+							<Synopsis>The query returns the instrument's Media Access Control (MAC) address as an ASCII string of 12 hexadecimal characters (0-9 and A-F) enclosed in quotation marks.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:MAC" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="address" semanticType="String" description="Returns the MAC address.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="SMAS" mnemonic="SMASk">
+						<SubsystemCommand>
+							<Synopsis>The command assigns a subnet mask for the instrument to use in determining whether a client IP address is on the same local subnet.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:SMASK" endAnchor="SYSTem:LAN:UPDate" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:DHCP" />
+							</HelpLinks>
+							<CommandSyntaxes>
+								<CommandSyntax>
+									<Parameters>
+										<Parameter name="mask" semanticType="String" description="Sets a subnet mask for the instrument ">
+											<ParameterType>
+												<String />
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+								</CommandSyntax>
+							</CommandSyntaxes>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Parameters>
+										<Parameter name="maskType" semanticType="String" description="Shows which type of address is being used." optional="true">
+											<ParameterType>
+												<Character>
+													<EnumRef name="BooleanClone_10" />
+												</Character>
+											</ParameterType>
+										</Parameter>
+									</Parameters>
+									<Responses>
+										<Response name="mask" semanticType="String" description="Returns Subnet mask used by the instrument.">
+											<ResponseType>
+												<String />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+					<Node aliases="CONT" mnemonic="CONTrol">
+						<SubsystemCommand>
+							<Synopsis>The query reads and returns the control connection port number for Socket communications.</Synopsis>
+							<HelpLinks>
+								<HelpLink name=":SYSTem:COMMunicate:LAN:CONTrol" endAnchor="SYST:COMM:LAN:DHCP" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:LAN:CONTrol?" />
+							</HelpLinks>
+							<QuerySyntaxes>
+								<QuerySyntax>
+									<Responses>
+										<Response name="portNumber" semanticType="Integer" description="Returns the control connection port number for Socket communications.">
+											<ResponseType>
+												<NR1Numeric />
+											</ResponseType>
+										</Response>
+									</Responses>
+								</QuerySyntax>
+							</QuerySyntaxes>
+						</SubsystemCommand>
+					</Node>
+				</Node>
+				<Node aliases="RLST" mnemonic="RLSTate">
+					<SubsystemCommand>
+						<Synopsis>The command sets the power supply to remote or local mode.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":SYSTem:COMMunicate:RLSTate" endAnchor="SYST:COMM:RLST" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:RLST" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="rlstate" semanticType="String" description="The power supply mode as remote or local.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="BooleanClone_4Clone" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Responses>
+									<Response name="rlstate" semanticType="String" description="Returns the power supply mode as LOC, REM, or RWL.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="BooleanClone_4Clone" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+			<Node mnemonic="DATE">
+				<SubsystemCommand>
+					<Synopsis>The command sets the date of the power supply's real-time clock. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:DATE" endAnchor="SystLoc" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:COMM:RLST" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="yyyy" semanticType="Integer" description="The year for the date of power supply's real-time clock.">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+								<Parameter name="mm" semanticType="Integer" description="The month for the date of power supply's real-time clock.">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+								<Parameter name="dd" semanticType="Integer" description="The day for the date of power supply's real-time clock.">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="yyyy" semanticType="Integer" description="Returns the year for the date of power supply's real-time clock.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+								<Response name="mm" semanticType="Integer" description="Returns the month for the date of power supply's real-time clock.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+								<Response name="dd" semanticType="Integer" description="Returns the day for the date of power supply's real-time clock.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="LOC" mnemonic="LOCal">
+				<SubsystemCommand>
+					<Synopsis>The command places the power supply in the local mode. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:LOCal" endAnchor="SystRem" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SystLoc" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="REM" mnemonic="REMote">
+				<SubsystemCommand>
+					<Synopsis>The command places the power supply into remote mode for remote operation. </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:REMote" endAnchor="SystRwl" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SystRem" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="RWL" mnemonic="RWLock">
+				<SubsystemCommand>
+					<Synopsis>The command places the power supply in the remote mode.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:RWLock" endAnchor="SYST:SET" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SystRwl" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax />
+					</CommandSyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="SET" mnemonic="SET">
+				<SubsystemCommand>
+					<Synopsis>The command sets the instrument to a specified state.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:SET" endAnchor="SYST:TIME" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:SET" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax timeout="20000">
+							<Parameters>
+								<Parameter name="data" semanticType="1-D Array" description="A specified state of instrument (0-9).">
+									<ParameterType>
+										<ArbitraryBlock>
+											<Element format="Ascii" type="String" separator="newline" />
+										</ArbitraryBlock>
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax timeout="20000">
+							<Responses>
+								<Response name="data" semanticType="1-D Array" description="Returns the instrument present stored state (store 0-9).">
+									<ResponseType>
+										<DefiniteLengthArbitraryBlock>
+											<Element format="Ascii" type="String" separator="newline" />
+										</DefiniteLengthArbitraryBlock>
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node mnemonic="TIME">
+				<SubsystemCommand>
+					<Synopsis>The command sets the real time clock in hours (hh), minutes (mm), and seconds (ss). </Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:TIME" endAnchor="SystVers" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SYST:TIME" />
+					</HelpLinks>
+					<CommandSyntaxes>
+						<CommandSyntax>
+							<Parameters>
+								<Parameter name="hh" semanticType="Integer" description="Sets the real time clock hours.&#xD;&#xA;">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+								<Parameter name="mm" semanticType="Integer" description="Sets the real time clock minutes.&#xD;&#xA;">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+								<Parameter name="ss" semanticType="Integer" description="Sets the real time clock seconds.&#xD;&#xA;">
+									<ParameterType>
+										<DecimalNumeric />
+									</ParameterType>
+								</Parameter>
+							</Parameters>
+						</CommandSyntax>
+					</CommandSyntaxes>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="hh" semanticType="Integer" description="Returns the real time clock hours.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+								<Response name="mm" semanticType="Integer" description="Returns the real time clock minutes.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+								<Response name="ss" semanticType="Integer" description="Returns the real time clock seconds.">
+									<ResponseType>
+										<NR1Numeric />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+			<Node aliases="VERS" mnemonic="VERSion">
+				<SubsystemCommand>
+					<Synopsis>The query returns the present SCPI version of the power supply.</Synopsis>
+					<HelpLinks>
+						<HelpLink name=":SYSTem:VERSion" url="Topics\2 - Programming Commands\110 - SYSTem Subsystem.htm#SystVers" />
+					</HelpLinks>
+					<QuerySyntaxes>
+						<QuerySyntax>
+							<Responses>
+								<Response name="version" semanticType="String" description="Returns the present SCPI version of the power supply.">
+									<ResponseType>
+										<String />
+									</ResponseType>
+								</Response>
+							</Responses>
+						</QuerySyntax>
+					</QuerySyntaxes>
+				</SubsystemCommand>
+			</Node>
+		</RootNode>
+		<RootNode aliases="TRIG" mnemonic="TRIGger">
+			<Node aliases="SEQ" default="true" mnemonic="SEQuence">
+				<Node aliases="DEL" mnemonic="DELay">
+					<SubsystemCommand>
+						<Synopsis>The command sets the time delay between the detection of an event on the specified trigger source and the start of any corresponding trigger action on the power supply output. </Synopsis>
+						<HelpLinks>
+							<HelpLink name=":TRIGger:SEQuence:DELay" endAnchor="TRIG:SOUR" url="Topics\2 - Programming Commands\115 - Trigger Subsystem.htm#TRIG:DEL" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="delay" semanticType="Real" description="The time delay between the detection of an event on the specified trigger source and the start of any corresponding trigger action on the power supply output.">
+										<ParameterType>
+											<DecimalNumeric />
+											<Character>
+												<EnumRef name="BooleanClone_3" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Parameters>
+									<Parameter name="delay" semanticType="String" description="The Minimum or Maximum seconds." optional="true">
+										<ParameterType>
+											<Character>
+												<EnumRef name="BooleanClone_3" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+								<Responses>
+									<Response name="delayValue" semanticType="Real" description="Returns the programmed trigger time delay in the form +n.nnnnnnnnE+nn for each channel specified.">
+										<ResponseType>
+											<NR3Numeric />
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+				<Node aliases="SOUR" mnemonic="SOURce">
+					<SubsystemCommand>
+						<Synopsis>The command selects the trigger source for the output trigger system.</Synopsis>
+						<HelpLinks>
+							<HelpLink name=":TRIGger:SEQuence:SOURce" url="Topics\2 - Programming Commands\115 - Trigger Subsystem.htm#TRIG:SOUR" />
+						</HelpLinks>
+						<CommandSyntaxes>
+							<CommandSyntax>
+								<Parameters>
+									<Parameter name="source" semanticType="String" description="The trigger source.">
+										<ParameterType>
+											<Character>
+												<EnumRef name="MinMaxClone_2" />
+											</Character>
+										</ParameterType>
+									</Parameter>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+							</CommandSyntax>
+						</CommandSyntaxes>
+						<QuerySyntaxes>
+							<QuerySyntax>
+								<Parameters>
+									<Parameter name="chanlist" semanticType="String" description="The channel list." optional="true">
+										<ParameterType>
+											<Expression>
+												<ChannelList />
+											</Expression>
+										</ParameterType>
+									</Parameter>
+								</Parameters>
+								<Responses>
+									<Response name="source" semanticType="String" description="Returns BUS, EXT, IMM or PIN&lt;n&gt;.">
+										<ResponseType>
+											<Character>
+												<EnumRef name="MinMaxClone_2" />
+											</Character>
+										</ResponseType>
+									</Response>
+								</Responses>
+							</QuerySyntax>
+						</QuerySyntaxes>
+					</SubsystemCommand>
+				</Node>
+			</Node>
+		</RootNode>
+	</SubsystemCommands>
+	<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+		<SignedInfo>
+			<CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" />
+			<SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+			<Reference URI="">
+				<Transforms>
+					<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+				</Transforms>
+				<DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+				<DigestValue>C8tXM2ulghw96MsnT/4NuaMXc7Q=</DigestValue>
+			</Reference>
+		</SignedInfo>
+		<SignatureValue>Kn82cXRTm13KD66p9hOmj9X4bbBN7mF1sOg+ajk+3VBOQIkjvIZHmQihSgqT7Iw0xx5+aL+Sh/8dC2bvkuNUL/IBWiutNiDuJ0nH++KRb63CHZeQR3tb8dKI8ODYF2vJSST7pKzvnWAhS8B3X+Du8r8yXDSPHtiBbBSzQAiF7o1Binz7RsUaayokmeBc8SYWK/3F5EURUGcC9OzUlmpvlpTGd0sVUd8I06/bgOQCXrGNXR4anjh1VbvC7YHeYs9YbrJjAIPEhnSQToD7zMIbdzqeXHWBEUtBX+xZiBiIg/4u2LgY+GtHTlVtE1Sc2eR0wkLUA/Nx0sa2n0bESXYPmg==</SignatureValue>
+		<KeyInfo>
+			<X509Data>
+				<X509Certificate>MIIFijCCBHKgAwIBAgIQeywH9czu0mbNbF4nC1HJ9TANBgkqhkiG9w0BAQUFADCBtDELMAkGA1UEBhMCVVMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykxMDEuMCwGA1UEAxMlVmVyaVNpZ24gQ2xhc3MgMyBDb2RlIFNpZ25pbmcgMjAxMCBDQTAeFw0xMjA2MDYwMDAwMDBaFw0xNTA2MDYyMzU5NTlaMIHNMQswCQYDVQQGEwJVUzERMA8GA1UECBMIQ29sb3JhZG8xETAPBgNVBAcTCExvdmVsYW5kMSswKQYDVQQKFCJBZ2lsZW50IFRlY2hub2xvZ2llcywgSW5jb3Jwb3JhdGVkMT4wPAYDVQQLEzVEaWdpdGFsIElEIENsYXNzIDMgLSBNaWNyb3NvZnQgU29mdHdhcmUgVmFsaWRhdGlvbiB2MjErMCkGA1UEAxQiQWdpbGVudCBUZWNobm9sb2dpZXMsIEluY29ycG9yYXRlZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAI1uRsQ1Th6akdFoG9wraBiF3tZkxbhkdTZqA4YPi0N7jJ0BJ7BPrVCDF+N/RBzMPA5IOPbPobUYu2s08CzGWPrA3MtRHa+wcWRaNhXuxOCGgR/H2AzG0BxZlND55anG0VLikgC7YH6oRcL5bl4SFyc8tepWo3GXBGTYAhtKEgsiEvsADqgYuN6rr84kI02JTy8igsEVbeYvTYLuFUNUFvdCUpZ02aa7fLBNccE5fSYp2TrFuGIKYk71tsBHbvrWpEMFeXzb+sS8KrJ7CEMY/fh/8ES84n5Xgka1YdVJesAe093ZpP8o64zWEU9mXAckQROuqPMo8ZM07YdwjqWoK1UCAwEAAaOCAXswggF3MAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQDAgeAMEAGA1UdHwQ5MDcwNaAzoDGGL2h0dHA6Ly9jc2MzLTIwMTAtY3JsLnZlcmlzaWduLmNvbS9DU0MzLTIwMTAuY3JsMEQGA1UdIAQ9MDswOQYLYIZIAYb4RQEHFwMwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYTATBgNVHSUEDDAKBggrBgEFBQcDAzBxBggrBgEFBQcBAQRlMGMwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLnZlcmlzaWduLmNvbTA7BggrBgEFBQcwAoYvaHR0cDovL2NzYzMtMjAxMC1haWEudmVyaXNpZ24uY29tL0NTQzMtMjAxMC5jZXIwHwYDVR0jBBgwFoAUz5mp6nsm9EvJjo/X8AUm7+PSp50wEQYJYIZIAYb4QgEBBAQDAgQQMBYGCisGAQQBgjcCARsECDAGAQEAAQH/MA0GCSqGSIb3DQEBBQUAA4IBAQACP8OPyWsaE64RRRU8oQTR8WYxPQ/YNmkiyusDvZlIb1CkOzVGM+akUfY7qqP9GaZm/uodKOg/gyhza6Yh4d8QLYo2XyiDqDtAQDD4YKERfa+wixRPhnoIoSOSkRkithdZaK7/DY9I1DaBcKLXlL745P5rGQtsrKq2+XGVxDRnPFrhHQoIzDrLtleNrz/efOuYt6DYfSgZEjZ3vw87PXBaQ7Pn0nn0ZSi0WMIToGRQPSunOotBijG7XwNHw+jRCbfkH752w+oluxh6n3L6yeLdzGLXQsISEXNlv5At9a6DbbpcAgslse2y1sXgyXrJKaoGxLr3hTTEGuQedrqgkIqv</X509Certificate>
+			</X509Data>
+		</KeyInfo>
+	</Signature>
+</ScpiDefinition>

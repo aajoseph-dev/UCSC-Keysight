@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="Programming Commands" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" /><title>APPLy Command</title>
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">APPLy Subsystem</h2>
+        <h3 style="margin-bottom: 2pt;"><a name="APPL"></a>APPLy P6V | P30V | N30V | CH1 | CH2 | CH3[,&lt;voltage&gt; | DEFault | MINimum | MAXimum [,&lt;current&gt;| DEFault | MINimum | MAXimum]]</h3>
+        <h3 style="margin-top: 0;">APPLy? [P6V | P30V | N30V | CH1 | CH2 | CH3]</h3>
+        <p>The command is combination of <a href="70%20-%20INSTrument%20Subsystem.htm">INSTrument:SELect</a>, <a href="35%20-%20CURRent%20Subsystem.htm">[SOURce:]CURRent</a>, and <a href="125%20-%20VOLTage%20Subsystem.htm">[SOURce:]VOLTage</a> commands. The values of the voltage and current of the specified output will change as soon as the command is executed.</p>
+        <p>You can identify each output by the output name (P6V, P30V, N30V, ch1, ch2, or ch3). For the voltage and current parameters of the APPLy command, the ranges depend on the output currently selected. You can substitute �MINimum�, �MAXimum�, or �DEFault� in place of a specific value for the voltage and current parameters.   If you specify only one value for the parameter, the power supply regards it as voltage setting value. If you do not specify any value for the parameter, the APPLy command only selects the output specified and acts as the INSTrument command.</p>
+        <p>The query returns the power supply's present voltage and current values for each output as a quoted string as shown in the sample string below (the quotation marks are returned as part of the string). If any output identifier is not specified, the voltage and the current of the currently selected output are returned.</p>
+        <p>"5.000000,1.000000"</p>
+        <p>Referring to the above string, the first number 5.000000 is the voltage limit value and the second number 1.000000 is the current limit value for the specified output.</p>
+        <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 86px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" />
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Output</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Range of values</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">&lt;voltage&gt;</td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">P6V = (MAX = 6.18 V | MIN = 0 V | DEF = 0 V)
+<br />P30V = (MAX = 30.9 V | MIN = 0 V | DEF = 0 V)
+<br />N30V = (MAX = 30.9 V | MIN = 0 V | DEF = 0 V)<br /></td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyB-Column1-WhiteRows">&lt;current&gt;</td>
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows">
+                        <p>P6V = (MAX = 5.15 A | MIN = 0.002 A | DEF = 5 A)<br />P30V = (MAX = 1.03 A | MIN = 0.001 A | DEF = 1 A)<br />N30V = (MAX = 1.03 A | MIN = 0.001 A | DEF = 1 A)<br /></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p>&#160;</p>
+        <table class="TableStyle-Kt_Basic" style="mc-table-style: url('../../css/Kt_Basic.css');margin-left: 0;margin-right: auto;" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 300px;" />
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 170px;" />
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">
+                        <p>&lt;voltage&gt;| DEF | MIN | MAX, <br />&lt;current&gt; | DEF | MIN | MAX<br />Default: &lt;DEF in Range of values&gt;</p>
+                    </td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows">&lt;voltage&gt;, &lt;current&gt;</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Sets the maximum voltage and current of 6 V output :&#160;<span style="background-color: #dcdcdc;">APPL P6V, MAX, MAX</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>

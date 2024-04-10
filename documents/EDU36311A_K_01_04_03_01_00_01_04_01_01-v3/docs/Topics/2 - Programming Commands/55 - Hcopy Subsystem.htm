@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:MadCap="http://www.madcapsoftware.com/Schemas/MadCap.xsd" MadCap:tocPath="Programming Commands" MadCap:InPreviewMode="false" MadCap:PreloadImages="false" MadCap:RuntimeFileType="Topic" MadCap:TargetType="HtmlHelp" MadCap:PathToHelpSystem="../../" MadCap:HelpSystemFileName="EDU36311A_PG CHM.xml" MadCap:SearchType="Stem">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=7" />
+        <meta http-equiv="Content-Type" content="text/html; charset=Windows-1252" />
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" /><title>Hcopy Commands</title>
+        <link href="../../css/Kt_Basic.css" rel="stylesheet" MadCap:stylesheetType="table" />
+        <link href="../../css/Keysight_Help_Flare.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="../../SkinSupport/jquery-1.12.4.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapGlobal.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapSlideshow.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapMerging.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapAliasFile.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapUtilities.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBody.js">
+        </script>
+        <script type="text/javascript" src="../../SkinSupport/MadCapHighlighter.js">
+        </script>
+    </head>
+    <body>
+        <h2 style="page-break-before: always;">HCOPy Subsystem</h2>
+        <p>HCOPy commands return the front panel display image.</p>
+        <h3><a name="HCOPy_SDUMp_DATA_Q"></a>HCOPy:SDUMp:DATA?</h3>
+        <p>The query returns the front panel display image ("screen shot"). </p>
+        <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 248px;">
+            </col>
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 233px;">
+            </col>
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">(none)<br /></td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: left;">(A definite-length binary block containing the image.)
+<br />Definite-length block data allows any type of device-dependent data to be transmitted as a series
+of 8-bit binary data bytes. This is particularly useful for transferring large quantities of data or 8-bit
+extended ASCII codes.</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Capture and return the display image: <span style="background-color: #dcdcdc;">HCOP:SDUM:DATA?</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <h4>Remarks</h4>
+        <ul class="EnDash">
+            <li class="IndentTight"> The image format (PNG or BMP) is specified by <a href="#HCOPy_SDUMp_DATA_FORMat">HCOPy:SDUMp:DATA:FORMat</a>.</li>
+        </ul>
+        <h3><a name="HCOPy_SDUMp_DATA_FORMat"></a>HCOPy:SDUMp:DATA:FORMat BMP<br />HCOPy:SDUMp:DATA:FORMat?</h3>
+        <p> The command specifies the image format for images returned by <a href="#HCOPy_SDUMp_DATA_Q">HCOPy:SDUMp:DATA?</a>.</p>
+        <table style="margin-left: 0;margin-right: auto;caption-side: top;mc-table-style: url('../../css/Kt_Basic.css');" class="TableStyle-Kt_Basic" cellspacing="0">
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 248px;">
+            </col>
+            <col class="TableStyle-Kt_Basic-Column-Column1" style="width: 233px;">
+            </col>
+            <thead>
+                <tr class="TableStyle-Kt_Basic-Head-Header1">
+                    <th class="TableStyle-Kt_Basic-HeadE-Column1-Header1">Parameter</th>
+                    <th class="TableStyle-Kt_Basic-HeadD-Column1-Header1">Typical return</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyE-Column1-WhiteRows">BMP<br />Default:  BMP<br /></td>
+                    <td class="TableStyle-Kt_Basic-BodyD-Column1-WhiteRows" style="text-align: left;">BMP</td>
+                </tr>
+                <tr class="TableStyle-Kt_Basic-Body-WhiteRows">
+                    <td class="TableStyle-Kt_Basic-BodyA-Column1-WhiteRows" colspan="2">Specify BMP as the image format: <span style="background-color: #dcdcdc;">HCOP:SDUM:DATA:FORM BMP</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <script type="text/javascript" src="../../SkinSupport/MadCapBodyEnd.js">
+        </script>
+    </body>
+</html>
