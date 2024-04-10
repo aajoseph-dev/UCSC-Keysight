@@ -16,11 +16,13 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         self.commands_label = QtWidgets.QLabel("Prefilled Commands:")
         self.description_label = QtWidgets.QLabel("Description:")
         self.language_label = QtWidgets.QLabel("Choose Language:")
+        self.zip_path_label = QtWidgets.QLabel("Input path for zip file to save under:")
 
         # Create entry fields
         self.plugin_name_input = QtWidgets.QLineEdit()
         self.device_name_input = QtWidgets.QLineEdit()
         self.description_input = QtWidgets.QTextEdit()
+        self.zip_path_input = QtWidgets.QLineEdit()
 
         # Checkboxes for prefilled commands
         self.commands = [
@@ -54,6 +56,8 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         self.main_layout.addWidget(self.plugin_name_input)
         self.main_layout.addWidget(self.device_name_label)
         self.main_layout.addWidget(self.device_name_input)
+        self.main_layout.addWidget(self.zip_path_label)
+        self.main_layout.addWidget(self.zip_path_input)
 
         # Dictionary to hold the command name and its checkbox widget
         self.command_checkboxes = {}
@@ -78,13 +82,14 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         # Set window title
         self.setWindowTitle("Plugin Generator")
 
+    
+
         # Show the window
         self.show()
 
     # Retrieves user input from the form and displays a popup window
     def submit_info(self):
-        
-        # Collected from prefilled commands
+        # folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')        # Collected from prefilled commands
         selected_commands = [command for command, checkbox in self.command_checkboxes.items() if checkbox.isChecked()]
 
         # Debugging Print Message
@@ -107,7 +112,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         question = f"""Using the scpi commands available to you can you create a plugin for the {self.device_name_input.text()} device(s). Implement the {', '.join(selected_commands)} functions in python"""
         # question = f"""Find a SCPI command for the E364xA power supply. Write out the entirety of the text from the documents. Specify if not available in the docs."""
         # payload is what gets passed to the LLM/chat bot
-        payload = {"plugin_name" : self.device_name_input.text(), "question": question}
+        payload = {"plugin_name" : self.device_name_input.text(), "question": question, "file_path" : self.zip_path_input.text()}
 
         api_url = "http://127.0.0.1:5000/generate_plugin" 
         response = requests.post(api_url, json=payload)
@@ -118,7 +123,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
                 result = response.json()
             else:
                 try:
-                    with open(f"{self.device_name_input.text()}.zip", 'wb') as f:
+                    with open(f"{self.zip_path_input.text()}/{self.device_name_input.text()}.zip", 'wb') as f:
                         f.write(response.content)
                     print("Downloaded successfully")
                     self.close() # close the popup window

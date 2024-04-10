@@ -28,6 +28,7 @@ def generate_plugin():
     data = request.get_json()
     user_prompt = data.get('question')
     name = data.get('plugin_name')
+    send_zip_path = data.get('file_path')
 
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     # :param deployment_id: The deployment ID for the model to use with your own data.
@@ -89,8 +90,12 @@ def generate_plugin():
     response = completion.choices[0].message.content
     print(response)
     #returns response in json format to client
-    file_path = generate_zipfolder(name, response)
-    return send_zip_file(file_path,name)
+    generate_zipfolder(name, response)
+    # zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
+    # print("send_zip_path:", send_zip_path)
+    # zip = send_from_directory(send_zip_path, f"{name}.zip", as_attachment=True)
+    zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
+    return zip
 
 # Generating zip file
 def generate_zipfolder(plugin_name, data):
@@ -130,7 +135,6 @@ def generate_xml(name, folder_path):
 
     des = doc.createElement('Description')
     package.appendChild(des)
-
     des_text = doc.createTextNode('TEST')
     des.appendChild(des_text)
 
@@ -139,6 +143,20 @@ def generate_xml(name, folder_path):
     prereq_text = doc.createTextNode(' Python (>3.7) ')
     prereq.appendChild(prereq_text)
 
+    # Add dependency for OpenTAP
+    dep = doc.createElement('Dependencies')
+    package.appendChild(dep)
+    dep_text = doc.createElement('PackageDependency')
+    dep_text.setAttribute("Package", "OpenTAP")
+    dep_text.setAttribute("Version", "^9.18.2")
+    dep.appendChild(dep_text)
+
+    # Add dependency for Python
+    dep_text = doc.createElement('PackageDependency')
+    dep_text.setAttribute("Package", "Python")
+    dep_text.setAttribute("Version", "^$(GitVersion)")
+    dep.appendChild(dep_text)
+    
     files = doc.createElement('Files')
     package.appendChild(files)
 
@@ -151,12 +169,12 @@ def generate_xml(name, folder_path):
 
     xml_str = doc.toprettyxml(indent="\t", encoding="UTF-8")
 
-    save_path_file = folder_path + '/' + name + ".xml"
+    save_path_file = folder_path + '/' + "package" + ".xml"
     with open(save_path_file, "wb") as f:
         f.write(xml_str)
     
     return save_path_file
-
+    
 # Send back the zip file to the user's directory
 def send_zip_file(file_path, plugin_name):
     return send_from_directory('.', f"{plugin_name}.zip", as_attachment=True)
