@@ -57,6 +57,7 @@ def generate_plugin():
     search_index_name = "plugin-pdf-vector"; 
     message_text = [{"role": "user", "content": user_prompt}]
 
+    # TODO: Check if the search is using vectors
     # Ask the chat bot
     completion = openai.ChatCompletion.create(
         messages=message_text,

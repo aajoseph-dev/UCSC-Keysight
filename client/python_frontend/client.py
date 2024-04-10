@@ -105,7 +105,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
                     - {self.description_input.toPlainText()}.
                     - Please only return the code (put any English text in comments using #)."""
         question = f"""Using the scpi commands available to you can you create a plugin for the {self.device_name_input.text()} device(s). Implement the {', '.join(selected_commands)} functions in python"""
-
+        # question = f"""Find a SCPI command for the E364xA power supply. Write out the entirety of the text from the documents. Specify if not available in the docs."""
         # payload is what gets passed to the LLM/chat bot
         payload = {"plugin_name" : self.device_name_input.text(), "question": question}
 

@@ -8,7 +8,7 @@ from langchain_community.vectorstores.azuresearch import AzureSearch
 from langchain_openai import AzureOpenAIEmbeddings
 
 
-def upload_doc(document_path, tags):
+def upload_doc(document_path):
     load_dotenv()
     azure_endpoint: str = os.getenv("OPENAI_ENDPOINT")
     azure_openai_api_key: str = os.getenv("OPENAI_KEY1")
@@ -43,13 +43,10 @@ def upload_doc(document_path, tags):
         length_function = len
     )
 
-
-
     chunks = text_splitter.split_documents(data)
     vector_store.add_documents(documents=chunks)
 
 
 if __name__ == "__main__":
     document_path = input("Path to File:")
-    tags = input("Tags (Comma Seperated):").split(",")
-    upload_doc(document_path, tags)
+    upload_doc(document_path)
