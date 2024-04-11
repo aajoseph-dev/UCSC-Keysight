@@ -106,12 +106,14 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         question = f"""
                     Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
                     Keep in mind, the .xml file, and init py has already been created. 
-                    Using SCPI commands implement these functions:
-                    - {self.description_input.toPlainText()}.
-                    - Please only return the code (put any English text in comments using #)."""
-        question = f"""Using the scpi commands available to you can you create a plugin for the {self.device_name_input.text()} device(s). Implement the {', '.join(selected_commands)} functions in python"""
+                    Using SCPI commands implement these functions: {', '.join(selected_commands)} 
+                    - Please only return the code (put any English text in comments using #).
+                    - Do not write ```python ``` at any point.
+                    """ 
+        #question = f"""Using the scpi commands available to you can you create a plugin for the {self.device_name_input.text()} device(s). Implement the {', '.join(selected_commands)} functions in python"""
         # question = f"""Find a SCPI command for the E364xA power supply. Write out the entirety of the text from the documents. Specify if not available in the docs."""
         # payload is what gets passed to the LLM/chat bot
+        print("question:", question)
         payload = {"plugin_name" : self.device_name_input.text(), "question": question, "file_path" : self.zip_path_input.text()}
 
         api_url = "http://127.0.0.1:5000/generate_plugin" 
