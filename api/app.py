@@ -7,6 +7,7 @@ import zipfile
 from pathlib import Path
 from dotenv import load_dotenv
 import openai
+import re
 
 # This file serves as our backend and is responsible for making calls to Azure
 
@@ -56,13 +57,16 @@ def generate_plugin():
     search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
     search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
     search_index_name = "plugin-pdf-vector"; 
-    message_text = [{"role": "user", "content": user_prompt}]
+    message_text = [
+        {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
+        {"role": "user", "content": user_prompt}]
 
     # TODO: Check if the search is using vectors
     # Ask the chat bot
     completion = openai.ChatCompletion.create(
         messages=message_text,
         deployment_id=deployment_id,
+        
         dataSources=[  # camelCase is intentional, as this is the format the API expects
             {
                 "type": "AzureCognitiveSearch",
@@ -88,7 +92,7 @@ def generate_plugin():
 
     # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
     response = completion.choices[0].message.content
-    print(response)
+
     #returns response in json format to client
     generate_zipfolder(name, response)
     # zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
@@ -111,6 +115,15 @@ def generate_zipfolder(plugin_name, data):
         zip.write(py_file)
 
     return file_path
+
+def clean_code(code, file_path):
+    pattern = r"`python(.*?)`"
+    match = re.findall(pattern, code, re.DOTALL)
+    print(match)
+    with open(file_path, 'w') as file:
+        for m in match:
+            file.write(m)
+            file.write('\n')
 
 # Generating python file that eventually gets populated with the LLM's generated plugin
 def generate_py(name, code, file_path):
