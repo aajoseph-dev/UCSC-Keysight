@@ -28,6 +28,7 @@ def generate_plugin():
     data = request.get_json()
     user_prompt = data.get('question')
     name = data.get('plugin_name')
+    functions = data.get('functions')
 
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     # :param deployment_id: The deployment ID for the model to use with your own data.
@@ -55,41 +56,60 @@ def generate_plugin():
     search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
     search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
     search_index_name = "pdf_data"; 
-    message_text = [{"role": "user", "content": user_prompt}]
+
+    zip_file_paths = []
 
     # Ask the chat bot
-    completion = openai.ChatCompletion.create(
-        messages=message_text,
-        deployment_id=deployment_id,
-        dataSources=[  # camelCase is intentional, as this is the format the API expects
-            {
-                "type": "AzureCognitiveSearch",
-                "parameters": {
-                    "endpoint": search_endpoint,
-                    "indexName": search_index_name,
-                    "semanticConfiguration": "default",
-                    "queryType": "simple",
-                    "fieldsMapping": {},
-                    "inScope": True,
-                    "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text.",
-                    "filter": None,
-                    "strictness": 3,
-                    "topNDocuments": 5,
-                    "key": search_key
+    for index, function in enumerate(functions):
+        full_prompt = user_prompt + function
+        message_text = [{"role": "user", "content": full_prompt}]
+        completion = openai.ChatCompletion.create(
+            messages=message_text,
+            deployment_id=deployment_id,
+            dataSources=[  # camelCase is intentional, as this is the format the API expects
+                {
+                    "type": "AzureCognitiveSearch",
+                    "parameters": {
+                        "endpoint": search_endpoint,
+                        "indexName": search_index_name,
+                        "semanticConfiguration": "default",
+                        "queryType": "simple",
+                        "fieldsMapping": {},
+                        "inScope": True,
+                        "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified function you are given and write plugin code for it.",
+                        "filter": None,
+                        "strictness": 3,
+                        "topNDocuments": 5,
+                        "key": search_key
+                    }
                 }
-            }
-        ],
-        temperature=0,
-        top_p=1,
-        max_tokens=800,
-    )
+            ],
+            temperature=0,
+            top_p=1,
+            max_tokens=800,
+        )
 
-    # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
-    response = completion.choices[0].message.content
-    print(response)
-    #returns response in json format to client
-    file_path = generate_zipfolder(name, response)
-    return send_zip_file(file_path,name)
+        # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
+        response = completion.choices[0].message.content
+        print(response)
+        #returns response in json format to client
+        # file_path = generate_zipfolder(name, response)
+
+        zip_file_path = generate_zipfolder(f"{name}_{index}", response)
+        zip_file_paths.append(zip_file_path)
+
+    final_zip_file_path = pack_zip_files(zip_file_paths, name)
+    
+    return send_zip_file(final_zip_file_path, name)
+
+    # return send_zip_file(file_path,name)
+
+def pack_zip_files(zip_file_paths, final_zip_name):
+    final_zip_file_path = f"{final_zip_name}_pack.zip"
+    with zipfile.ZipFile(final_zip_file_path, 'w') as final_zip:
+        for zip_file_path in zip_file_paths:
+            final_zip.write(zip_file_path)
+    return final_zip_file_path
 
 # Generating zip file
 def generate_zipfolder(plugin_name, data):
