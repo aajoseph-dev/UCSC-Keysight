@@ -24,11 +24,13 @@ def generate_plugin():
     openai.api_key = os.getenv("OPENAI_KEY1")
     deployment_id = "OpenTap-Plugin-LLM"
    
-    #get data sent from client.py
+    # get data sent from client.py
     data = request.get_json()
     user_prompt = data.get('question')
     name = data.get('plugin_name')
-    functions = data.get('functions')
+    # functions = data.get('functions')
+    selected_commands = data.get('selected_commands')
+    print("selected commands", selected_commands)
 
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     # :param deployment_id: The deployment ID for the model to use with your own data.
@@ -59,9 +61,13 @@ def generate_plugin():
 
     zip_file_paths = []
 
+    py_filepaths = []
+
     # Ask the chat bot
-    for index, function in enumerate(functions):
-        full_prompt = user_prompt + function
+    print("FINAL selected_commands: ", selected_commands)
+    for index, function in enumerate(selected_commands):
+        full_prompt = user_prompt + "- Using SCPI commands, implement this specific function: " + function
+        print("full prompt: ", full_prompt)
         message_text = [{"role": "user", "content": full_prompt}]
         completion = openai.ChatCompletion.create(
             messages=message_text,
@@ -76,7 +82,7 @@ def generate_plugin():
                         "queryType": "simple",
                         "fieldsMapping": {},
                         "inScope": True,
-                        "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified function you are given and write plugin code for it.",
+                        "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified command you are given and write plugin code for it.",
                         "filter": None,
                         "strictness": 3,
                         "topNDocuments": 5,
@@ -94,21 +100,36 @@ def generate_plugin():
         print(response)
         #returns response in json format to client
         # file_path = generate_zipfolder(name, response)
+        new_name = name + "-" + function
+        py_filepath = generate_py(new_name, response, new_name) # for each call to chatbot, generate its own .py file
+        py_filepaths.append(py_filepath)
 
-        zip_file_path = generate_zipfolder(f"{name}_{index}", response)
-        zip_file_paths.append(zip_file_path)
+        # zip_file_path = generate_zipfolder(f"{name}_{function}", response)
+        # zip_file_paths.append(zip_file_path)
 
-    final_zip_file_path = pack_zip_files(zip_file_paths, name)
+
+
+    final_zip_file_path = pack_zip_file(zip_file_paths, name)
     
     return send_zip_file(final_zip_file_path, name)
 
     # return send_zip_file(file_path,name)
 
-def pack_zip_files(zip_file_paths, final_zip_name):
-    final_zip_file_path = f"{final_zip_name}_pack.zip"
+def verify_code():
+    pass
+
+
+
+def pack_zip_file(py_filepaths, final_zip_name):
+    final_zip_file_path = f"{final_zip_name}.zip"
+    file_path = final_zip_name
+    os.makedirs(file_path, exist_ok=True)
+    os.chmod(file_path, 0o700)
     with zipfile.ZipFile(final_zip_file_path, 'w') as final_zip:
-        for zip_file_path in zip_file_paths:
-            final_zip.write(zip_file_path)
+        for py_filepath in py_filepaths:
+            final_zip.write(py_filepath)
+    # also write an .xml file
+    generate_xml(final_zip_name, final_zip_name)
     return final_zip_file_path
 
 # Generating zip file
@@ -118,7 +139,7 @@ def generate_zipfolder(plugin_name, data):
     os.chmod(file_path, 0o700)
 
     py_file = generate_py(plugin_name, data, file_path)
-    xml_file = generate_xml(plugin_name, file_path)
+    # xml_file = generate_xml(plugin_name, file_path)
 
     with zipfile.ZipFile(f"{plugin_name}.zip", 'w', zipfile.ZIP_DEFLATED) as zip:
         zip.write(xml_file)
@@ -129,11 +150,12 @@ def generate_zipfolder(plugin_name, data):
 # Generating python file that eventually gets populated with the LLM's generated plugin
 def generate_py(name, code, file_path):
     Path(file_path).mkdir(parents=True, exist_ok=True)
-
+    
     # Create a file inside the directory
     name += '.py'
     file_path = Path(file_path) / name
     file_path.write_text(code)
+    print(f"name: {name}, file_path: {file_path}")
     return file_path
 
 # Generating .xml file that contains info about which .py file the plugin was made for
