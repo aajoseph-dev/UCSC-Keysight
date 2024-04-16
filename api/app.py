@@ -7,6 +7,7 @@ import zipfile
 from pathlib import Path
 from dotenv import load_dotenv
 import openai
+import re
 
 # This file serves as our backend and is responsible for making calls to Azure
 
@@ -28,9 +29,13 @@ def generate_plugin():
     data = request.get_json()
     user_prompt = data.get('question')
     name = data.get('plugin_name')
+
     # functions = data.get('functions')
     selected_commands = data.get('selected_commands')
     print("selected commands", selected_commands)
+
+#     send_zip_path = data.get('file_path')
+
 
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     # :param deployment_id: The deployment ID for the model to use with your own data.
@@ -57,7 +62,8 @@ def generate_plugin():
     
     search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
     search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
-    search_index_name = "pdf_data"; 
+
+    # search_index_name = "pdf_data"; 
 
     # zip_file_paths = []
 
@@ -68,12 +74,23 @@ def generate_plugin():
     # Ensure the folder exists
     Path(folder_path).mkdir(parents=True, exist_ok=True)
 
+    search_index_name = "plugin-pdf-vector"; 
+#     message_text = [
+#         {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
+#         {"role": "user", "content": user_prompt}]
+
+
+    # TODO: Check if the search is using vectors
     # Ask the chat bot
+
     print("FINAL selected_commands: ", selected_commands)
     for index, function in enumerate(selected_commands):
         full_prompt = user_prompt + "- Using SCPI commands, implement this specific function: " + function
         print("full prompt: ", full_prompt)
-        message_text = [{"role": "user", "content": full_prompt}]
+#         message_text = [{"role": "user", "content": full_prompt}]
+        message_text = [
+        {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
+        {"role": "user", "content": user_prompt}]
         completion = openai.ChatCompletion.create(
             messages=message_text,
             deployment_id=deployment_id,
@@ -169,6 +186,45 @@ def pack_zip_file(py_filepaths, final_zip_name):
     
     return final_zip_file_path
 
+#     completion = openai.ChatCompletion.create(
+#         messages=message_text,
+#         deployment_id=deployment_id,
+        
+#         dataSources=[  # camelCase is intentional, as this is the format the API expects
+#             {
+#                 "type": "AzureCognitiveSearch",
+#                 "parameters": {
+#                     "endpoint": search_endpoint,
+#                     "indexName": search_index_name,
+#                     "semanticConfiguration": "default",
+#                     "queryType": "simple",
+#                     "fieldsMapping": {},
+#                     "inScope": True,
+#                     "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text.",
+#                     "filter": None,
+#                     "strictness": 3,
+#                     "topNDocuments": 5,
+#                     "key": search_key
+#                 }
+#             }
+#         ],
+#         temperature=0,
+#         top_p=1,
+#         max_tokens=800,
+#     )
+
+#     # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
+#     response = completion.choices[0].message.content
+
+#     #returns response in json format to client
+#     generate_zipfolder(name, response)
+#     # zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
+#     # print("send_zip_path:", send_zip_path)
+#     # zip = send_from_directory(send_zip_path, f"{name}.zip", as_attachment=True)
+#     zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
+#     return zip
+
+
 # Generating zip file
 def generate_zipfolder(plugin_name, data):
     file_path = plugin_name
@@ -184,6 +240,15 @@ def generate_zipfolder(plugin_name, data):
         zip.write(py_file)
 
     return file_path
+
+def clean_code(code, file_path):
+    pattern = r"`python(.*?)`"
+    match = re.findall(pattern, code, re.DOTALL)
+    print(match)
+    with open(file_path, 'w') as file:
+        for m in match:
+            file.write(m)
+            file.write('\n')
 
 # Generating python file that eventually gets populated with the LLM's generated plugin
 def generate_py(name, code, folder_path):
@@ -218,7 +283,6 @@ def generate_xml(name, folder_path):
 
     des = doc.createElement('Description')
     package.appendChild(des)
-
     des_text = doc.createTextNode('TEST')
     des.appendChild(des_text)
 
@@ -227,6 +291,20 @@ def generate_xml(name, folder_path):
     prereq_text = doc.createTextNode(' Python (>3.7) ')
     prereq.appendChild(prereq_text)
 
+    # Add dependency for OpenTAP
+    dep = doc.createElement('Dependencies')
+    package.appendChild(dep)
+    dep_text = doc.createElement('PackageDependency')
+    dep_text.setAttribute("Package", "OpenTAP")
+    dep_text.setAttribute("Version", "^9.18.2")
+    dep.appendChild(dep_text)
+
+    # Add dependency for Python
+    dep_text = doc.createElement('PackageDependency')
+    dep_text.setAttribute("Package", "Python")
+    dep_text.setAttribute("Version", "^$(GitVersion)")
+    dep.appendChild(dep_text)
+    
     files = doc.createElement('Files')
     package.appendChild(files)
 
@@ -239,12 +317,12 @@ def generate_xml(name, folder_path):
 
     xml_str = doc.toprettyxml(indent="\t", encoding="UTF-8")
 
-    save_path_file = folder_path + '/' + name + ".xml"
+    save_path_file = folder_path + '/' + "package" + ".xml"
     with open(save_path_file, "wb") as f:
         f.write(xml_str)
     
     return save_path_file
-
+    
 # Send back the zip file to the user's directory
 def send_zip_file(file_path, plugin_name):
     return send_from_directory('.', f"{plugin_name}.zip", as_attachment=True)

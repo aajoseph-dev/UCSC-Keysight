@@ -70,7 +70,6 @@ class PluginGeneratorApp(QtWidgets.QWidget):
             self.main_layout.addWidget(checkbox)
             self.command_checkboxes[command_name] = checkbox
 
-
         self.main_layout.addWidget(self.device_category_label)
         self.main_layout.addWidget(self.device_category_combo)
         self.main_layout.addWidget(self.description_label)
@@ -122,11 +121,14 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         #             - Please only return the code (put any English text in comments using #).
         #             - Do not write ```python ``` at any point.
         #             """ 
+        
         #question = f"""Using the scpi commands available to you can you create a plugin for the {self.device_name_input.text()} device(s). Implement the {', '.join(selected_commands)} functions in python"""
         # question = f"""Find a SCPI command for the E364xA power supply. Write out the entirety of the text from the documents. Specify if not available in the docs."""
         # payload is what gets passed to the LLM/chat bot
         print("question:", question)
+
         payload = {"plugin_name" : self.device_name_input.text(), "question": question, "file_path" : self.zip_path_input.text(), "selected_commands" : selected_commands}
+
 
         api_url = "http://127.0.0.1:5000/generate_plugin" 
         response = requests.post(api_url, json=payload)
