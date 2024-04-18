@@ -29,13 +29,7 @@ def generate_plugin():
     data = request.get_json()
     user_prompt = data.get('question')
     name = data.get('plugin_name')
-
-    # functions = data.get('functions')
     selected_commands = data.get('selected_commands')
-    print("selected commands", selected_commands)
-
-#     send_zip_path = data.get('file_path')
-
 
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     # :param deployment_id: The deployment ID for the model to use with your own data.
@@ -63,10 +57,6 @@ def generate_plugin():
     search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
     search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
 
-    # search_index_name = "pdf_data"; 
-
-    # zip_file_paths = []
-
     py_filepaths = []
 
     folder_path = name
@@ -74,20 +64,11 @@ def generate_plugin():
     # Ensure the folder exists
     Path(folder_path).mkdir(parents=True, exist_ok=True)
 
-    search_index_name = "plugin-pdf-vector"; 
-#     message_text = [
-#         {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
-#         {"role": "user", "content": user_prompt}]
-
-
-    # TODO: Check if the search is using vectors
+    search_index_name = "plugin-pdf-vector"
+    
     # Ask the chat bot
-
-    print("FINAL selected_commands: ", selected_commands)
-    for index, function in enumerate(selected_commands):
+    for function in selected_commands:
         full_prompt = user_prompt + "- Using SCPI commands, implement this specific function: " + function
-        print("full prompt: ", full_prompt)
-#         message_text = [{"role": "user", "content": full_prompt}]
         message_text = [
         {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
         {"role": "user", "content": user_prompt}]
@@ -119,42 +100,12 @@ def generate_plugin():
 
         # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
         response = completion.choices[0].message.content
-        print(response)
-        #returns response in json format to client
-        # file_path = generate_zipfolder(name, response)
-        new_name = name + "-" + function
+        new_name = function
         py_filepath = generate_py(new_name, response, folder_path) # for each call to chatbot, generate its own .py file
         py_filepaths.append(py_filepath)
 
-        # zip_file_path = generate_zipfolder(f"{name}_{function}", response)
-        # zip_file_paths.append(zip_file_path)
-
-        print("for loop iteration")
-
-
-
     final_zip_file_path = pack_zip_file(py_filepaths, name)
-    
     return send_zip_file(final_zip_file_path, name)
-
-    # return send_zip_file(file_path,name)
-
-def verify_code():
-    pass
-
-
-
-# def pack_zip_file(py_filepaths, final_zip_name):
-#     final_zip_file_path = f"{final_zip_name}.zip"
-#     file_path = final_zip_name
-#     os.makedirs(file_path, exist_ok=True)
-#     os.chmod(file_path, 0o700)
-#     with zipfile.ZipFile(final_zip_file_path, 'w') as final_zip:
-#         for py_filepath in py_filepaths:
-#             final_zip.write(py_filepath)
-#     # also write an .xml file
-#     generate_xml(final_zip_name, final_zip_name)
-#     return final_zip_file_path
 
 def pack_zip_file(py_filepaths, final_zip_name):
     final_zip_file_path = f"{final_zip_name}.zip"
@@ -186,65 +137,9 @@ def pack_zip_file(py_filepaths, final_zip_name):
     
     return final_zip_file_path
 
-#     completion = openai.ChatCompletion.create(
-#         messages=message_text,
-#         deployment_id=deployment_id,
-        
-#         dataSources=[  # camelCase is intentional, as this is the format the API expects
-#             {
-#                 "type": "AzureCognitiveSearch",
-#                 "parameters": {
-#                     "endpoint": search_endpoint,
-#                     "indexName": search_index_name,
-#                     "semanticConfiguration": "default",
-#                     "queryType": "simple",
-#                     "fieldsMapping": {},
-#                     "inScope": True,
-#                     "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text.",
-#                     "filter": None,
-#                     "strictness": 3,
-#                     "topNDocuments": 5,
-#                     "key": search_key
-#                 }
-#             }
-#         ],
-#         temperature=0,
-#         top_p=1,
-#         max_tokens=800,
-#     )
-
-#     # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
-#     response = completion.choices[0].message.content
-
-#     #returns response in json format to client
-#     generate_zipfolder(name, response)
-#     # zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
-#     # print("send_zip_path:", send_zip_path)
-#     # zip = send_from_directory(send_zip_path, f"{name}.zip", as_attachment=True)
-#     zip = send_from_directory('.', f"{name}.zip", as_attachment=True)
-#     return zip
-
-
-# Generating zip file
-def generate_zipfolder(plugin_name, data):
-    file_path = plugin_name
-    print(f"generate_zipfolder(): {file_path}")
-    os.makedirs(file_path, exist_ok=True)
-    os.chmod(file_path, 0o700)
-
-    py_file = generate_py(plugin_name, data, file_path)
-    # xml_file = generate_xml(plugin_name, file_path)
-
-    with zipfile.ZipFile(f"{plugin_name}.zip", 'w', zipfile.ZIP_DEFLATED) as zip:
-        zip.write(xml_file)
-        zip.write(py_file)
-
-    return file_path
-
 def clean_code(code, file_path):
     pattern = r"`python(.*?)`"
     match = re.findall(pattern, code, re.DOTALL)
-    print(match)
     with open(file_path, 'w') as file:
         for m in match:
             file.write(m)
@@ -252,22 +147,11 @@ def clean_code(code, file_path):
 
 # Generating python file that eventually gets populated with the LLM's generated plugin
 def generate_py(name, code, folder_path):
-    # Path(file_path).mkdir(parents=True, exist_ok=True)
-    
-    # # Create a file inside the directory
-    # name += '.py'
-    # file_path = Path(file_path) / name
-    # file_path.write_text(code)
-    # print(f"name: {name}, file_path: {file_path}")
-    # return file_path
-
     # Ensure the folder exists
     Path(folder_path).mkdir(parents=True, exist_ok=True)
-    
     # Create a file inside the directory
     file_path = Path(folder_path) / (name + '.py')
     file_path.write_text(code)
-    print(f"name: {name}, file_path: {file_path}")
     return file_path
 
 # Generating .xml file that contains info about which .py file the plugin was made for
@@ -328,4 +212,4 @@ def send_zip_file(file_path, plugin_name):
     return send_from_directory('.', f"{plugin_name}.zip", as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

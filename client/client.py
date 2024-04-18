@@ -82,17 +82,13 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         # Set window title
         self.setWindowTitle("Plugin Generator")
 
-    
-
         # Show the window
         self.show()
 
     # Retrieves user input from the form and displays a popup window
     def submit_info(self):
-        # folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')        # Collected from prefilled commands
         selected_commands = [command for command, checkbox in self.command_checkboxes.items() if checkbox.isChecked()]
 
-        # Debugging Print Message
         message = f"""
             Plugin Name: {self.plugin_name_input.text()}
             Device Name(s): {self.device_name_input.text()}
@@ -101,11 +97,6 @@ class PluginGeneratorApp(QtWidgets.QWidget):
             Description: {self.description_input.toPlainText()}
             Language: {self.button_group.checkedButton().text()}
         """
-        print(message)
-
-    
-
-        print("selected_commands:", selected_commands)
 
         question = f"""
                     Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
@@ -113,25 +104,16 @@ class PluginGeneratorApp(QtWidgets.QWidget):
                     - Please only return the code (put any English text in comments using #).
                     - Do not write ```python ``` at any point.
                     """ 
-        
-        # question = f"""
-        #             Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
-        #             Keep in mind, the .xml file, and init py has already been created. 
-        #             Using SCPI commands implement these functions: {', '.join(selected_commands)} 
-        #             - Please only return the code (put any English text in comments using #).
-        #             - Do not write ```python ``` at any point.
-        #             """ 
-        
-        #question = f"""Using the scpi commands available to you can you create a plugin for the {self.device_name_input.text()} device(s). Implement the {', '.join(selected_commands)} functions in python"""
-        # question = f"""Find a SCPI command for the E364xA power supply. Write out the entirety of the text from the documents. Specify if not available in the docs."""
-        # payload is what gets passed to the LLM/chat bot
-        print("question:", question)
 
         payload = {"plugin_name" : self.device_name_input.text(), "question": question, "file_path" : self.zip_path_input.text(), "selected_commands" : selected_commands}
 
 
         api_url = "http://127.0.0.1:5000/generate_plugin" 
-        response = requests.post(api_url, json=payload)
+
+        # Specify the timeout value in seconds
+        timeout_seconds = 20  # Adjust this value as needed
+
+        response = requests.post(api_url, json=payload, timeout=timeout_seconds)
 
         # Error handling 
         if response.status_code == 200:
@@ -141,7 +123,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
                 try:
                     with open(f"{self.zip_path_input.text()}/{self.device_name_input.text()}.zip", 'wb') as f:
                         f.write(response.content)
-                    print("Downloaded successfully")
+                    print("Downloaded successfully.")
                     self.close() # close the popup window
                 except Exception as e:
                     print("error", e)
