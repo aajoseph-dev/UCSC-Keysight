@@ -102,8 +102,12 @@ def generate_plugin():
         # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
         response = completion.choices[0].message.content
         new_name = function
-        python_only_response = extract_python_code(response)
-        py_filepath = generate_py(new_name, python_only_response, folder_path) # for each call to chatbot, generate its own .py file
+        python_only_response = extract_python_code(response) # remove all plain text from file not commented out
+        result, verified_code = verify_code(python_only_response) # add import OpenTAP, check for class/func defs
+
+        print(f"after verified_code(): {result}")
+        
+        py_filepath = generate_py(new_name, verified_code, folder_path) # for each call to chatbot, generate its own .py file
         py_filepaths.append(py_filepath)
 
     final_zip_file_path = pack_zip_file(py_filepaths, name)
@@ -139,28 +143,26 @@ def pack_zip_file(py_filepaths, final_zip_name):
     
     return final_zip_file_path
 
-def verify_code(code, file_path):
-    
-    # checking for certain keywords, we'll pass this check at getting response before calling generate_py
-    if 'import' in code and 'def' in code:
-        verification_result = 'Verified'
+def verify_code(code):
+    # checking for certain keywords
+    if 'def' in code and 'class' in code:
+        verification_result = 'Found class and function definitions.'
     else:
-        verification_result = 'Not verified'
+        verification_result = 'Unable to find class and function definitions.'
 
-    return {'verification_result': verification_result}
+    # checking for OpenTAP import
+    if 'import OpenTAP' not in code:
+        # Adding OpenTAP import if not present
+        code = 'import OpenTAP' + code
 
-
-def verify_code_llm(code):
-    pass
-
-
+    return verification_result, code
 
 # Remove comments before and after the Python code
 def extract_python_code(text):
     start_index = text.find("```python")
     end_index = text.find("```", start_index + 1)
     if start_index != -1 and end_index != -1:
-        return text[start_index + 8:end_index].strip()
+        return text[start_index + 9:end_index].strip()
     else:
         return text
 
