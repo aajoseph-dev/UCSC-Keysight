@@ -1,11 +1,17 @@
-from bs4 import BeautifulSoup
-import pdfkit
 import os
+import sys
 import requests
 import zipfile
 import io
 from collections import defaultdict
-import sys
+
+from bs4 import BeautifulSoup
+import pdfkit
+from dotenv import load_dotenv
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.vectorstores.azuresearch import AzureSearch
+from langchain_openai import AzureOpenAIEmbeddings
 
 class DataFetch:
 
@@ -23,11 +29,10 @@ class DataFetch:
             return
     
         for folderName in os.listdir(parentFolder):
-
             topicLinks = []
             folderPath = os.path.join(parentFolder, folderName)
-
             if os.path.isdir(folderPath):
+
                 for fileName in os.listdir(folderPath):
 
                     filePath = os.path.join(folderPath, fileName)
@@ -37,12 +42,10 @@ class DataFetch:
                         with open(filePath, "r") as file: 
                             contents = file.read()
 
-                        soup = BeautifulSoup(contents, 'xml')
-
+                        soup = BeautifulSoup(contents, 'lxml-xml')
                         link = soup.find_all("HelpLink")
 
                         for data in link:
-                            
                             dataStr = str(data.get('url'))
                             dataStr = dataStr.replace('\\', '/') 
                             completePath =  f"{folderPath}/docs/{dataStr}"
@@ -53,12 +56,11 @@ class DataFetch:
                                 topicLinks.append(completePath)
 
                         try:
-                            pdfkit.from_file(topicLinks, f'{outputFolder}/{fileName}.pdf', verbose=True)
+                            pdfkit.from_file(topicLinks, f'{outputFolder}/{fileName.strip(".sdl")}.pdf', verbose=True)
                         except Exception as e:
                             print(f"The file could not be parsed: {e}")
 
     def fetchUrlData(self, filePath, outputFolder):
-        
         if not os.path.exists(filePath) or not os.path.isfile(filePath):
             print(f"Error: File path '{filePath}' does not exist or is not a valid file.")
             return
@@ -106,26 +108,75 @@ class DataFetch:
             else:
                 print(f"Failed to download file: key {key}, {dict[key]}. Status code: {response.status_code}")
                 
+    def uploadFile(pathToFile):
+        
+        load_dotenv()
+        azure_endpoint: str = os.getenv("OPENAI_ENDPOINT")
+        azure_openai_api_key: str = os.getenv("OPENAI_KEY1")
+        azure_openai_api_version: str = "2023-05-15"
+        azure_deployment: str = "OpenTap-Plugin-Embedding-Model"
+
+        vector_store_address: str = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
+        vector_store_password: str =  os.getenv("AZURE_AI_SEARCH_API_KEY")
+
+        embeddings: AzureOpenAIEmbeddings = AzureOpenAIEmbeddings(
+            azure_deployment=azure_deployment,
+            openai_api_version=azure_openai_api_version,
+            azure_endpoint=azure_endpoint,
+            api_key=azure_openai_api_key,
+        )
+
+        index_name: str = "plugin-pdf-vector"
+        vector_store: AzureSearch = AzureSearch(
+            azure_search_endpoint=vector_store_address,
+            azure_search_key=vector_store_password,
+            index_name=index_name,
+            embedding_function=embeddings.embed_query,
+        )
+
+        # Chunk/split the doc
+        loader = PyPDFLoader(pathToFile, extract_images=False)
+        data = loader.load_and_split()
+
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size = 5000,
+            chunk_overlap  = 300,
+            length_function = len
+        )
+
+        chunks = text_splitter.split_documents(data)
+        vector_store.add_documents(documents=chunks)
+
 
 if __name__ == "__main__":
     print("Select an option")
     print("c: Convert Help File to PDF")
     print("f: Fetch URL Data")
+    print("u: Upload files to azure")
     print("e: Exit the program")
     
-    choice = input("Enter you choice (c or f): ")
+    choice = input("Enter you choice: ")
+    dataFetch = DataFetch()
 
-    while True:
-        if choice == "c" or "C":
-            parentFolder = input("Enter the directory that contains the CE_files: ")
-            outputFolder = input("Enter the directory to save the PDFs: ")
-            break
+    if choice == "c":
+        parentFolder = input("Enter the directory that contains the CE_files: ")
+        outputFolder = input("Enter the directory to save the PDFs: ")
+        dataFetch.convertToPDF(parentFolder, outputFolder)
 
-        elif choice == "f" or "F":
-            parentFolder = input("Enter the path to the xml file: ")
-            outputFolder = input("Enter the directory to save the output: ")
-            break
+    elif choice == "f":
+        parentFolder = input("Enter the path to the xml file: ")
+        outputFolder = input("Enter the directory to save the output: ")
+        dataFetch.fetchUrlData(parentFolder, outputFolder)
 
-        elif choice == "e" or "E":
-            print("The program has been terminated")
-            sys.exit()
+    elif choice == "u":
+        pathToFile = input("Enter path to file")
+        dataFetch.uploadFiles(pathToFile)
+
+    elif choice == "e":
+        print("The program has been terminated")
+    else:
+        print("invalid input")
+    
+    sys.exit()
+
+        
