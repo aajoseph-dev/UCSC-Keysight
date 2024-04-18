@@ -140,7 +140,20 @@ def pack_zip_file(py_filepaths, final_zip_name):
     return final_zip_file_path
 
 def verify_code(code, file_path):
+    
+    # checking for certain keywords, we'll pass this check at getting response before calling generate_py
+    if 'import' in code and 'def' in code:
+        verification_result = 'Verified'
+    else:
+        verification_result = 'Not verified'
+
+    return {'verification_result': verification_result}
+
+
+def verify_code_llm(code):
     pass
+
+
 
 # Remove comments before and after the Python code
 def extract_python_code(text):
