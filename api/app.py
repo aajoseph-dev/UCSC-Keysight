@@ -8,6 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 import re
+import ast
 
 # This file serves as our backend and is responsible for making calls to Azure
 
@@ -101,7 +102,8 @@ def generate_plugin():
         # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
         response = completion.choices[0].message.content
         new_name = function
-        py_filepath = generate_py(new_name, response, folder_path) # for each call to chatbot, generate its own .py file
+        python_only_response = extract_python_code(response)
+        py_filepath = generate_py(new_name, python_only_response, folder_path) # for each call to chatbot, generate its own .py file
         py_filepaths.append(py_filepath)
 
     final_zip_file_path = pack_zip_file(py_filepaths, name)
@@ -137,13 +139,17 @@ def pack_zip_file(py_filepaths, final_zip_name):
     
     return final_zip_file_path
 
-def clean_code(code, file_path):
-    pattern = r"`python(.*?)`"
-    match = re.findall(pattern, code, re.DOTALL)
-    with open(file_path, 'w') as file:
-        for m in match:
-            file.write(m)
-            file.write('\n')
+def verify_code(code, file_path):
+    pass
+
+# Remove comments before and after the Python code
+def extract_python_code(text):
+    start_index = text.find("```python")
+    end_index = text.find("```", start_index + 1)
+    if start_index != -1 and end_index != -1:
+        return text[start_index + 8:end_index].strip()
+    else:
+        return text
 
 # Generating python file that eventually gets populated with the LLM's generated plugin
 def generate_py(name, code, folder_path):
