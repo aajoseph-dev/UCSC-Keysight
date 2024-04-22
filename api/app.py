@@ -155,6 +155,12 @@ def verify_code(code):
         # Adding OpenTAP import if not present
         code = 'import OpenTAP' + code
 
+    # checking for @attribute
+    if '@attribute' in code:
+        verification_result += ' Found @attribute.'
+    else:
+        verification_result += ' @attribute not found.'
+
     return verification_result, code
 
 # Remove comments before and after the Python code
