@@ -10,10 +10,15 @@ import openai
 import re
 import ast
 
+from llm2 import llm2_call
+
 # This file serves as our backend and is responsible for making calls to Azure
 
 app = Flask(__name__)
 
+# Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
+# :param deployment_id: The deployment ID for the model to use with your own data.
+# To remove this configuration, simply set openai.requestssession to None.
 def setup_byod(deployment_id: str) -> None:
 
     class BringYourOwnDataAdapter(requests.adapters.HTTPAdapter):
@@ -31,7 +36,6 @@ def setup_byod(deployment_id: str) -> None:
     )
 
     openai.requestssession = session
-
 
 # This function configures chat bot and gets response
 @app.route('/generate_plugin', methods=['POST'])
@@ -52,10 +56,6 @@ def generate_plugin():
     user_prompt = data.get('question')
     name = data.get('plugin_name')
     selected_commands = data.get('selected_commands')
-
-    # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
-    # :param deployment_id: The deployment ID for the model to use with your own data.
-    # To remove this configuration, simply set openai.requestssession to None.
 
     setup_byod(deployment_id)
     
@@ -110,6 +110,10 @@ def generate_plugin():
         result, verified_code = verify_code(python_only_response) # add import OpenTAP, check for class/func defs
 
         print(f"after verified_code(): {result}")
+
+        # pass the text to the 2nd llm
+        # call a func in llm2.py
+        llm2_call(verified_code)
         
         py_filepath = generate_py(new_name, verified_code, folder_path) # for each call to chatbot, generate its own .py file
         py_filepaths.append(py_filepath)
