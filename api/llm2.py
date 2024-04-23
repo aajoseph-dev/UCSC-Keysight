@@ -8,6 +8,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 
+
+
 def setup_byod(deployment_id: str) -> None:
 
     class BringYourOwnDataAdapter(requests.adapters.HTTPAdapter):
@@ -35,7 +37,8 @@ def llm2_call(code):
 
     # for 2nd llm:
     openai.api_type = "azure"
-    openai.api_version = "2023-05-15" # maybe?2023-05-15
+    openai.api_version = "2024-02-15-preview" # maybe?2023-05-15   api_version="2024-02-15-preview"
+
     openai.api_base = os.getenv('Forum-GPT4_ENDPOINT') 
     openai.api_key = os.getenv("Forum-GPT4_KEY1")
     # deployment_id2 = "OpenTAP-Forum-OpenAI"
@@ -58,33 +61,59 @@ def llm2_call(code):
         {"role": "user", "content": code}]
     print(f"\n\nmessage_text: {message_text}\n\n")
 
-    completion = openai.ChatCompletion.create( # openai.ChatCompletion.create
-        # model=deployment,
-        messages=message_text,
-        deployment_id=deployment_id2,
-        extra_body={
-            "data_sources":[
-                {
-                    "type": "azure_search",
-                    "parameters": {
-                        "endpoint": os.environ["AZURE_AI_SEARCH_ENDPOINT"],
-                        "index_name": os.environ["AZURE_AI_SEARCH_INDEX"],
-                        "authentication": {
-                            "type": "api_key",
-                            "key": os.environ["AZURE_AI_SEARCH_API_KEY"],
-                        }
-                    }
-                }
-            ],
-        }
-    )
+    # completion = openai.ChatCompletion.create( # openai.ChatCompletion.create
+    #     model=deployment,
+    #     messages=message_text,
+    #     deployment_id=deployment_id2
+    #     dataSources=[  # camelCase is intentional, as this is the format the API expects
+    #             {
+    #                 "type": "AzureCognitiveSearch",
+    #                 "parameters": {
+    #                     "endpoint": search_endpoint,
+    #                     "indexName": search_index_name,
+    #                     "semanticConfiguration": "default",
+    #                     "queryType": "simple",
+    #                     "fieldsMapping": {},
+    #                     "inScope": True,
+    #                     "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified command you are given and write plugin code for it.",
+    #                     "filter": None,
+    #                     "strictness": 3,
+    #                     "topNDocuments": 5,
+    #                     "key": search_key
+    #                 }
+    #             }
+    #     ],
+    # )
+    completion = openai.ChatCompletion.create(
+            messages=message_text,
+            deployment_id=deployment_id2,
+            # dataSources=[  # camelCase is intentional, as this is the format the API expects
+            #     {
+            #         "type": "AzureCognitiveSearch",
+            #         "parameters": {
+            #             "endpoint": search_endpoint,
+            #             "indexName": search_index_name,
+            #             "semanticConfiguration": "default",
+            #             "queryType": "simple",
+            #             "fieldsMapping": {},
+            #             "inScope": True,
+            #             "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified command you are given and write plugin code for it.",
+            #             "filter": None,
+            #             "strictness": 3,
+            #             "topNDocuments": 5,
+            #             "key": search_key
+            #         }
+            #     }
+            # ],
+            temperature=0,
+            top_p=1,
+            max_tokens=800,
+        )
 
-    
+    print("\ndone talking with 2nd llm\n")
 
-        # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
+    # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
     response = completion.choices[0].message.content
     print(f"\n\nLLM 2's response: {response}\n\n")
 
     return response
-
-        

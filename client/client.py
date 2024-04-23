@@ -111,7 +111,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         api_url = "http://127.0.0.1:5000/generate_plugin" 
 
         # Specify the timeout value in seconds
-        timeout_seconds = 20  # Adjust this value as needed
+        timeout_seconds = 60  # Adjust this value as needed
 
         response = requests.post(api_url, json=payload, timeout=timeout_seconds)
 

@@ -73,6 +73,7 @@ def generate_plugin():
     
     # Ask the chat bot
     for function in selected_commands:
+        print("\nITERATION\n")
         full_prompt = user_prompt + "- Using SCPI commands, implement this specific function: " + function
         message_text = [
         {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
