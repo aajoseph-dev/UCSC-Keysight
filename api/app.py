@@ -14,12 +14,33 @@ import ast
 
 app = Flask(__name__)
 
+def setup_byod(deployment_id: str) -> None:
+
+    class BringYourOwnDataAdapter(requests.adapters.HTTPAdapter):
+
+        def send(self, request, **kwargs):
+            request.url = f"{openai.api_base}/openai/deployments/{deployment_id}/extensions/chat/completions?api-version={openai.api_version}"
+            return super().send(request, **kwargs)
+
+    session = requests.Session()
+
+    # Mount a custom adapter which will use the extensions endpoint for any call using the given `deployment_id`
+    session.mount(
+        prefix=f"{openai.api_base}/openai/deployments/{deployment_id}",
+        adapter=BringYourOwnDataAdapter()
+    )
+
+    openai.requestssession = session
+
+
 # This function configures chat bot and gets response
 @app.route('/generate_plugin', methods=['POST'])
 def generate_plugin():
 
     # Loading api keys from .env folder
     load_dotenv()
+
+    # for 1st llm:
     openai.api_type = "azure"
     openai.api_version = "2023-08-01-preview"
     openai.api_base = os.getenv('OPENAI_ENDPOINT')
@@ -35,23 +56,6 @@ def generate_plugin():
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     # :param deployment_id: The deployment ID for the model to use with your own data.
     # To remove this configuration, simply set openai.requestssession to None.
-    def setup_byod(deployment_id: str) -> None:
-
-        class BringYourOwnDataAdapter(requests.adapters.HTTPAdapter):
-
-            def send(self, request, **kwargs):
-                request.url = f"{openai.api_base}/openai/deployments/{deployment_id}/extensions/chat/completions?api-version={openai.api_version}"
-                return super().send(request, **kwargs)
-
-        session = requests.Session()
-
-        # Mount a custom adapter which will use the extensions endpoint for any call using the given `deployment_id`
-        session.mount(
-            prefix=f"{openai.api_base}/openai/deployments/{deployment_id}",
-            adapter=BringYourOwnDataAdapter()
-        )
-
-        openai.requestssession = session
 
     setup_byod(deployment_id)
     
@@ -142,6 +146,10 @@ def pack_zip_file(py_filepaths, final_zip_name):
         final_zip.write(xml_file_path, os.path.basename(xml_file_path))
     
     return final_zip_file_path
+
+# make a new llm that will verify the output of the 1st llm
+def llm_verifier():
+    pass
 
 def verify_code(code):
     # checking for certain keywords
