@@ -33,7 +33,7 @@ marshmallow==3.21.1
 multidict==6.0.5
 mypy-extensions==1.0.0
 numpy==1.26.4
-openai==0.28.0
+openai==0.28.1.
 orjson==3.9.15
 packaging==23.2
 pydantic==2.6.3
