@@ -74,6 +74,11 @@ def generate_plugin():
     # Ask the chat bot
     for function in selected_commands:
         print("\nITERATION\n")
+        openai.api_type = "azure"
+        openai.api_version = "2023-08-01-preview"
+        openai.api_base = os.getenv('OPENAI_ENDPOINT')
+        openai.api_key = os.getenv("OPENAI_KEY1")
+        deployment_id = "OpenTap-Plugin-LLM"
         full_prompt = user_prompt + "- Using SCPI commands, implement this specific function: " + function
         message_text = [
         {"role" : "system", "content": "Generate Python code based on SCPI commands and do not include anything beside the python code"},
