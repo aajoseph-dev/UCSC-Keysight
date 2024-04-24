@@ -171,7 +171,7 @@ def verify_code(code):
     # checking for OpenTAP import
     if 'import OpenTAP' not in code:
         # Adding OpenTAP import if not present
-        code = 'import OpenTAP' + code
+        code = 'import OpenTAP\n' + code
 
     # checking for @attribute
     if '@attribute' in code:
