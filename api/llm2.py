@@ -64,24 +64,24 @@ def llm2_call(code):
     completion = openai.ChatCompletion.create(
             messages=message_text,
             deployment_id=deployment_id2,
-            dataSources=[  # camelCase is intentional, as this is the format the API expects
-                {
-                    "type": "AzureCognitiveSearch",
-                    "parameters": {
-                        "endpoint": search_endpoint,
-                        "indexName": search_index_name,
-                        "semanticConfiguration": "default",
-                        "queryType": "simple",
-                        "fieldsMapping": {},
-                        "inScope": True,
-                        "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified command you are given and write plugin code for it.",
-                        "filter": None,
-                        "strictness": 3,
-                        "topNDocuments": 5,
-                        "key": search_key
-                    }
-                }
-            ],
+            # dataSources=[  # camelCase is intentional, as this is the format the API expects
+            #     {
+            #         "type": "AzureCognitiveSearch",
+            #         "parameters": {
+            #             "endpoint": search_endpoint,
+            #             "indexName": search_index_name,
+            #             "semanticConfiguration": "default",
+            #             "queryType": "simple",
+            #             "fieldsMapping": {},
+            #             "inScope": True,
+            #             "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified command you are given and write plugin code for it.",
+            #             "filter": None,
+            #             "strictness": 3,
+            #             "topNDocuments": 5,
+            #             "key": search_key
+            #         }
+            #     }
+            # ],
             temperature=0,
             top_p=1,
             max_tokens=200,
