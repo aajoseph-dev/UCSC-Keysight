@@ -1,9 +1,9 @@
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_file
 from xml.dom import minidom
 import os
 import requests
 from io import BytesIO
-import zipfile
+from zipfile import ZipFile
 from pathlib import Path
 from dotenv import load_dotenv
 import openai
@@ -21,21 +21,23 @@ app = Flask(__name__)
 
 @app.route('/generate_plugin', methods=['POST'])
 def handleRequest():
-    # Get data from client
+
     data = request.get_json()
-    # prompt = createPrompt(data)
-
     deviceName = data.get("deviceName")
-    for command in data.get("commands"):
-        context = callAiSearch(f"{deviceName}: {command}")
-        prompt = createPrompt(data, command, context)
-        callLLM(prompt, data)
-        # clean the data and format to python File
-        # we send it function
-        
+    path = f"plugins/raw_files/{deviceName}"
+    path_to_zip = f"plugins/zip_files/{deviceName}.zip"
+    requirements = set()
     
-    return jsonify({"status": "success"})
-
+    if not os.path.exists(path):
+        os.makedirs(path)  
+        for command in data.get("commands"):
+            context = callAiSearch(f"{deviceName}: {command}")
+            prompt = createPrompt(data, command, context)
+            response = callLLM(prompt, data)
+            buildPy(path, command, response, requirements)
+        packageFiles(path, path_to_zip)
+    
+    return send_file(path_to_zip, as_attachment=True)
 
 
 def createPrompt(data, command, context):
@@ -115,14 +117,88 @@ def callAiSearch(query, TOKEN_LIMIT=500):
         print(f"Error during AI search: {e}")
 
 
-def buildPy():
-    pass
+def buildPy(path, command, code, req):
 
-def buildXML():
-    pass
+    pattern = r'^\s*(?:import|from)\s+(\S+)'
+    matches = re.findall(pattern, code, re.MULTILINE)
+    req.update(matches)
 
-def packageFiles():
-    pass
+    name = "".join( x for x in command if (x.isalnum() or x in "._- "))
+    pyFile = f"{path}/{name}.py"
+    pyFile.write_text(code)
+    return pyFile
+
+def buildXML(plugin_name, folder_path):
+    # Create an XML document
+    doc = minidom.Document()
+    
+    # Create the main package element
+    package = doc.createElement('Package')
+    doc.appendChild(package)
+    package.setAttribute('Name', plugin_name)
+    package.setAttribute('xmlns', "http://keysight.com/Schemas/tap")
+    package.setAttribute('Version', "$(GitVersion)")
+    package.setAttribute('OS', "Windows,Linux,MacOS")
+
+    # Create the description element with prerequisites
+    description = doc.createElement('Description')
+    package.appendChild(description)
+    description_text = doc.createTextNode('TEST')
+    description.appendChild(description_text)
+
+    prerequisites = doc.createElement('Prerequisites')
+    description.appendChild(prerequisites)
+    prerequisites_text = doc.createTextNode(' Python (>3.7) ')
+    prerequisites.appendChild(prerequisites_text)
+
+    # Create dependencies with specific package requirements
+    dependencies = doc.createElement('Dependencies')
+    package.appendChild(dependencies)
+
+    opentap_dependency = doc.createElement('PackageDependency')
+    dependencies.appendChild(opentap_dependency)
+    opentap_dependency.setAttribute('Package', 'OpenTAP')
+    opentap_dependency.setAttribute('Version', '^9.18.2')
+
+    python_dependency = doc.createElement('PackageDependency')
+    dependencies.appendChild(python_dependency)
+    python_dependency.setAttribute('Package', 'Python')
+    python_dependency.setAttribute('Version', '^$(GitVersion)')
+
+    # Create the files section
+    files = doc.createElement('Files')
+    package.appendChild(files)
+
+    file_element = doc.createElement('File')
+    files.appendChild(file_element)
+    file_element.setAttribute('Path', folder_path)
+
+    project_file = doc.createElement('ProjectFile')
+    file_element.appendChild(project_file)
+
+    # Convert the document to a string format
+    xml_str = doc.toprettyxml(indent="\t", encoding="UTF-8")
+
+    # Save the XML file
+    save_path_file = os.path.join(folder_path, plugin_name + ".xml")
+    with open(save_path_file, "wb") as f:
+        f.write(xml_str)
+    
+    return save_path_file
+
+def packageFiles(source, destination, req):
+
+    #create req.txt
+    
+    with ZipFile(destination, 'w') as zip_object:
+        for file_name in os.listdir(source):
+            file_path = os.path.join(source, file_name)
+            if os.path.isfile(file_path):
+                zip_object.write(file_path, file_name)
+
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    # path = "/Users/shaun/Desktop/115b/UCSC-Keysight/api/plugins/raw_files/EDU36311A"
+    # zip = "/Users/shaun/Desktop/115b/UCSC-Keysight/api/plugins/zip_files/EDU36311A.zip"
+    # packageFiles(path,zip)
+    app.run(debug=True, port=5000)
