@@ -9,20 +9,22 @@ def run_test(deviceName, category, commands, interface, progLang, role, useCase)
                 "role" : role,
                 "useCase" : useCase}
 
-    api_url = "http://127.0.0.1:5002/generate_plugin" 
+    api_url = "http://127.0.0.1:5000/generate_plugin" 
     response = requests.post(api_url, json=payload)
 
-    # Error handling 
+    # Error handling
     if response.status_code == 200:
         if response.headers.get('Content-Type') == 'application/json':
             result = response.json()
+            print(result)  # Handle JSON response if needed
         else:
+            # Save the zip file locally
             try:
-                with open(f"/Users/shaun/Desktop/115b/UCSC-Keysight/documents/{deviceName}.zip", 'wb') as f:
+                with open(f"{deviceName}.zip", 'wb') as f:
                     f.write(response.content)
                 print("Downloaded successfully")
             except Exception as e:
-                print("error", e)
+                print("Error:", e)
     else:
         print("Error:", response.status_code, response.text)
 
