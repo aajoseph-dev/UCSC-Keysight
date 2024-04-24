@@ -8,6 +8,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 
+from azure.core.credentials import AzureKeyCredential
+from azure.search.documents import SearchClient
 
 
 def setup_byod(deployment_id: str) -> None:
@@ -28,6 +30,27 @@ def setup_byod(deployment_id: str) -> None:
 
     openai.requestssession = session
 
+def retrieve_context(code):
+    # Define Azure search index properties
+    endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
+    key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
+    index_name = "plugin-pdf-vector"
+
+    # Init the search index client
+    credential = AzureKeyCredential(key)
+    client = SearchClient(endpoint=endpoint,
+                        index_name=index_name,
+                        credential=credential)
+    # fetch the related chunks for Azure AI Search
+    context = """"""
+    results = client.search(search_text=code, top = 2)
+    for doc in results:
+        print(f"content! {doc['content']}")
+        context += "\n" + doc['content']
+        
+    print(f"context!: {context}")
+    return context
+
 def llm2_call(code):
 
     print(f"\ninitial code: {code}\n\n")
@@ -41,47 +64,27 @@ def llm2_call(code):
 
     openai.api_base = os.getenv('Forum-GPT4_ENDPOINT') 
     openai.api_key = os.getenv("Forum-GPT4_KEY1")
-    # deployment_id2 = "OpenTAP-Forum-OpenAI"
-    deployment_id2 = "gpt-4-1106-Preview" # using resource: "OpenTAP-Forum-OpenAI"
-
-    # deployment_id = "OpenTap-Plugin-LLM"
+    deployment_id2 = "gpt-4-1106-Preview" 
 
     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
     setup_byod(deployment_id2)
 
-    search_endpoint = "https://azure-plugin-ai-search.search.windows.net"; 
-    search_key = os.getenv("AZURE_AI_SEARCH_API_KEY"); 
+    context = retrieve_context(code)
 
-    search_index_name = "plugin-pdf-vector"
-
-    # Ask the chat bot
-    # full_prompt = user_prompt + "- Using SCPI commands, implement this specific function: " + function
+    content = '''Your answer should contain CORRECT if you believe the Python code is part of a correctly 
+                 implemented OpenTAP plugin based on the context that is provided to you below.
+                 Otherwise, your answer should contain INCORRECT if you believe it to be wrong, and if so
+                 return any errors that you believe there to be. Make your response as concise as possible.
+                 Use this context to base your answer off of:\n'''
+    content += context
     message_text = [
-        {"role" : "system", "content": "Verify that this Python code is correctly implemented based on SCPI commands and provide comments on whether or not you believe it to be correct. Return any errors that you believe there to be."},
+        {"role" : "system", "content": content},
         {"role": "user", "content": code}]
     print(f"\n\nmessage_text: {message_text}\n\n")
 
     completion = openai.ChatCompletion.create(
             messages=message_text,
             deployment_id=deployment_id2,
-            # dataSources=[  # camelCase is intentional, as this is the format the API expects
-            #     {
-            #         "type": "AzureCognitiveSearch",
-            #         "parameters": {
-            #             "endpoint": search_endpoint,
-            #             "indexName": search_index_name,
-            #             "semanticConfiguration": "default",
-            #             "queryType": "simple",
-            #             "fieldsMapping": {},
-            #             "inScope": True,
-            #             "roleInformation": "You are an AI assistant that takes in a user-specified device and writes only Python code yourself for OpenTAP plugins. Does not write any text. You take the specified command you are given and write plugin code for it.",
-            #             "filter": None,
-            #             "strictness": 3,
-            #             "topNDocuments": 5,
-            #             "key": search_key
-            #         }
-            #     }
-            # ],
             temperature=0,
             top_p=1,
             max_tokens=200,
