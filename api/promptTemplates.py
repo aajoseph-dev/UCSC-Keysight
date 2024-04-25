@@ -7,24 +7,23 @@ class PromptTemplates:
         self.role = data.get("role")
         self.context = context
 
-    def generate_plugin_prompt(self, scpi_commands):
-        return f"""Generate a function for the give of a device based on the provided parameters.
+    def generate_plugin_prompt(self, command):
+        return f"""Generate a class for a subset of scpi commands for the given device.
         Context:
         - Device Name: {self.device_name}
         - Category: {self.category}
-        - Commands: {', '.join(scpi_commands)}
+        - Command: {command}
         - Interface: {self.interface}
         - Programming Language: {self.prog_lang}
         - Role: {self.role}
         - Documentation: {self.context}
         - 
         Instructions:
-        - Use {self.prog_lang} to generate the plugin.
+        - In {self.prog_lang} generate code for this subset of SCPI commands.
         - Include functions that utilize the provided SCPI commands.
-        - Provide clear and well-documented code with examples.
         - Follow best practices for the specified programming language and role.
 
-        Example code for reference:
+        Example code for guidance:
             import sys
             import clr
             import math

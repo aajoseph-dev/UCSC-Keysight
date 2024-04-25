@@ -18,13 +18,12 @@ import tiktoken
 
 from promptTemplates import PromptTemplates
 
-
+load_dotenv()
 app = Flask(__name__)
 
 @app.route('/generate_plugin', methods=['POST'])
 def handleRequest():
-    print("hello1")
-
+    
     data = request.get_json()
     deviceName = data.get("deviceName")
     path = f"plugins/raw_files/{deviceName}"
@@ -38,18 +37,17 @@ def handleRequest():
             prompt = createPrompt(data, command, context)
             response = callLLM(prompt, data)
             buildPy(path, command, response, requirements)
+        buildXML(f"{deviceName}", path)
         packageFiles(path, path_to_zip, requirements)
-    
+
     return send_file(path_to_zip, as_attachment=True)
 
 
 def createPrompt(data, command, context):
     prompt_templates = PromptTemplates(data, context)
     
-    scpi_commands = context.split('|')
-
     if data.get("useCase") == "generate_plugin":
-        prompt = prompt_templates.generate_plugin_prompt(scpi_commands)
+        prompt = prompt_templates.generate_plugin_prompt(command)
     # elif data.get("useCase") == "Power_supply_plugin":
     #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
     # elif data.get("useCase") == "Oscilloscopes_plugin":
@@ -70,17 +68,17 @@ def callLLM(prompt, data):
     response = openai.Completion.create(
         engine="OpenTap-Plugin-LLM",
         prompt=prompt,
-        temperature=0.7,  # Increase temperature for more diverse and creative responses
-        max_tokens=1000,  # Increase max tokens to allow for longer responses
+        temperature=0.5,  # Increase temperature for more diverse and creative responses
+        max_tokens=1500,  # Increase max tokens to allow for longer responses
         top_p=1,
         frequency_penalty=0.2,  # Add frequency penalty to reduce repetition
         presence_penalty=0.2,  # Add presence penalty to encourage new ideas
         stop=None  # Remove stop sequence to allow complete responses
     )
 
-    
     for choice in response['choices']:
         generated_text = choice['text']
+
     
     with open(f"something1.txt", 'w') as file:
         file.write(generated_text)
@@ -91,9 +89,8 @@ def callLLM(prompt, data):
     # return match
     return generated_text
 
-def callAiSearch(query, TOKEN_LIMIT=500):
+def callAiSearch(query, TOKEN_LIMIT=1500):
 
-    load_dotenv()
     service_endpoint = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
     index_name = "plugin-pdf-vector"
     key = os.getenv("AZURE_AI_SEARCH_API_KEY")
@@ -119,7 +116,7 @@ def callAiSearch(query, TOKEN_LIMIT=500):
                 truncated_content = tokenizer.decode(tokens[:remaining_tokens])
                 context += truncated_content
                 break
-
+        print(context)
         return context
     
     except Exception as e:
@@ -146,7 +143,7 @@ def buildXML(plugin_name, folder_path):
     # Create the main package element
     package = doc.createElement('Package')
     doc.appendChild(package)
-    package.setAttribute('Name', plugin_name)
+    package.setAttribute('Name', package)
     package.setAttribute('xmlns', "http://keysight.com/Schemas/tap")
     package.setAttribute('Version', "$(GitVersion)")
     package.setAttribute('OS', "Windows,Linux,MacOS")
@@ -198,7 +195,10 @@ def buildXML(plugin_name, folder_path):
     return save_path_file
 
 def packageFiles(source, destination, req):
-
+     
+    with open(f"{source}/__init__.py", 'w') as file:
+        pass
+    
     with open(f"{source}/requirements.txt", 'w') as file:
         for lib in req:
             try:
@@ -218,7 +218,4 @@ def packageFiles(source, destination, req):
 
 
 if __name__ == '__main__':
-    # path = "/Users/shaun/Desktop/115b/UCSC-Keysight/api/plugins/raw_files/EDU36311A"
-    # zip = "/Users/shaun/Desktop/115b/UCSC-Keysight/api/plugins/zip_files/EDU36311A.zip"
-    # packageFiles(path,zip)
     app.run(debug=True, port=5000)
