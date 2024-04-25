@@ -8,6 +8,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import openai
 import re
+import importlib.metadata as metadata
+
 
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
@@ -21,6 +23,7 @@ app = Flask(__name__)
 
 @app.route('/generate_plugin', methods=['POST'])
 def handleRequest():
+    print("hello1")
 
     data = request.get_json()
     deviceName = data.get("deviceName")
@@ -35,7 +38,7 @@ def handleRequest():
             prompt = createPrompt(data, command, context)
             response = callLLM(prompt, data)
             buildPy(path, command, response, requirements)
-        packageFiles(path, path_to_zip)
+        packageFiles(path, path_to_zip, requirements)
     
     return send_file(path_to_zip, as_attachment=True)
 
@@ -58,7 +61,7 @@ def createPrompt(data, command, context):
     return prompt
 
 def callLLM(prompt, data):
-
+    print("hello")
     openai.api_type = "azure"
     openai.api_base = "https://opentappluginai.openai.azure.com/"
     openai.api_version = "2023-09-15-preview"
@@ -78,9 +81,15 @@ def callLLM(prompt, data):
     
     for choice in response['choices']:
         generated_text = choice['text']
-        print(generated_text)
-
-    return
+    
+    with open(f"something1.txt", 'w') as file:
+        file.write(generated_text)
+    #remove string and send to validation
+    # pattern = r"`python(.*?)`"
+    # match = re.findall(pattern, generated_text, re.DOTALL)
+    # print(match)
+    # return match
+    return generated_text
 
 def callAiSearch(query, TOKEN_LIMIT=500):
 
@@ -119,13 +128,15 @@ def callAiSearch(query, TOKEN_LIMIT=500):
 
 def buildPy(path, command, code, req):
 
-    pattern = r'^\s*(?:import|from)\s+(\S+)'
-    matches = re.findall(pattern, code, re.MULTILINE)
-    req.update(matches)
+    # pattern = r'^\s*(?:import|from)\s+(\S+)'
+    # matches = re.findall(pattern, code, re.MULTILINE)
+    # req.update(matches)
 
     name = "".join( x for x in command if (x.isalnum() or x in "._- "))
+
     pyFile = f"{path}/{name}.py"
-    pyFile.write_text(code)
+    with open(pyFile, 'w') as file:
+        file.write(code)
     return pyFile
 
 def buildXML(plugin_name, folder_path):
@@ -188,8 +199,17 @@ def buildXML(plugin_name, folder_path):
 
 def packageFiles(source, destination, req):
 
-    #create req.txt
-    
+    with open(f"{source}/requirements.txt", 'w') as file:
+        for lib in req:
+            try:
+                version = metadata.version(lib)
+                if version:
+                    file.write(f"{lib}=={version}\n")
+                else:
+                    file.write(f"{lib}\n")
+            except metadata.PackageNotFoundError:
+                file.write(f"{lib}\n")
+
     with ZipFile(destination, 'w') as zip_object:
         for file_name in os.listdir(source):
             file_path = os.path.join(source, file_name)
