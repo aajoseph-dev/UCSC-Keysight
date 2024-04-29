@@ -1,0 +1,65 @@
+Here's a Python class that includes functions for controlling the display of the EDU36311A power supply using SCPI commands over USB:
+
+```python
+import pyvisa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        # Initialize VISA resource manager
+        self.rm = pyvisa.ResourceManager()
+        # Open the specified resource (instrument)
+        self.instr = self.rm.open_resource(resource_name)
+
+    def close(self):
+        # Close the VISA connection
+        self.instr.close()
+        self.rm.close()
+
+    def display_enable(self, enable=True):
+        # Enable or disable the display
+        state = 'ON' if enable else 'OFF'
+        self.instr.write(f":DISPlay:ENABle {state}")
+
+    def query_display_enable(self):
+        # Query the display enable state
+        return self.instr.query(":DISPlay:ENABle?").strip()
+
+    def set_display_mode(self, mode):
+        # Set the display mode (V-V, I-I, V-I)
+        if mode.upper() not in ['V-V', 'I-I', 'V-I']:
+            raise ValueError("Invalid display mode. Choose from 'V-V', 'I-I', 'V-I'.")
+        self.instr.write(f"DISPlay:MODE {mode}")
+
+    def get_display_mode(self):
+        # Get the current display mode
+        return self.instr.query("DISPlay:MODE?").strip()
+
+# Example usage
+if __name__ == "__main__":
+    # Replace with the actual VISA resource name for your EDU36311A power supply
+    resource_name = "USB0::0x2A8D::0x1202::MY12345678::INSTR"
+    power_supply = EDU36311APowerSupply(resource_name)
+
+    try:
+        # Turn off the display
+        power_supply.display_enable(False)
+        
+        # Query display enable state
+        display_state = power_supply.query_display_enable()
+        print(f"Display Enabled: {display_state}")
+
+        # Set the display mode to V-I
+        power_supply.set_display_mode('V-I')
+
+        # Query and print the current display mode
+        display_mode = power_supply.get_display_mode()
+        print(f"Current Display Mode: {display_mode}")
+
+    finally:
+        # Always close the connection to the instrument
+        power_supply.close()
+```
+
+Please remember to replace the `resource_name` with the actual VISA resource name for your EDU36311A power supply. The VISA resource name can usually be found using the VISA resource manager or NI MAX (National Instruments Measurement & Automation Explorer) if you're using National Instruments VISA libraries.
+
+The class `EDU36311APowerSupply` includes methods to enable/disable the display and query its status, as well as to set and get the current display mode of the power supply. These methods encapsulate the SCPI commands provided in the context.

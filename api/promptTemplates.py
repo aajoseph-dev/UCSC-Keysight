@@ -1,3 +1,4 @@
+#update to focus on test steps not plugins
 class PromptTemplates:
     def __init__(self, data, context):
         self.device_name = data.get("deviceName")
@@ -78,3 +79,8 @@ class PromptTemplates:
                     v = math.trunc(voltage * 100) / 100.0
                     c = math.trunc(current * 100) / 100.0
                     self.PublishResult("Charge", ["Sample Number", "Voltage", "Current"], [sampleNo, v, c])"""
+
+# class AiQuery:
+#     def __init__(self):
+
+#     def generate_query(self, command):

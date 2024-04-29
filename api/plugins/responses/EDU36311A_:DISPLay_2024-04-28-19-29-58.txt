@@ -1,0 +1,61 @@
+Based on the context and instructions provided, I'll create a Python class that handles the subset of SCPI commands for controlling the display of the EDU36311A power supply device. The class will include methods to enable and disable the display, query the display status, and set different display modes like V-V, I-I, or V-I.
+
+Here's an example implementation:
+
+```python
+import pyvisa
+
+class Edu36311ADisplayController:
+    def __init__(self, resource_name):
+        # Initialize the VISA resource manager and open a session to the instrument
+        self.rm = pyvisa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+    
+    def enable_display(self, enable=True):
+        # Enable or disable the display
+        command = ':DISPlay:ENABle {}'.format('ON' if enable else 'OFF')
+        self.instr.write(command)
+    
+    def query_display_status(self):
+        # Query the display status
+        response = self.instr.query(':DISPlay:ENABle?')
+        return 'ON' if response.strip() == '1' else 'OFF'
+    
+    def set_display_mode(self, mode):
+        # Set the display mode (V-V, I-I, or V-I)
+        valid_modes = ['V-V', 'I-I', 'V-I']
+        if mode not in valid_modes:
+            raise ValueError("Invalid mode. Choose from 'V-V', 'I-I', or 'V-I'.")
+        
+        # Enter view menu, select display mode, and exit menu
+        self.instr.write(':DISPlay:MODE {}'.format(mode))
+
+    def close(self):
+        # Close the session to the instrument
+        self.instr.close()
+        self.rm.close()
+
+# Example usage
+if __name__ == '__main__':
+    # Replace with the actual VISA resource name of your EDU36311A power supply
+    resource_name = 'USB0::0x2A8D::0x1202::MY1234567::INSTR'
+    
+    display_controller = Edu36311ADisplayController(resource_name)
+    
+    try:
+        # Enable the display
+        display_controller.enable_display(True)
+        
+        # Check the display status
+        status = display_controller.query_display_status()
+        print(f"Display status: {status}")
+        
+        # Change the display mode to V-V
+        display_controller.set_display_mode('V-V')
+    finally:
+        display_controller.close()
+```
+
+Please note that you will need to install the `pyvisa` package if you haven't already. You can install it using `pip install pyvisa`. Also, replace `resource_name` with the actual VISA resource name of your device. This can usually be found using the VISA resource manager or NI MAX tool if you're using National Instruments VISA.
+
+Keep in mind that the SCPI command syntax may vary slightly depending on the device, so you should always refer to the specific instrument's programming guide or SCPI command reference for the exact commands.

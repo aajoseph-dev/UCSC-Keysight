@@ -1,0 +1,59 @@
+Here's a Python class that encompasses a subset of the SCPI commands for controlling the display on the EDU36311A power supply. This class includes methods to enable or disable the display as well as to query the current state of the display.
+
+```python
+import pyvisa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = pyvisa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        self.instr.write_termination = '\n'
+        self.instr.read_termination = '\n'
+        self.instr.timeout = 5000  # Set timeout to 5000 ms
+
+    def enable_display(self):
+        """
+        Enables the display on the EDU36311A power supply.
+        """
+        self.instr.write(":DISPlay:ENABle ON")
+
+    def disable_display(self):
+        """
+        Disables the display on the EDU36311A power supply.
+        """
+        self.instr.write(":DISPlay:ENABle OFF")
+
+    def query_display_enabled(self):
+        """
+        Queries the power supply to check if the display is enabled.
+        Returns:
+            bool: True if the display is enabled, False otherwise.
+        """
+        response = self.instr.query(":DISPlay:ENABle?")
+        return response.strip().upper() == 'ON'
+
+    def close(self):
+        """
+        Closes the connection to the EDU36311A power supply.
+        """
+        self.instr.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+
+# Example usage:
+if __name__ == "__main__":
+    resource_name = "USB0::0x2A8D::0x1202::MY1234567::INSTR"  # Replace with your actual resource name
+    with EDU36311APowerSupply(resource_name) as psu:
+        psu.disable_display()  # Turn off the display
+        # Add your battery testing code here
+        psu.enable_display()  # Turn on the display when done
+```
+
+Please replace `"USB0::0x2A8D::0x1202::MY1234567::INSTR"` with the actual VISA resource name of your EDU36311A power supply. You can find the VISA resource name using NI MAX or pyvisa's `list_resources()` function.
+
+The class `EDU36311APowerSupply` includes methods to enable and disable the display, query the current state of the display, and manage the connection to the instrument. The `__enter__` and `__exit__` methods allow the class to be used with the `with` statement, ensuring that the connection is properly closed after use.

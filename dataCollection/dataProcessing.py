@@ -108,7 +108,7 @@ class DataFetch:
             else:
                 print(f"Failed to download file: key {key}, {dict[key]}. Status code: {response.status_code}")
                 
-    def uploadFile(pathToFile):
+    def uploadFile(self, pathToFile):
         
         load_dotenv()
         azure_endpoint: str = os.getenv("OPENAI_ENDPOINT")
@@ -134,9 +134,13 @@ class DataFetch:
             embedding_function=embeddings.embed_query,
         )
 
+        print("about to chunk/split the doc")
         # Chunk/split the doc
         loader = PyPDFLoader(pathToFile, extract_images=False)
+        print("done with PyPDFLoader(pathToFile, extract_images=False)")
         data = loader.load_and_split()
+
+        print("done with loader.load_and_split()")
 
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size = 5000,
@@ -144,8 +148,12 @@ class DataFetch:
             length_function = len
         )
 
+        print("done with RecursiveCharacterTextSplitter")
+
         chunks = text_splitter.split_documents(data)
+        print("done with chunks = text_splitter.split_documents(data)")
         vector_store.add_documents(documents=chunks)
+        print("DONE!")
 
 
 if __name__ == "__main__":
@@ -169,8 +177,8 @@ if __name__ == "__main__":
         dataFetch.fetchUrlData(parentFolder, outputFolder)
 
     elif choice == "u":
-        pathToFile = input("Enter path to file")
-        dataFetch.uploadFiles(pathToFile)
+        pathToFile = input("Enter path to file: ")
+        dataFetch.uploadFile(pathToFile)
 
     elif choice == "e":
         print("The program has been terminated")

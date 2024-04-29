@@ -9,7 +9,7 @@
 		<PackageDependency Package="Python" Version="^$(GitVersion)"/>
 	</Dependencies>
 	<Files>
-		<File Path="EDU36311A">
+		<File Path="plugins/raw_files/EDU36311A">
 			<ProjectFile/>
 		</File>
 	</Files>

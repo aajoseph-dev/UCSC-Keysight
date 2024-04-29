@@ -1,0 +1,72 @@
+In the provided context, you are looking to create a plugin in Python to interface with a power supply using SCPI commands over a USB interface. Below is an example Python class that encapsulates a subset of SCPI commands relevant to the EDU36311A power supply for testing batteries. Please note that to communicate with the device over USB, you might need to use a library like `PyVISA` which is not shown in the example.
+
+```python
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = visa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        
+    def close(self):
+        self.instr.close()
+
+    def measure_voltage(self):
+        """
+        Measure the voltage from the power supply.
+        """
+        return float(self.instr.query(":MEASure:VOLTage?"))
+
+    def measure_current(self):
+        """
+        Measure the current from the power supply.
+        """
+        return float(self.instr.query(":MEASure:CURRent?"))
+
+    def set_voltage(self, voltage):
+        """
+        Set the voltage of the power supply.
+        """
+        self.instr.write(f":SOURce:VOLTage {voltage}")
+
+    def set_current(self, current):
+        """
+        Set the current limit of the power supply.
+        """
+        self.instr.write(f":SOURce:CURRent {current}")
+
+    def output_on(self):
+        """
+        Enable the output of the power supply.
+        """
+        self.instr.write(":OUTPut ON")
+
+    def output_off(self):
+        """
+        Disable the output of the power supply.
+        """
+        self.instr.write(":OUTPut OFF")
+        
+    # Additional methods can be added here for other SCPI commands as needed.
+
+# Example usage
+if __name__ == "__main__":
+    # Replace 'GPIB::23::INSTR' with the actual address of your device.
+    psu = EDU36311APowerSupply('USB::0x2A8D::0x1301::MY58001234::INSTR')
+    try:
+        psu.set_voltage(3.3)
+        psu.set_current(0.5)
+        psu.output_on()
+        voltage = psu.measure_voltage()
+        current = psu.measure_current()
+        print(f"Voltage: {voltage} V, Current: {current} A")
+    finally:
+        psu.output_off()
+        psu.close()
+```
+
+This class provides a high-level interface to the power supply. It uses the PyVISA library to send SCPI commands over the USB interface. The class includes methods to set and measure voltage and current, as well as to turn the output on and off. Additional methods can be added following a similar pattern to support other SCPI commands.
+
+Remember to replace the 'USB::...' string with the actual resource name of your device, which can be found using the PyVISA `visa.ResourceManager().list_resources()` method.
+
+Please ensure that you have the PyVISA library installed in your environment (`pip install pyvisa`) and that you have the necessary backend (like NI-VISA) installed on your system to communicate with the device.

@@ -1,0 +1,53 @@
+Below is a Python class that represents a plugin for the EDU36311A power supply, focusing on the display enable/disable functionality and providing an interface for controlling this aspect via SCPI commands. The class includes methods for enabling and disabling the display, as well as querying its current state. The class assumes you are using PyVISA to communicate with the device over USB.
+
+```python
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = visa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        
+    def enable_display(self, enable=True):
+        """
+        Enables or disables the display of the EDU36311A power supply.
+        :param enable: A boolean value where True enables the display and False disables it.
+        """
+        state = 'ON' if enable else 'OFF'
+        self.instr.write(f':DISPlay:ENABle {state}')
+    
+    def query_display_enable(self):
+        """
+        Queries the current state of the display (enabled or disabled).
+        :return: A boolean value where True means the display is enabled and False means it's disabled.
+        """
+        response = self.instr.query(':DISPlay:ENABle?')
+        return response.strip().upper() == 'ON'
+    
+    def close(self):
+        """
+        Closes the connection to the instrument.
+        """
+        self.instr.close()
+        self.rm.close()
+
+# Example usage:
+if __name__ == '__main__':
+    # Assuming 'USB0::0x2A8D::0x1301::MY1234567::INSTR' is the USB resource name of the EDU36311A power supply.
+    psu = EDU36311APowerSupply('USB0::0x2A8D::0x1301::MY1234567::INSTR')
+    
+    # Enable the display
+    psu.enable_display(True)
+    
+    # Query the display state
+    is_display_enabled = psu.query_display_enable()
+    print(f"Display Enabled: {is_display_enabled}")
+    
+    # Disable the display
+    psu.enable_display(False)
+    
+    # Close the connection
+    psu.close()
+```
+
+Please ensure that you have PyVISA installed (`pip install pyvisa`), and that you have the correct VISA backend (such as NI-VISA) to communicate with the instrument over USB. Replace the resource name with the actual identifier of your EDU36311A power supply when creating an instance of the class.

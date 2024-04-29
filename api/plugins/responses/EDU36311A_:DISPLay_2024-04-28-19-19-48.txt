@@ -1,0 +1,69 @@
+Based on your specifications, I will create a Python class to control the EDU36311A power supply using SCPI commands over a USB interface. This class will include functions to enable or disable the display and query its status. Additionally, it will adhere to best practices and be structured for integration as a plugin in an OpenTAP environment.
+
+Here is the example code:
+
+```python
+import visa
+from opentap import *
+
+# Define the SCPI commands as constants
+DISPLAY_ENABLE_CMD = ':DISPlay:ENABle'
+DISPLAY_QUERY_CMD = ':DISPlay:ENABle?'
+
+class EDU36311APowerSupply(OpenTap.TestStep):
+    """
+    A TestStep for controlling the EDU36311A power supply's display.
+    """
+    
+    # Define properties for the resource name and display state
+    resource_name = property(str).add_attribute(Display("Resource Name", "VISA resource name of the power supply", "Connection", 0))
+    display_enabled = property(bool).add_attribute(Display("Display Enabled", "Turns the display on or off", "Settings", 1))
+    
+    def __init__(self):
+        super(EDU36311APowerSupply, self).__init__()
+        self.Name = "EDU36311A Power Supply Control"
+        self.resource_name = "USB0::0x2A8D::0x1202::MY1234567::INSTR"  # Example VISA resource name, change accordingly
+        self.rm = visa.ResourceManager()
+        self.instr = None
+    
+    def PrePlanRun(self):
+        super(EDU36311APowerSupply, self).PrePlanRun()
+        try:
+            self.instr = self.rm.open_resource(self.resource_name)
+        except visa.VisaIOError as e:
+            Log.Error(f"Could not open VISA resource {self.resource_name}: {e}")
+    
+    def Run(self):
+        if self.instr is not None:
+            self.set_display_state(self.display_enabled)
+            current_state = self.query_display_state()
+            Log.Info(f"Power supply display is now {'enabled' if current_state else 'disabled'}.")
+    
+    def PostPlanRun(self):
+        if self.instr is not None:
+            self.instr.close()
+        super(EDU36311APowerSupply, self).PostPlanRun()
+    
+    def set_display_state(self, enable):
+        """
+        Sets the display state of the power supply.
+        """
+        cmd_value = 'ON' if enable else 'OFF'
+        self.instr.write(f'{DISPLAY_ENABLE_CMD} {cmd_value}')
+    
+    def query_display_state(self):
+        """
+        Queries the current display state of the power supply.
+        """
+        response = self.instr.query(DISPLAY_QUERY_CMD)
+        return True if response.strip().upper() == 'ON' else False
+
+# Register the test step in OpenTAP
+OpenTap.TapPlan.CurrentPlan.Steps.Add(EDU36311APowerSupply())
+```
+
+Please note that you will need to adjust the `resource_name` property to match the actual VISA resource name of your EDU36311A power supply. This code assumes that you have PyVISA installed (`pip install pyvisa`) and an appropriate backend (like NI-VISA) to communicate with the instrument over USB.
+
+Remember to import the necessary modules from OpenTAP if they are not already included in your environment. The `EDU36311APowerSupply` class extends `OpenTap.TestStep`, integrating it into the OpenTAP framework for use as a plugin.
+
+This class includes methods for setting up the connection, running the test (which sets or queries the display state), and cleaning up the connection after the test plan has run. You can further extend the class with additional SCPI commands as needed for your testing purposes.
