@@ -119,8 +119,12 @@ def generate_plugin():
 
         # pass the text to the 2nd llm
         # call a func in llm2.py
-        llm2_call(verified_code)
-        
+        llm2_response = llm2_call(verified_code)
+
+        # if llm2 check that the plugin is incorrect, put the error message in a txt file
+        if llm2_TF(llm2_response) == False:
+            llm2_txt(new_name, llm2_response, folder_path)
+
         py_filepath = generate_py(new_name, verified_code, folder_path) # for each call to chatbot, generate its own .py file
         py_filepaths.append(py_filepath)
 
@@ -157,6 +161,22 @@ def pack_zip_file(py_filepaths, final_zip_name):
     
     return final_zip_file_path
 
+# check if llm2 is CORRECT or INCORRECT
+def llm2_TF(response):
+    if 'CORRECT' in response:
+        return True
+    else:
+        return False
+
+# write error text from llm2
+def llm2_txt(name, response, folder_path):
+    # Ensure the folder exists
+    Path(folder_path).mkdir(parents=True, exist_ok=True)
+    # Create a file inside the directory
+    file_path = Path(folder_path) / (name + 'error.txt')
+    file_path.write_text(response)
+    return file_path
+    
 # make a new llm that will verify the output of the 1st llm
 def llm_verifier():
     pass
