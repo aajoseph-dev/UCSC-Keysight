@@ -1,15 +1,14 @@
 from flask import Flask, jsonify, request, send_file
 from xml.dom import minidom
-import os
 import requests
 from io import BytesIO
 from zipfile import ZipFile
 from pathlib import Path
 from dotenv import load_dotenv
-import openai
 import re
 import importlib.metadata as metadata
-
+import os
+from openai import AzureOpenAI
 
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
@@ -30,6 +29,9 @@ def handleRequest():
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
     requirements = set()
     
+    if os.path.exists(path):
+        os.rmdir(path)
+
     if not os.path.exists(path):
         os.makedirs(path)  
         for command in data.get("commands"):
@@ -59,35 +61,35 @@ def createPrompt(data, command, context):
     return prompt
 
 def callLLM(prompt, data):
-    print("hello")
-    openai.api_type = "azure"
-    openai.api_base = "https://opentappluginai.openai.azure.com/"
-    openai.api_version = "2023-09-15-preview"
-    openai.api_key = os.getenv("OPENAI_KEY1")
-
-    response = openai.Completion.create(
-        engine="OpenTap-Plugin-LLM",
-        prompt=prompt,
-        temperature=0.5,  # Increase temperature for more diverse and creative responses
-        max_tokens=1500,  # Increase max tokens to allow for longer responses
-        top_p=1,
-        frequency_penalty=0.2,  # Add frequency penalty to reduce repetition
-        presence_penalty=0.2,  # Add presence penalty to encourage new ideas
-        stop=None  # Remove stop sequence to allow complete responses
+    client = AzureOpenAI(
+            azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
+            api_key=os.getenv("Forum-GPT4_KEY1"),  
+            api_version="2024-02-15-preview"
     )
 
-    for choice in response['choices']:
-        generated_text = choice['text']
+    message_text = [{"role":"system", "content":"You are an AI assistant that helps people Opentap plugins using SCPI commands in Python."}, 
+                    {"role": "user", "content": prompt}]
 
+    completion = client.chat.completions.create(
+        model="gpt-4-1106-Preview", # model = "deployment_name"
+        messages = message_text,
+        temperature=0.7,
+        max_tokens=800,
+        top_p=0.95,
+        frequency_penalty=0,
+        presence_penalty=0,
+        stop=None
+    )
+    content = str(completion.choices[0].message.content)
     
     with open(f"something1.txt", 'w') as file:
-        file.write(generated_text)
+        file.write(content)
     #remove string and send to validation
     # pattern = r"`python(.*?)`"
     # match = re.findall(pattern, generated_text, re.DOTALL)
     # print(match)
     # return match
-    return generated_text
+    return 
 
 def callAiSearch(query, TOKEN_LIMIT=1500):
 
@@ -116,7 +118,6 @@ def callAiSearch(query, TOKEN_LIMIT=1500):
                 truncated_content = tokenizer.decode(tokens[:remaining_tokens])
                 context += truncated_content
                 break
-        print(context)
         return context
     
     except Exception as e:
@@ -218,4 +219,4 @@ def packageFiles(source, destination, req):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)

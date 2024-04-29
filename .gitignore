@@ -5,6 +5,5 @@
 .env
 
 # Ignore all pycache files
-
 **/__pycache__
 
