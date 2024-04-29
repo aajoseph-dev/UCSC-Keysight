@@ -51,13 +51,6 @@ def retrieve_context(code):
     print(f"context!: {context}")
     return context
 
-# # check if llm2 is CORRECT or INCORRECT
-# def llm2_TF(code):
-#     if 'CORRECT' in code:
-#         return True
-#     else:
-#         return False
-
 def llm2_call(code):
 
     print(f"\ninitial code: {code}\n\n")
