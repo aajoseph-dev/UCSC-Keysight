@@ -1,0 +1,59 @@
+Here's an example of a Python class designed to control the EDU36311A power supply, focusing on the subset of SCPI commands related to the display. This class includes functions to enable or disable the device display and to query its current status using PyVISA, a Python library for interfacing with instruments over various buses, including USB, GPIB, RS232, and Ethernet.
+
+First, ensure you have the PyVISA library installed:
+
+```bash
+pip install pyvisa
+```
+
+Now, you can create the Python class for controlling the power supply:
+
+```python
+import pyvisa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        # Initialize connection to the instrument
+        self.rm = pyvisa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        self.instr.write_termination = '\n'
+        self.instr.read_termination = '\n'
+
+    def enable_display(self, enable=True):
+        # Enable or disable the display
+        command = ":DISPlay:ENABle {}".format('ON' if enable else 'OFF')
+        self.instr.write(command)
+
+    def query_display_status(self):
+        # Query the current status of the display
+        response = self.instr.query(":DISPlay:ENABle?")
+        return response.strip()
+
+    def close(self):
+        # Close the connection to the instrument
+        self.instr.close()
+
+# Usage example
+if __name__ == "__main__":
+    # Replace with the correct USB resource name for the EDU36311A power supply
+    resource_name = 'USB0::0x2A8D::0x1301::MY1234567::INSTR'
+    power_supply = EDU36311APowerSupply(resource_name)
+
+    try:
+        # Turn the display off to increase speed or for security purposes
+        power_supply.enable_display(False)
+        
+        # Query the display status
+        status = power_supply.query_display_status()
+        print(f"Display status: {'Enabled' if status == '1' else 'Disabled'}")
+        
+        # Perform other operations...
+        
+    finally:
+        # Ensure the connection to the instrument is closed
+        power_supply.close()
+```
+
+This example class `EDU36311APowerSupply` initializes the connection to the power supply, provides methods to enable/disable the display and to query its status, and ensures that the connection is properly closed. The `resource_name` variable should be replaced with the actual identifier of your EDU36311A power supply, which you can find using the PyVISA `list_resources` method or the NI-VISA or Keysight Connection Expert software.
+
+Please keep in mind that this code is meant to be illustrative and may require adjustments to match the specifics of your test setup and the complete set of SCPI commands supported by your instrument.

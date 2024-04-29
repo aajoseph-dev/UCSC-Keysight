@@ -1,0 +1,59 @@
+To create a Python class for controlling the EDU36311A power supply using SCPI commands, we can use the `pyvisa` library to communicate with the device over a USB interface. Below is an example class that includes methods for controlling the display of the EDU36311A:
+
+```python
+import pyvisa
+
+class EDU36311A:
+    def __init__(self, resource_name):
+        # Initialize VISA resource manager
+        self.rm = pyvisa.ResourceManager()
+        # Open the connection to the device
+        self.instr = self.rm.open_resource(resource_name)
+    
+    def close(self):
+        # Close the connection to the device
+        self.instr.close()
+    
+    def enable_display(self, enable):
+        # Enable or disable the display
+        if enable:
+            self.instr.write(':DISPlay:ENABle ON')
+        else:
+            self.instr.write(':DISPlay:ENABle OFF')
+    
+    def query_display_enabled(self):
+        # Query if the display is enabled
+        return self.instr.query(':DISPlay:ENABle?')
+    
+    def set_display_mode(self, mode):
+        # Set the display mode to V-V, I-I, or V-I
+        if mode.upper() in ['V-V', 'I-I', 'V-I']:
+            self.instr.write(':DISPlay:MODE ' + mode.upper())
+        else:
+            raise ValueError("Invalid display mode. Choose 'V-V', 'I-I', or 'V-I'.")
+
+    # Additional methods can be added here for other SCPI commands
+
+
+# Example usage:
+if __name__ == "__main__":
+    # Replace 'GPIB0::14::INSTR' with the actual address of your device
+    power_supply = EDU36311A('USB0::0x2A8D::0x1202::MY1234567::INSTR')
+
+    try:
+        # Enable the display
+        power_supply.enable_display(True)
+
+        # Query if the display is enabled
+        display_status = power_supply.query_display_enabled()
+        print(f"Display Enabled: {display_status}")
+
+        # Set the display mode to V-V
+        power_supply.set_display_mode('V-V')
+
+    finally:
+        # Close the connection
+        power_supply.close()
+```
+
+Please note that you'll need to install `pyvisa` and the appropriate backend (like NI-VISA or pyvisa-py) to use this code, and you'll need to replace the resource name with the actual address of your device. This class provides a simple way to control the display of the EDU36311A using SCPI commands, and you can extend it to include other SCPI commands as needed for your testing purposes.

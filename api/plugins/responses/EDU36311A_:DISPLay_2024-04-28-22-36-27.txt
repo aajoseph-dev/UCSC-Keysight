@@ -1,0 +1,63 @@
+Below is an example Python class that represents a subset of SCPI commands for controlling the display of an EDU36311A power supply device. The class uses PyVISA, a Python library that enables you to control all kinds of measurement devices independently of the interface (e.g., GPIB, RS232, USB, Ethernet). 
+
+Please note that you'll need to have PyVISA and a backend (like NI-VISA or pyvisa-py) installed to communicate with your instrument.
+
+```python
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        # Initialize the connection to the instrument
+        self.rm = visa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        
+    def display_enable(self, state):
+        """
+        Enable or disable the device display.
+        :param state: bool or int (0 or 1), True to enable, False to disable
+        """
+        if isinstance(state, bool):
+            state_str = 'ON' if state else 'OFF'
+        elif isinstance(state, int) and state in [0, 1]:
+            state_str = 'ON' if state == 1 else 'OFF'
+        else:
+            raise ValueError("Invalid state value. Use bool or int (0 or 1).")
+        
+        self.instr.write(f":DISPlay:ENABle {state_str}")
+
+    def query_display_enable(self):
+        """
+        Query the display enable status.
+        :return: bool, True if enabled, False if disabled
+        """
+        response = self.instr.query(":DISPlay:ENABle?")
+        return True if response.strip().upper() == '1' else False
+
+    def close(self):
+        # Close the connection to the instrument
+        self.instr.close()
+        self.rm.close()
+
+# Example usage:
+if __name__ == "__main__":
+    # Replace with the actual resource name of your device
+    resource_name = 'USB0::0x2A8D::0x1202::MY12345678::INSTR'
+    
+    power_supply = EDU36311APowerSupply(resource_name)
+    
+    try:
+        # Disable the display for increased speed or other reasons
+        power_supply.display_enable(False)
+        
+        # Query the status of the display
+        is_display_enabled = power_supply.query_display_enable()
+        print(f"Display Enabled: {is_display_enabled}")
+        
+        # Re-enable the display
+        power_supply.display_enable(True)
+        
+    finally:
+        power_supply.close()
+```
+
+In the example above, the `EDU36311APowerSupply` class encapsulates the SCPI commands for controlling the display of the power supply. It includes methods to enable or disable the display (`display_enable`) and to query the current state of the display (`query_display_enable`). The `__init__` method initializes the connection, and the `close` method closes it. The `resource_name` needs to be replaced with the actual address of your device.

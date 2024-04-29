@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CatapultSkin Version="1" Title="Keysight EDU36311A Programmable DC Power Supply Programming Guide" AutoSyncTOC="false" Tabs="TOC,Index,Search" Top="143px" Left="240px" Width="1200px" Height="725px" DefaultTab="TOC" EnableAboutBox="false" BrowserSetup="Resizable" UseDefaultBrowserSetup="false" UseBrowserDefaultSize="true">
-    <HtmlHelpOptions ShowMenuBar="false" TopmostWindowStyle="false" AutoShowNavigationPane="false" EnableButtonCaptions="false" AdvancedSearch="false" NavigationPaneWidth="250" Buttons="Hide,Back,Forward,Home,Print" HideNavigationOnStartup="false" SaveUserWindowPosition="true" />
-    <Toc LinesBetweenItems="true" LinesFromRoot="false" SingleClick="true" PlusMinusSquares="false" AlwaysShowSelection="false" UseFolderIcons="false" ImageListWidth="16" BinaryStorage="false" Border="Fixed3D" />
-    <Stylesheet Link="Stylesheet.xml">
-    </Stylesheet>
-    <Toolbar EnableCustomLayout="true" Buttons="Back|Separator|Forward|Separator|Home" />
-    <WebHelpOptions NavigationPaneWidth="200" />
-</CatapultSkin>

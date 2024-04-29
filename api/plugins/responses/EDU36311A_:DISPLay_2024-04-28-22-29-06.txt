@@ -1,0 +1,52 @@
+Below is a Python class that encapsulates the SCPI command subset for controlling the display of the EDU36311A power supply device. The class includes methods to enable and disable the display as well as to query its current state. Additionally, it provides a method to change the display mode. This class utilizes PyVISA, a Python library for interfacing with instruments over various buses, including USB.
+
+```python
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        # Initialize the connection to the instrument
+        self.rm = visa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+    
+    def display_enable(self, enable=True):
+        # Enables or disables the display
+        cmd = ':DISPlay:ENABle {}'.format('ON' if enable else 'OFF')
+        self.instr.write(cmd)
+    
+    def query_display_enable(self):
+        # Queries the current state of the display
+        response = self.instr.query(':DISPlay:ENABle?')
+        return True if response.strip() == '1' else False
+    
+    def set_display_mode(self, mode):
+        # Sets the display mode. Valid modes: 'V-V', 'I-I', or 'V-I'
+        if mode not in ['V-V', 'I-I', 'V-I']:
+            raise ValueError("Invalid mode. Choose 'V-V', 'I-I', or 'V-I'.")
+        cmd = ':DISPlay:MODE {}'.format(mode)
+        self.instr.write(cmd)
+    
+    def close(self):
+        # Close the connection to the instrument
+        self.instr.close()
+        self.rm.close()
+
+# Example usage:
+if __name__ == '__main__':
+    try:
+        power_supply = EDU36311APowerSupply('USB0::0x2A8D::0x1301::MY1234567::0::INSTR')
+        power_supply.display_enable(False)  # Turn off the display
+        display_status = power_supply.query_display_enable()
+        print('Display Enabled:' if display_status else 'Display Disabled')
+
+        power_supply.set_display_mode('V-V')  # Set the display mode to V-V
+
+        # ... Perform other operations ...
+
+    finally:
+        power_supply.close()  # Ensure the connection is closed
+```
+
+Please replace the `'USB0::0x2A8D::0x1301::MY1234567::0::INSTR'` string with the actual USB resource name for your specific EDU36311A device. You can find this information using the NI-VISA or Keysight Connection Expert utilities.
+
+This class provides a simple interface for interacting with the EDU36311A power supply's display controls using SCPI commands. The `__init__` method establishes a connection with the instrument, and the `close` method ensures that the connection is properly closed to free up resources. The `display_enable`, `query_display_enable`, and `set_display_mode` methods perform the specific SCPI commands as described in the documentation. The example usage at the bottom illustrates how the class could be used in a script.

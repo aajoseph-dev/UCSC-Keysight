@@ -1,0 +1,55 @@
+Below is an example of a Python class that wraps SCPI commands for the EDU36311A power supply device, focusing on display control as per the provided context and documentation. The class includes methods to enable or disable the display and query its status.
+
+```python
+import pyvisa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = pyvisa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+    
+    def enable_display(self, enable=True):
+        """
+        Enable or disable the display on the power supply.
+        :param enable: True to enable, False to disable
+        """
+        self.instr.write(f':DISPlay:ENABle {"ON" if enable else "OFF"}')
+    
+    def query_display_enable(self):
+        """
+        Query the display enable status.
+        :return: True if the display is enabled, False otherwise
+        """
+        response = self.instr.query(':DISPlay:ENABle?')
+        return True if response.strip().upper() == '1' else False
+    
+    def close(self):
+        """
+        Close the connection to the device.
+        """
+        self.instr.close()
+
+# Example usage
+if __name__ == "__main__":
+    # Replace 'USB0::0x2A8D::0x1202::MY1234567::INSTR' with the actual VISA address of your device
+    visa_address = 'USB0::0x2A8D::0x1202::MY1234567::INSTR'
+    power_supply = EDU36311APowerSupply(visa_address)
+    
+    try:
+        # Enable the display
+        power_supply.enable_display(True)
+        print("Display enabled.")
+        
+        # Query the display status
+        is_enabled = power_supply.query_display_enable()
+        print(f"Display is {'enabled' if is_enabled else 'disabled'}.")
+        
+        # Disable the display
+        power_supply.enable_display(False)
+        print("Display disabled.")
+    finally:
+        # Always make sure to close the connection
+        power_supply.close()
+```
+
+This class demonstrates how to encapsulate the SCPI commands related to the display feature of the EDU36311A power supply into a Python class using the `pyvisa` library to communicate with the device over USB. The example usage at the bottom shows how to create an instance of the class, enable/disable the display, and check the display status. Remember to replace the `visa_address` with the actual address of your EDU36311A device.

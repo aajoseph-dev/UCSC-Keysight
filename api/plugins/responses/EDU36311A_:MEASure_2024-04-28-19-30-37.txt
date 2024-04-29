@@ -1,0 +1,65 @@
+Based on the context provided, below is an example Python class for interfacing with the EDU36311A power supply using SCPI commands to perform WLAN DSSS measurements. The class includes functions to configure, initiate, and fetch WLAN DSSS measurement data.
+
+```python
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = visa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        self.instr.timeout = 5000  # Set timeout to 5000 ms
+
+    def configure_wlan_dsss(self, default=False):
+        if default:
+            self.instr.write(":CONFigure:W11B:NDEFault")
+        else:
+            self.instr.write(":CONFigure:W11B")
+
+    def initiate_wlan_dsss(self):
+        self.instr.write(":INITiate:W11B")
+
+    def fetch_wlan_dsss_results(self, trace_number=1):
+        results = self.instr.query(f":FETCh:W11B{trace_number}?").strip()
+        if results == "9.91e37":
+            return None  # NaN indicates results are not available
+        results_list = results.split(',')
+        results_dict = {
+            "EVM (% rms)": float(results_list[0]),
+            "EVM Peak (% peak)": float(results_list[1]),
+            "EVM Peak Location (chip)": float(results_list[2]),
+            # ... other parameters as per the documentation
+            "Symbol Clock Error (ratio)": float(results_list[21])
+        }
+        return results_dict
+
+    def measure_wlan_dsss(self, trace_number=1):
+        results = self.instr.query(f":MEASure:W11B{trace_number}?").strip()
+        return results  # Results processing can be similar to fetch_wlan_dsss_results
+
+    def read_wlan_dsss(self, trace_number=1):
+        results = self.instr.query(f":READ:W11B{trace_number}?").strip()
+        return results  # Results processing can be similar to fetch_wlan_dsss_results
+
+    def close(self):
+        self.instr.close()
+
+# Example usage:
+if __name__ == "__main__":
+    # Substitute 'USB0::0x2A8D::0x1202::MY12345678::0::INSTR' with the actual VISA resource name of your device
+    psu = EDU36311APowerSupply('USB0::0x2A8D::0x1202::MY12345678::0::INSTR')
+    
+    try:
+        psu.configure_wlan_dsss()  # Set up for WLAN DSSS measurement
+        psu.initiate_wlan_dsss()   # Start the WLAN DSSS measurement
+        results = psu.fetch_wlan_dsss_results()  # Fetch the measurement results
+        if results:
+            print("WLAN DSSS Measurement Results:")
+            for parameter, value in results.items():
+                print(f"{parameter}: {value}")
+        else:
+            print("Measurement results not available")
+    finally:
+        psu.close()  # Ensure the resource is properly released
+```
+
+Please note that you'll need to have the PyVISA library installed to run this code. You can install it using `pip install pyvisa`. Also, replace the `resource_name` with the actual VISA resource name of your EDU36311A power supply, which you can find using the NI MAX tool or PyVISA's `list_resources()` method.

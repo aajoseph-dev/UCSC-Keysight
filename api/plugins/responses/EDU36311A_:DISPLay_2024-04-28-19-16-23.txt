@@ -1,0 +1,56 @@
+Here is an example class in Python that encapsulates SCPI commands related to the display functionality of the EDU36311A power supply. The class includes functions to enable or disable the display, query the display status, and set the display mode.
+
+```python
+import pyvisa
+
+class EDU36311ADisplayControl:
+    def __init__(self, resource_name):
+        self.rm = pyvisa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+
+    def enable_display(self, enable=True):
+        """
+        Enables or disables the display of the power supply.
+        :param enable: True to enable the display, False to disable it.
+        """
+        command = ":DISPlay:ENABle ON" if enable else ":DISPlay:ENABle OFF"
+        self.instr.write(command)
+
+    def query_display_status(self):
+        """
+        Queries the display status of the power supply.
+        :return: True if the display is enabled, False otherwise.
+        """
+        response = self.instr.query(":DISPlay:ENABle?")
+        return True if response.strip() in ('ON', '1') else False
+
+    def set_display_mode(self, mode):
+        """
+        Sets the display mode of the power supply.
+        :param mode: 'V-V' for voltage-voltage, 'I-I' for current-current,
+                     'V-I' for voltage-current display mode.
+        """
+        if mode not in ('V-V', 'I-I', 'V-I'):
+            raise ValueError("Invalid display mode. Choose from 'V-V', 'I-I', 'V-I'.")
+        self.instr.write(f":DISPlay:MODE {mode}")
+
+    def close(self):
+        """
+        Closes the connection to the power supply.
+        """
+        self.instr.close()
+
+# Example usage:
+if __name__ == "__main__":
+    power_supply = EDU36311ADisplayControl("USB0::0x2A8D::0x1301::MY1234567::INSTR")
+    power_supply.enable_display(True)
+    print("Display status:", "Enabled" if power_supply.query_display_status() else "Disabled")
+    power_supply.set_display_mode('V-I')
+    power_supply.close()
+```
+
+Please make sure to replace `"USB0::0x2A8D::0x1301::MY1234567::INSTR"` with the actual resource name of your device. You can find this information using the PyVISA `list_resources()` method or by using the NI-VISA or Keysight Connection Expert tools.
+
+Make sure to install the PyVISA package (`pip install pyvisa`) and the appropriate backend (e.g., NI-VISA or Keysight IO Libraries) to communicate with your device over USB.
+
+This class allows you to enable/disable the display, query the current status of the display, and set the display mode to show voltage or current for each channel. The `close()` method is provided to properly close the connection to the device once operations are complete.

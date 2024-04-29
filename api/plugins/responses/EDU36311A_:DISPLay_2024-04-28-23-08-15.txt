@@ -1,0 +1,61 @@
+
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = visa.ResourceManager()
+        self.instrument = self.rm.open_resource(resource_name)
+    
+    def enable_display(self, enable=True):
+        """
+        Enables or disables the display of the power supply.
+        
+        :param enable: True to enable the display, False to disable
+        """
+        if enable:
+            self.instrument.write(':DISPlay:ENABle ON')
+        else:
+            self.instrument.write(':DISPlay:ENABle OFF')
+    
+    def query_display_enabled(self):
+        """
+        Queries the current state of the display.
+        
+        :return: True if the display is enabled, False otherwise
+        """
+        response = self.instrument.query(':DISPlay:ENABle?')
+        return True if response.strip().upper() == 'ON' else False
+    
+    def set_display_mode(self, mode):
+        """
+        Sets the display mode of the power supply.
+        
+        :param mode: 'V-V', 'I-I', or 'V-I' for voltage-voltage, current-current, or voltage-current display mode
+        """
+        if mode not in ['V-V', 'I-I', 'V-I']:
+            raise ValueError("Invalid mode. Choose 'V-V', 'I-I', or 'V-I'.")
+        self.instrument.write(f':DISPlay:MODE {mode}')
+    
+    def close(self):
+        """
+        Closes the connection to the power supply.
+        """
+        self.instrument.close()
+
+# Example usage:
+if __name__ == '__main__':
+    # Substitute 'GPIB0::5::INSTR' with the correct resource name for your setup.
+    power_supply = EDU36311APowerSupply('USB0::0x2A8D::0x1301::MY1234567::INSTR')
+    
+    # Enable the display
+    power_supply.enable_display(True)
+    
+    # Query the state of the display
+    display_enabled = power_supply.query_display_enabled()
+    print(f'Display Enabled: {display_enabled}')
+    
+    # Set the display mode to V-I (voltage-current)
+    power_supply.set_display_mode('V-I')
+    
+    # When done, close the connection
+    power_supply.close()

@@ -1,0 +1,59 @@
+Below is an example Python class that encapsulates a subset of SCPI commands for the EDU36311A power supply device. The class provides methods to enable or disable the display and to query its status. It uses PyVISA to communicate with the device over USB.
+
+```python
+import visa
+
+class EDU36311APowerSupply:
+    def __init__(self, resource_name):
+        self.rm = visa.ResourceManager()
+        self.instr = self.rm.open_resource(resource_name)
+        
+        # Set the timeout for all resource operations
+        self.instr.timeout = 5000
+    
+    def enable_display(self, enable=True):
+        """
+        Enables or disables the display of the power supply.
+        """
+        if enable:
+            self.instr.write(":DISP:ENAB ON")
+        else:
+            self.instr.write(":DISP:ENAB OFF")
+    
+    def is_display_enabled(self):
+        """
+        Queries the power supply to check if the display is enabled.
+        """
+        response = self.instr.query(":DISP:ENAB?")
+        return True if response.strip() == "1" else False
+    
+    def close(self):
+        """
+        Closes the connection to the power supply.
+        """
+        self.instr.close()
+        self.rm.close()
+
+    # Additional methods for other SCPI commands can be added here.
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        # Replace with the correct resource name for your instrument
+        resource_name = "USB0::0x2A8D::0x1301::MY1234567::INSTR"
+        psu = EDU36311APowerSupply(resource_name)
+        
+        # Enable the display
+        psu.enable_display(True)
+        print("Display enabled:", psu.is_display_enabled())
+        
+        # Disable the display
+        psu.enable_display(False)
+        print("Display enabled:", psu.is_display_enabled())
+        
+    finally:
+        # Ensure that we close the connection to the instrument
+        psu.close()
+```
+
+Please note that you need to have PyVISA and the necessary backend (like NI-VISA) installed to run this code. Also, you should replace `resource_name` with the correct identifier for your specific EDU36311A device. You can use the PyVISA `visa.ResourceManager().list_resources()` method to list all connected resources and identify the correct resource name for your device.
