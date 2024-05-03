@@ -45,9 +45,11 @@ def handleRequest():
             response = callLLM(prompt, command, data)
             # match = re.findall(pattern, response, re.DOTALL)
             # response = match[0]
-            print(response)
+            print(f"response: {response}")
             buildPy(path, command, response, requirements)
-            llm_code_check(command, response, deviceName)
+            print("done buildPy()")
+            llm_code_check(command, response, deviceName) # not doing anything with the 2nd llm's response yet ?
+            print("done with code check")
         buildXML(deviceName, path)
         packageFiles(path, path_to_zip, requirements)
 
@@ -70,6 +72,9 @@ def createPrompt(data, command, context):
     return prompt
 
 def callLLM(prompt, command, data):
+
+    print("about to call LLM")
+
     client = AzureOpenAI(
             azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
             api_key=os.getenv("Forum-GPT4_KEY1"),  
@@ -90,10 +95,12 @@ def callLLM(prompt, command, data):
         stop=None
     )
 
+    print("done with client.chat.completions")
+
     content = completion.choices[0].message.content
-    pattern = r'```python(.*?)```'
-    match = re.findall(pattern, content, re.DOTALL)
-    content = match[0]
+    # pattern = r'```python(.*?)```'
+    # match = re.findall(pattern, content, re.DOTALL)
+    # content = match[0]
 
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
     device_name =  data.get("deviceName")
@@ -232,4 +239,4 @@ def packageFiles(source, destination, req):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5003)
+    app.run(debug=True, port=5000)
