@@ -41,19 +41,45 @@ def handleRequest():
         for command in data.get("commands"):
             context = callAiSearch(f"{deviceName}: {command}")
             prompt = createPrompt(data, command, context)
-            # pattern = r'```python(.*?)```'
+            pattern = r'```python(.*?)```'
             response = callLLM(prompt, command, data)
-            # match = re.findall(pattern, response, re.DOTALL)
-            # response = match[0]
+            match = re.findall(pattern, response, re.DOTALL)
+            response = match[0]
             print(f"response: {response}")
             buildPy(path, command, response, requirements)
             print("done buildPy()")
+            result, verified_code = verify_code(response)
+            print(f"result: {result}")
+            print(f"verified_code: {verified_code}")
             llm_code_check(command, response, deviceName) # not doing anything with the 2nd llm's response yet ?
             print("done with code check")
         buildXML(deviceName, path)
         packageFiles(path, path_to_zip, requirements)
 
     return send_file(path_to_zip, as_attachment=True)
+
+def verify_code(code):
+    # checking for certain keywords
+    if 'def' in code and 'class' in code:
+        verification_result = 'Found class and function definitions.'
+    else:
+        verification_result = 'Unable to find class and function definitions.'
+
+    # checking for OpenTAP import
+    if 'import OpenTAP' not in code:
+        # Adding OpenTAP import if not present
+        code = '\nimport OpenTAP\n' + code
+
+    if 'import opentap' not in code:
+        code = '\n import opentap\n' + code
+
+    # checking for @attribute
+    if '@attribute' in code:
+        verification_result += ' Found @attribute.'
+    else:
+        verification_result += ' @attribute not found.'
+
+    return verification_result, code
 
 
 def createPrompt(data, command, context):
