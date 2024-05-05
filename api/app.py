@@ -39,24 +39,64 @@ def handleRequest():
     if not os.path.exists(path):
         os.makedirs(path)  
         for command in data.get("commands"):
-            context = callAiSearch(f"{deviceName}: {command}")
+            context = callAISearch(f"{deviceName}: {command}")
             prompt = createPrompt(data, command, context)
             pattern = r'```python(.*?)```'
             response = callLLM(prompt, command, data)
-            match = re.findall(pattern, response, re.DOTALL)
-            response = match[0]
+            # match = re.findall(pattern, response, re.DOTALL)
+            # response = match[0]
+            response = extract_python_code(response)
             print(f"response: {response}")
             buildPy(path, command, response, requirements)
             print("done buildPy()")
             result, verified_code = verify_code(response)
             print(f"result: {result}")
             print(f"verified_code: {verified_code}")
-            llm_code_check(command, response, deviceName) # not doing anything with the 2nd llm's response yet ?
-            print("done with code check")
-        buildXML(deviceName, path)
-        packageFiles(path, path_to_zip, requirements)
-
+            response_dict = llm_code_check(command, response, deviceName) # go ask the 2nd llm's response yet
+            # {"Sentiment" : "Positive", "Response" : content}
+            if response_dict["Sentiment"] == "Positive":
+                print("Sentiment was Positive")
+                buildXML(deviceName, path)
+                packageFiles(path, path_to_zip, requirements)
+                # return send_file(path_to_zip, as_attachment=True)
+            elif response_dict["Sentiment"] == "Negative":
+                # already tried, this is the second time
+                print("Sentiment was Negative, trying one more time")
+                prompt += f'''
+                    \nThe plugin that was generated was incorrect, please try again by using the following feedback:
+                    {response_dict["Response"]}
+                    '''
+                response = callLLM(prompt, command, data) # pass the 2nd llm's response to the 1st llm
+                response = extract_python_code(response)
+                # match = re.findall(pattern, response, re.DOTALL)
+                # response = match[0]
+                buildPy(path, command, response, requirements)
+                result, verified_code = verify_code(response)
+                response_dict = llm_code_check(command, response, deviceName) # go ask the 2nd llm's response yet
+                print("Asked the 2nd LLM again")
+                buildXML(deviceName, path)
+                packageFiles(path, path_to_zip, requirements)
+                # return send_file(path_to_zip, as_attachment=True)
+                # pass the 2nd llm's response to the 1st llm
+                # 1st llm regenerates the plugin
+            else: # response_dict["Sentiment"] == "Neutral":
+                print("Sentiment was Neutral")
+                buildXML(deviceName, path)
+                packageFiles(path, path_to_zip, requirements)
     return send_file(path_to_zip, as_attachment=True)
+    #     buildXML(deviceName, path)
+    #     packageFiles(path, path_to_zip, requirements)
+
+    # return send_file(path_to_zip, as_attachment=True)
+
+# Remove comments before and after the Python code
+def extract_python_code(text):
+    start_index = text.find("```python")
+    end_index = text.find("```", start_index + 1)
+    if start_index != -1 and end_index != -1:
+        return text[start_index + 9:end_index].strip()
+    else:
+        return text
 
 def verify_code(code):
     # checking for certain keywords
@@ -137,7 +177,7 @@ def callLLM(prompt, command, data):
 
     return content
 
-def callAiSearch(query, TOKEN_LIMIT=1500):
+def callAISearch(query, TOKEN_LIMIT=1500):
 
     service_endpoint = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
     index_name = "plugin-pdf-vector"

@@ -32,7 +32,7 @@ def llm_code_check(command, code, device_name):
             api_version="2024-02-15-preview"
     )
 
-    context = callAiSearch(command)
+    context = callAISearch(command)
 
     prompt = f"""Is the following code an acceptable file to be part of a Opentap plugin. This file is 
                 the {command} subsystem for the {device_name}:
@@ -63,57 +63,20 @@ def llm_code_check(command, code, device_name):
     print(content)
     scores = sid.polarity_scores(content)
 
-    if scores['compound'] >= 0.05:
-        print("Positive")
-    elif scores['compound'] <= -0.05:
-        print("Negative")
+    if scores['compound'] >= 0.25: # before it was 0.05
+        print(f'''
+              - 2nd LLM believes the plugin to be correct.
+              - 2nd LLM's response: {content}''')
+        return {"Sentiment" : "Positive", "Response" : content}
+    elif scores['compound'] <= -0.25: # before it was 0.05
+        print(f'''
+              - 2nd LLM believes the plugin to be incorrect.
+              - 2nd LLM's response: {content}''')
+        return {"Sentiment" : "Negative", "Response" : content}
     else:
-        print("Neutral")
+        print(f'''
+              - 2nd LLM could not determine if the plugin was correct.
+              - 2nd LLM's response: {content}''')
+        return {"Sentiment" : "Neutral", "Response" : content}
+
     
-    return content
-
-# def soemhing()
-#     print(f"\ninitial code: {code}\n\n")
-
-#     # Loading api keys from .env folder
-#     load_dotenv()
-
-#     # for 2nd llm:
-#     openai.api_type = "azure"
-#     openai.api_version = "2024-02-15-preview" # maybe?2023-05-15   api_version="2024-02-15-preview"
-
-#     openai.api_base = os.getenv('Forum-GPT4_ENDPOINT') 
-#     openai.api_key = os.getenv("Forum-GPT4_KEY1")
-#     deployment_id2 = "gpt-4-1106-Preview" 
-
-#     # Sets up the OpenAI Python SDK to use your own data for the chat endpoint.
-#     setup_byod(deployment_id2)
-
-#     context = retrieve_context(code)
-
-#     content = '''Your answer should contain CORRECT if you believe the Python code is part of a correctly 
-#                  implemented OpenTAP plugin based on the context that is provided to you below.
-#                  Otherwise, your answer should contain INCORRECT if you believe it to be wrong, and if so
-#                  return any errors that you believe there to be. Make your response as concise as possible.
-#                  Use this context to base your answer off of:\n'''
-#     content += context
-#     message_text = [
-#         {"role" : "system", "content": content},
-#         {"role": "user", "content": code}]
-#     print(f"\n\nmessage_text: {message_text}\n\n")
-
-#     completion = openai.ChatCompletion.create(
-#             messages=message_text,
-#             deployment_id=deployment_id2,
-#             temperature=0,
-#             top_p=1,
-#             max_tokens=200,
-#         )
-
-#     print("\ndone talking with 2nd llm\n")
-
-#     # Grabbing just the response and leaving our unnecessary data (i.e. token used, filters, etc.) 
-#     response = completion.choices[0].message.content
-#     print(f"\n\nLLM 2's response: {response}\n\n")
-
-#     return response

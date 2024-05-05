@@ -33,7 +33,7 @@ def run_test(deviceName, category, commands, interface, progLang, role, useCase)
 # test = run_test("E8363B", "Network Analyzer", [":PRESet", ":FREQuency"], "", "python", "As a test engineer, I want to create a plugin in python to analyze networks", "generate_plugin")
 
 # PSG Signal Generator
-test = run_test("E8663D", "PSG Signal Generator", [":CONTrast", ":DATA"], "", "python", "As a test engineer, I want to create a plugin in python to generate signals", "generate_plugin")
+# test = run_test("E8663D", "PSG Signal Generator", [":CONTrast", ":DATA"], "", "python", "As a test engineer, I want to create a plugin in python to generate signals", "generate_plugin")
 
 # Digital Multimeters (DMM), 34470A
 test = run_test("34470A", "Digital Multimeter", [":CALCulate:SCALe:DB:REFerence", ":CALibration:STRing"], "", "python", "As a test engineer, I want to create a plugin in python to interface with a Digital Multimeter", "generate_plugin")
