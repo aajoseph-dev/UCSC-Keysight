@@ -18,11 +18,19 @@ class PromptTemplates:
         - Programming Language: {self.prog_lang}
         - Role: {self.role}
         - Documentation: {self.context}
-        - 
+        
         Instructions:
         - In {self.prog_lang} generate code for this subset of SCPI commands.
         - Include functions that utilize the provided SCPI commands.
         - Follow best practices for the specified programming language and role.
+        - Along with the standard python libraries you have access to these:
+            -OpenTap
+            -opentap
+            -pythonnet==3.0.3
+            -PyVISA==1.14.1
+            -visa==2.21.0
+            -numpy==1.26.4
+            -debugpy==1.8.1
 
         Example code for guidance:
             import sys
@@ -79,8 +87,3 @@ class PromptTemplates:
                     v = math.trunc(voltage * 100) / 100.0
                     c = math.trunc(current * 100) / 100.0
                     self.PublishResult("Charge", ["Sample Number", "Voltage", "Current"], [sampleNo, v, c])"""
-
-# class AiQuery:
-#     def __init__(self):
-
-#     def generate_query(self, command):

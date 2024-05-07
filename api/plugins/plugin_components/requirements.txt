@@ -1,0 +1,5 @@
+pythonnet==3.0.3
+PyVISA==1.14.1
+visa==2.21.0
+numpy==1.26.4
+debugpy==1.8.1
