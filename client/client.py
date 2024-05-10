@@ -89,29 +89,42 @@ class PluginGeneratorApp(QtWidgets.QWidget):
     def submit_info(self):
         selected_commands = [command for command, checkbox in self.command_checkboxes.items() if checkbox.isChecked()]
 
-        message = f"""
-            Plugin Name: {self.plugin_name_input.text()}
-            Device Name(s): {self.device_name_input.text()}
-            Selected Commands: {selected_commands}
-            Device Category: {self.device_category_combo.currentText()}
-            Description: {self.description_input.toPlainText()}
-            Language: {self.button_group.checkedButton().text()}
-        """
+        # message = f"""
+        #     Plugin Name: {self.plugin_name_input.text()}
+        #     Device Name(s): {self.device_name_input.text()}
+        #     Selected Commands: {selected_commands}
+        #     Device Category: {self.device_category_combo.currentText()}
+        #     Description: {self.description_input.toPlainText()}
+        #     Language: {self.button_group.checkedButton().text()}
+        # """
 
-        question = f"""
-                    Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
-                    Keep in mind, the .xml file, and init py has already been created. 
-                    - Please only return the code (put any English text in comments using #).
-                    - Do not write ```python ``` at any point.
-                    """ 
+        # question = f"""
+        #             Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
+        #             Keep in mind, the .xml file, and init py has already been created. 
+        #             - Please only return the code (put any English text in comments using #).
+        #             - Do not write ```python ``` at any point.
+        #             """ 
 
-        payload = {"plugin_name" : self.device_name_input.text(), "question": question, "file_path" : self.zip_path_input.text(), "selected_commands" : selected_commands}
+        # payload = {"plugin_name" : self.device_name_input.text(), 
+        #            "question": question, "file_path" : self.zip_path_input.text(), 
+        #            "selected_commands" : selected_commands,
+        #            "useCase" : "generate_plugin"}
+        
+
+        # to add: interface option on ui box, role option
+        payload = {"deviceName" : self.device_name_input.text(),
+                "category" : self.device_name_input.text(),  
+                "commands" : selected_commands,
+                "interface" : "none specified", 
+                "progLang" : "Python",
+                "role" : "As a test engineer, I want to create a plugin in Python to interface with this instrument",
+                "useCase" : "generate_plugin"}
 
 
         api_url = "http://127.0.0.1:5000/generate_plugin" 
 
         # Specify the timeout value in seconds
-        timeout_seconds = 60  # Adjust this value as needed
+        timeout_seconds = 180  # Adjust this value as needed
 
         response = requests.post(api_url, json=payload, timeout=timeout_seconds)
 

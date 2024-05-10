@@ -9,6 +9,16 @@ class PromptTemplates:
         self.context = context
 
     def generate_plugin_prompt(self, command):
+        print(f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
+        Context:
+        - Device Name: {self.device_name}
+        - Category: {self.category}
+        - Command: {command}
+        - Interface: {self.interface}
+        - Programming Language: {self.prog_lang}
+        - Role: {self.role}
+        """)
+
         return f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
         Context:
         - Device Name: {self.device_name}

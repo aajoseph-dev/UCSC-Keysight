@@ -76,7 +76,7 @@ def handleRequest():
                 buildXML(deviceName, path)
                 packageFiles(path, path_to_zip)
                 # return send_file(path_to_zip, as_attachment=True)
-                # pass the 2nd llm's response to the 1st llm
+                # pass the 2nd llm's response to the 1st llm 
                 # 1st llm regenerates the plugin
             else: # response_dict["Sentiment"] == "Neutral":
                 print("Sentiment was Neutral")
