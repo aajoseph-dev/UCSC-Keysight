@@ -14,19 +14,20 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         # Add keysight logo
         self.photo_label = QtWidgets.QLabel()
         pixmap = QtGui.QPixmap("keysight_logo.png")
-        pixmap = pixmap.scaledToWidth(200)
+        pixmap = pixmap.scaledToWidth(600)
         self.photo_label.setPixmap(pixmap)
         self.photo_label.setAlignment(QtCore.Qt.AlignCenter)
         self.main_layout.addWidget(self.photo_label)
 
         # Add title "AI-based..."
-        title_font = QtGui.QFont("Times New Roman", 20, QtGui.QFont.Bold)  # Increase font size to 20
-        self.title_label = QtWidgets.QLabel("<h2 style='font-family: Times New Roman; font-size: 20px; font-weight: bold;'>AI-Based Plugin Generation</h2>")
+        title_font = QtGui.QFont("Times New Roman", 25, QtGui.QFont.Bold)  
+        self.title_label = QtWidgets.QLabel("<h2 style='font-family: Times New Roman; font-size: 25px; font-weight: bold;'>AI-Based Plugin Generation</h2>")
+        self.title_label.setFont(title_font)  # Set the font for the title label
         self.title_label.setAlignment(QtCore.Qt.AlignCenter)
         self.main_layout.addWidget(self.title_label)
 
         font = QtGui.QFont("Times New Roman")
-        font.setPointSize(20)  # Set font size to 14
+        font.setPointSize(23)  # Set font size to 14
 
         # Create labels
         self.plugin_name_label = QtWidgets.QLabel("Plugin Name:")
@@ -70,6 +71,10 @@ class PluginGeneratorApp(QtWidgets.QWidget):
             "Common Commands", "Power Supplies", "Other"
         ])
 
+        # Set font size for the combo box items
+        combo_font = QtGui.QFont("Times New Roman", 23)  # Set the font size to 16
+        self.device_category_combo.setFont(combo_font)
+
         # Create radio buttons
         self.csharp_button = QtWidgets.QRadioButton("C#")
         self.csharp_button.setFont(font)
@@ -81,13 +86,22 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         self.python_button.setChecked(True)  # Set default selection to Python
 
         # Create submit button
+        font_generate = QtGui.QFont("Times New Roman")
+        font_generate.setPointSize(28)  # Set font size to 14
         self.submit_button = QtWidgets.QPushButton("Generate")
-        self.submit_button.setFont(font)
+        self.submit_button.setFont(font_generate)
         self.submit_button.clicked.connect(self.submit_info)
         self.submit_button.setFixedSize(200, 80)
 
-        # self.main_layout.addLayout(button_layout, alignment=QtCore.Qt.AlignHCenter)
-        # self.main_layout.addSpacing(20) 
+        # # self.main_layout.addLayout(button_layout, alignment=QtCore.Qt.AlignHCenter)
+        # # self.main_layout.addSpacing(20) 
+        # button_layout = QtWidgets.QHBoxLayout()  # Create a horizontal box layout
+        # button_layout.addStretch(1)  # Add stretchable space before the button
+        # button_layout.addWidget(self.submit_button)  # Add the button to the layout
+        # button_layout.addStretch(1)  # Add stretchable space after the button
+        
+        # # Add the button layout to the main layout
+        # self.main_layout.addLayout(button_layout)  
 
 
         # Add widgets to layout
@@ -117,7 +131,8 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         self.main_layout.addWidget(self.language_label)
         self.main_layout.addWidget(self.csharp_button)
         self.main_layout.addWidget(self.python_button)
-        self.main_layout.addWidget(self.submit_button)
+        # self.main_layout.addWidget(self.python_button)
+        self.main_layout.addWidget(self.submit_button, alignment=QtCore.Qt.AlignHCenter)
 
         # Set window title
         self.setWindowTitle("Plugin Generator")
