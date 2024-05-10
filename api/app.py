@@ -31,8 +31,7 @@ def handleRequest():
     deviceName = data.get("deviceName")
     path = f"plugins/raw_files/{deviceName}"
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
-    requirements = set()
-    
+
     if os.path.exists(path):
         shutil.rmtree(path)
 
@@ -47,7 +46,7 @@ def handleRequest():
             # response = match[0]
             response = extract_python_code(response)
             print(f"response: {response}")
-            buildPy(path, command, response, requirements)
+            buildPy(path, command, response)
             print("done buildPy()")
             result, verified_code = verify_code(response)
             print(f"result: {result}")
@@ -57,7 +56,7 @@ def handleRequest():
             if response_dict["Sentiment"] == "Positive":
                 print("Sentiment was Positive")
                 buildXML(deviceName, path)
-                packageFiles(path, path_to_zip, requirements)
+                packageFiles(path, path_to_zip)
                 # return send_file(path_to_zip, as_attachment=True)
             elif response_dict["Sentiment"] == "Negative":
                 # already tried, this is the second time
@@ -70,19 +69,19 @@ def handleRequest():
                 response = extract_python_code(response)
                 # match = re.findall(pattern, response, re.DOTALL)
                 # response = match[0]
-                buildPy(path, command, response, requirements)
+                buildPy(path, command, response)
                 result, verified_code = verify_code(response)
                 response_dict = llm_code_check(command, response, deviceName) # go ask the 2nd llm's response yet
                 print("Asked the 2nd LLM again")
                 buildXML(deviceName, path)
-                packageFiles(path, path_to_zip, requirements)
+                packageFiles(path, path_to_zip)
                 # return send_file(path_to_zip, as_attachment=True)
                 # pass the 2nd llm's response to the 1st llm
                 # 1st llm regenerates the plugin
             else: # response_dict["Sentiment"] == "Neutral":
                 print("Sentiment was Neutral")
                 buildXML(deviceName, path)
-                packageFiles(path, path_to_zip, requirements)
+                packageFiles(path, path_to_zip)
     return send_file(path_to_zip, as_attachment=True)
     #     buildXML(deviceName, path)
     #     packageFiles(path, path_to_zip, requirements)
@@ -167,14 +166,6 @@ def callLLM(prompt, command, data):
     # pattern = r'```python(.*?)```'
     # match = re.findall(pattern, content, re.DOTALL)
     # content = match[0]
-
-    timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    device_name =  data.get("deviceName")
-
-    with open(f"plugins/responses/{device_name}_{command}_{timestamp}.txt", 'w') as file:
-        file.write(content)
-
-
     return content
 
 def callAISearch(query, TOKEN_LIMIT=1500):
@@ -210,12 +201,7 @@ def callAISearch(query, TOKEN_LIMIT=1500):
         print(f"Error during AI search: {e}")
 
 
-def buildPy(path, command, code, req):
-
-    pattern = r'^\s*(?:import|from)\s+(\S+)'
-    matches = re.findall(pattern, code, re.MULTILINE)
-    req.update(matches)
-
+def buildPy(path, command, code):
     name = "".join( x for x in command if (x.isalnum() or x in "._- "))
 
     pyFile = f"{path}/{name}.py"
@@ -281,21 +267,12 @@ def buildXML(plugin_name, folder_path):
     
     return save_path_file
 
-def packageFiles(source, destination, req):
+def packageFiles(source, destination):
      
     with open(f"{source}/__init__.py", 'w') as file:
         pass
-    
-    with open(f"{source}/requirements.txt", 'w') as file:
-        for lib in req:
-            try:
-                version = metadata.version(lib)
-                if version:
-                    file.write(f"{lib}=={version}\n")
-                else:
-                    file.write(f"{lib}\n")
-            except metadata.PackageNotFoundError:
-                file.write(f"{lib}\n")
+
+    shutil.copyfile("plugins/plugin_components/requirements.txt", f"{source}/requirements.txt")
 
     with ZipFile(destination, 'w') as zip_object:
         for file_name in os.listdir(source):
