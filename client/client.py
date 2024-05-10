@@ -9,7 +9,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         # Initialize layout
         self.main_layout = QtWidgets.QVBoxLayout(self)
 
-        self.setGeometry(100, 100, 1000, 600)  # (x, y, width, height)
+        self.setGeometry(100, 100, 900, 200) # (x, y, width, height)
 
         # Add keysight logo
         self.photo_label = QtWidgets.QLabel()
@@ -93,17 +93,6 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         self.submit_button.clicked.connect(self.submit_info)
         self.submit_button.setFixedSize(200, 80)
 
-        # # self.main_layout.addLayout(button_layout, alignment=QtCore.Qt.AlignHCenter)
-        # # self.main_layout.addSpacing(20) 
-        # button_layout = QtWidgets.QHBoxLayout()  # Create a horizontal box layout
-        # button_layout.addStretch(1)  # Add stretchable space before the button
-        # button_layout.addWidget(self.submit_button)  # Add the button to the layout
-        # button_layout.addStretch(1)  # Add stretchable space after the button
-        
-        # # Add the button layout to the main layout
-        # self.main_layout.addLayout(button_layout)  
-
-
         # Add widgets to layout
         self.main_layout.addWidget(self.plugin_name_label)
         self.main_layout.addWidget(self.plugin_name_input)
@@ -143,28 +132,6 @@ class PluginGeneratorApp(QtWidgets.QWidget):
     # Retrieves user input from the form and displays a popup window
     def submit_info(self):
         selected_commands = [command for command, checkbox in self.command_checkboxes.items() if checkbox.isChecked()]
-
-        # message = f"""
-        #     Plugin Name: {self.plugin_name_input.text()}
-        #     Device Name(s): {self.device_name_input.text()}
-        #     Selected Commands: {selected_commands}
-        #     Device Category: {self.device_category_combo.currentText()}
-        #     Description: {self.description_input.toPlainText()}
-        #     Language: {self.button_group.checkedButton().text()}
-        # """
-
-        # question = f"""
-        #             Write {self.button_group.checkedButton().text()} code for an opentap plugin for the {self.device_name_input.text()} {self.device_category_combo.currentText()}.\n 
-        #             Keep in mind, the .xml file, and init py has already been created. 
-        #             - Please only return the code (put any English text in comments using #).
-        #             - Do not write ```python ``` at any point.
-        #             """ 
-
-        # payload = {"plugin_name" : self.device_name_input.text(), 
-        #            "question": question, "file_path" : self.zip_path_input.text(), 
-        #            "selected_commands" : selected_commands,
-        #            "useCase" : "generate_plugin"}
-        
 
         # to add: interface option on ui box, role option
         payload = {"deviceName" : self.device_name_input.text(),
