@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui, QtCore
 import requests
 
 
@@ -9,20 +9,50 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         # Initialize layout
         self.main_layout = QtWidgets.QVBoxLayout(self)
 
+        self.setGeometry(100, 100, 1000, 600)  # (x, y, width, height)
+
+        # Add keysight logo
+        self.photo_label = QtWidgets.QLabel()
+        pixmap = QtGui.QPixmap("keysight_logo.png")
+        pixmap = pixmap.scaledToWidth(200)
+        self.photo_label.setPixmap(pixmap)
+        self.photo_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.main_layout.addWidget(self.photo_label)
+
+        # Add title "AI-based..."
+        title_font = QtGui.QFont("Times New Roman", 20, QtGui.QFont.Bold)  # Increase font size to 20
+        self.title_label = QtWidgets.QLabel("<h2 style='font-family: Times New Roman; font-size: 20px; font-weight: bold;'>AI-Based Plugin Generation</h2>")
+        self.title_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.main_layout.addWidget(self.title_label)
+
+        font = QtGui.QFont("Times New Roman")
+        font.setPointSize(20)  # Set font size to 14
+
         # Create labels
         self.plugin_name_label = QtWidgets.QLabel("Plugin Name:")
+        self.plugin_name_label.setFont(font)
         self.device_name_label = QtWidgets.QLabel("Device Name(s):")
+        self.device_name_label.setFont(font)
         self.device_category_label = QtWidgets.QLabel("Device Category:")
+        self.device_category_label.setFont(font)
         self.commands_label = QtWidgets.QLabel("Prefilled Commands:")
+        self.commands_label.setFont(font)
         self.description_label = QtWidgets.QLabel("Description:")
+        self.description_label.setFont(font)
         self.language_label = QtWidgets.QLabel("Choose Language:")
+        self.language_label.setFont(font)
         self.zip_path_label = QtWidgets.QLabel("Input path for zip file to save under:")
+        self.zip_path_label.setFont(font)
 
         # Create entry fields
         self.plugin_name_input = QtWidgets.QLineEdit()
+        self.plugin_name_input.setFont(font)
         self.device_name_input = QtWidgets.QLineEdit()
+        self.device_name_input.setFont(font)
         self.description_input = QtWidgets.QTextEdit()
+        self.description_input.setFont(font)
         self.zip_path_input = QtWidgets.QLineEdit()
+        self.zip_path_input.setFont(font)
 
         # Checkboxes for prefilled commands
         self.commands = [
@@ -33,6 +63,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         
         # Create dropdown menu for device category
         self.device_category_combo = QtWidgets.QComboBox()
+        self.device_category_combo.setFont(font)
         self.device_category_combo.addItems([
             "Generators", "Sources", "Power Products", "Oscilloscopes",
             "Analyzer", "Meters", "Modular Instruments", "Software",
@@ -41,7 +72,9 @@ class PluginGeneratorApp(QtWidgets.QWidget):
 
         # Create radio buttons
         self.csharp_button = QtWidgets.QRadioButton("C#")
+        self.csharp_button.setFont(font)
         self.python_button = QtWidgets.QRadioButton("Python")
+        self.python_button.setFont(font)
         self.button_group = QtWidgets.QButtonGroup()
         self.button_group.addButton(self.csharp_button)
         self.button_group.addButton(self.python_button)
@@ -49,7 +82,13 @@ class PluginGeneratorApp(QtWidgets.QWidget):
 
         # Create submit button
         self.submit_button = QtWidgets.QPushButton("Generate")
+        self.submit_button.setFont(font)
         self.submit_button.clicked.connect(self.submit_info)
+        self.submit_button.setFixedSize(200, 80)
+
+        # self.main_layout.addLayout(button_layout, alignment=QtCore.Qt.AlignHCenter)
+        # self.main_layout.addSpacing(20) 
+
 
         # Add widgets to layout
         self.main_layout.addWidget(self.plugin_name_label)
@@ -66,6 +105,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         # Create a checkbox for each command
         for command_name, is_checked in self.commands:
             checkbox = QtWidgets.QCheckBox(command_name)
+            checkbox.setFont(font)
             checkbox.setChecked(is_checked)
             self.main_layout.addWidget(checkbox)
             self.command_checkboxes[command_name] = checkbox
