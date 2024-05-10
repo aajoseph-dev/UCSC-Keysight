@@ -26,10 +26,10 @@ def run_test(deviceName, category, commands, interface, progLang, role, useCase)
             except Exception as e:
                 print("Error:", e)
     else:
-        print("Error:", response.status_code, response.text)
+        print("Error:", response.status_code, response.text) 
 
 
-# test = run_test("EDU36311A", "Power supply", [":DISPLay", ":MEASure"], "USB-B", "python", "As a test engineer, I want to create a plugin in python to test batteries", "generate_plugin")
+# test = run_test("EDU36311A",  "Power supply", [":DISPLay", ":MEASure"], "USB-B", "python", "As a test engineer, I want to create a plugin in python to test batteries", "generate_plugin")
 # test = run_test("E8363B", "Network Analyzer", [":PRESet", ":FREQuency"], "", "python", "As a test engineer, I want to create a plugin in python to analyze networks", "generate_plugin")
 
 # PSG Signal Generator
