@@ -30,6 +30,8 @@ Using generative AI to automate plugin generation to connect to Keysight's OpenT
 
 <img width="1003" alt="Screenshot 2024-05-13 at 3 21 24 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/3de8ba28-8ea4-4660-9127-a6d31e259950">
 
+<img width="1088" alt="Screenshot 2024-05-13 at 3 25 11 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/07764237-1e78-4711-8af5-484c8133fc30">
+
 
 ### Get Started:
 To utilize this automated plugin generation tool, follow these steps:
