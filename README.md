@@ -19,7 +19,7 @@ Using generative AI to automate plugin generation to connect to Keysight's OpenT
 3. **Code Generation**: Generated code snippets are assembled into complete plugin code structures in Python.
 4. **Output & Integration**: Users can review and integrate the generated code directly into their OpenTAP projects, significantly reducing manual coding efforts by a ~70% decrease.
 
-<img width="714" alt="Screenshot 2024-05-13 at 3 20 01 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/a57ea050-272b-4671-bc5a-88e12da39377">
+<img width="1003" alt="Screenshot 2024-05-13 at 3 20 01 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/a57ea050-272b-4671-bc5a-88e12da39377">
 
 ## Technologies Used:
 1. Frontend: Python PyQt5 - Popup window that receives user input.
