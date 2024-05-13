@@ -28,7 +28,6 @@ Using generative AI to automate plugin generation to connect to Keysight's OpenT
 4. Database: Azure AI Search - Queries the database based on keywords found in user’s input.
 5. PDF handling: LangChain - Chunks and vectorizes the PDFs, uploads them to AI Search’s database.
 
-<img width="684" alt="Screenshot 2024-05-13 at 3 21 11 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/fc352d58-0444-422e-86d2-5de14349181f">
 <img width="1003" alt="Screenshot 2024-05-13 at 3 21 24 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/3de8ba28-8ea4-4660-9127-a6d31e259950">
 
 
