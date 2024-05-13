@@ -33,10 +33,17 @@ Using generative AI to automate plugin generation to connect to Keysight's OpenT
 <img width="1088" alt="Screenshot 2024-05-13 at 3 25 11 PM" src="https://github.com/aajoseph-dev/UCSC-Keysight/assets/92142459/07764237-1e78-4711-8af5-484c8133fc30">
 
 
-### Get Started:
+## Get Started:
 To utilize this automated plugin generation tool, follow these steps:
 
-1. Step 1
+1. Clone the repo.
+2. Open VS Code.
+3. In a VS Code terminal run: ```pip install -r requirements.txt```
+4. Run python3 app.py in one terminal to start the server.
+5. Run python3 client.py to start the client application to get the popup window to appear.
+6. Enter in your device specs into the popup window.
+7. Wait for the program to generate your plugin.
+8. Plugin gets saved into the location that you specified in the popup window.
 
 ## Acknowledgements
 
