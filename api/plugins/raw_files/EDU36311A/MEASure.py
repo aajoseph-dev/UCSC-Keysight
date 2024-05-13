@@ -1,53 +1,46 @@
-
+import opentap
+from opentap import *
+from System import String
 import visa
+import numpy as np
 
-class EDU36311APowerSupply:
-    def __init__(self, resource_name):
-        # Assuming that PyVISA is being used to communicate with instruments
-        self.rm = visa.ResourceManager()
-        self.instr = self.rm.open_resource(resource_name)
-        
-    def configure_wlan_dsss(self):
-        # Configure the VSA for WLAN DSSS measurement
-        self.instr.write(":CONFigure:W11B")
-    
-    def configure_wlan_dsss_default(self):
-        # Set the WLAN DSSS measurement to default configuration
-        self.instr.write(":CONFigure:W11B:NDEFault")
-    
-    def initiate_wlan_dsss(self):
-        # Initiate the WLAN DSSS measurement
-        self.instr.write(":INITiate:W11B")
-        
-    def fetch_wlan_dsss_results(self, trace_number=1):
-        # Fetch results from the WLAN DSSS measurement
-        results = self.instr.query(f":FETCh:W11B{trace_number}?")
-        return results.strip().split(',')
-    
-    def measure_wlan_dsss_results(self, trace_number=1):
-        # Measure results from the WLAN DSSS measurement
-        results = self.instr.query(f":MEASure:W11B{trace_number}?")
-        return results.strip().split(',')
-    
-    def read_wlan_dsss_results(self, trace_number=1):
-        # Read results from the WLAN DSSS measurement
-        results = self.instr.query(f":READ:W11B{trace_number}?")
-        return results.strip().split(',')
-    
-    def close(self):
-        # Close the connection to the instrument
-        self.instr.close()
+# Import the OpenTAP Python library
+from OpenTap import DisplayAttribute, Instrument
 
-# Example usage:
-if __name__ == "__main__":
-    # Replace 'USB0::0x2A8D::0x1301::MY12345678::0::INSTR' with the actual address of your device
-    resource_name = 'USB0::0x2A8D::0x1301::MY12345678::0::INSTR'
-    power_supply = EDU36311APowerSupply(resource_name)
-    
-    try:
-        power_supply.configure_wlan_dsss()
-        power_supply.initiate_wlan_dsss()
-        results = power_supply.fetch_wlan_dsss_results()
-        print("WLAN DSSS Results:", results)
-    finally:
-        power_supply.close()
+# Define the plugin class
+@attribute(DisplayAttribute, "EDU36311A Power Supply", "Plugin for EDU36311A power supply to measure voltage, current, and power.", "Power Supply")
+class EDU36311APowerSupply(Instrument):
+    def __init__(self):
+        super().__init__()
+        self.Name = "EDU36311A"
+        self._resource_manager = visa.ResourceManager()
+        self._instrument = None
+
+    def Open(self):
+        # Open the connection to the power supply using the VISA resource manager
+        super().Open()
+        self._instrument = self._resource_manager.open_resource("USB0::0x2A8D::0x1202::MY1234567::INSTR")
+        
+    def Close(self):
+        # Close the connection to the power supply
+        if self._instrument is not None:
+            self._instrument.close()
+        super().Close()
+
+    @method(String)
+    def MeasureVoltage(self):
+        # Measure the output voltage
+        return self._instrument.query("MEAS:VOLT?")
+
+    @method(String)
+    def MeasureCurrent(self):
+        # Measure the output current
+        return self._instrument.query("MEAS:CURR?")
+
+    @method(String)
+    def MeasurePower(self):
+        # Measure the output power
+        return self._instrument.query("MEAS:POW?")
+
+# Register the plugin with OpenTAP
+Instrument.Add(EDU36311APowerSupply)

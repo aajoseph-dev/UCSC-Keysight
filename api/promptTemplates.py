@@ -1,4 +1,5 @@
-#update to focus on test steps not plugins
+#update to focus on plugins not test steps
+
 class PromptTemplates:
     def __init__(self, data, context):
         self.device_name = data.get("deviceName")
@@ -43,57 +44,77 @@ class PromptTemplates:
             -debugpy==1.8.1
 
         Example code for guidance:
-            import sys
-            import clr
-            import math
+
+            Simulated Power Analyzer example.
+
+            This power analyzer simulation simulates charging and discharging a battery and measuring the voltage meanwhile.
+
+            The instrument plugin created by this example is accessible from a .NET API by referencing the built example directly.
+            From a .NET point of view, the assembly is called Python.PluginExample.dll and the instrument is named Python.PluginExample.PowerAnalyzer.
             import opentap
             from opentap import *
-
-            from System import Array, Double, Byte, Int32
+            from System import Double, Random #Import types to reference for generic methods
             from System.Diagnostics import Stopwatch
             import OpenTap
-            from OpenTap import Log, DisplayAttribute, Display, Output, Unit, OutputAttribute, UnitAttribute
-            from .SamplingStepBase import SamplingStepBase
+            from OpenTap import DisplayAttribute
 
-            #This is how attributes are used:
-            @attribute(Display(Name="Charge", Description="Simulated scenario of an emulated power analyzer charging a battery and measuring the voltage curve.", Groups= ["Python Example", "Battery Test"]))
-            class ChargeStep(SamplingStepBase):
-                # Properties
-                Current = property(Double, 10)\
-                    .add_attribute(Unit("A"))\
-                    .add_attribute(Display("Charge Current", "", "Power Supply", -1, True))
-                Voltage = property(Double, 0.1)\
-                    .add_attribute(Unit("V"))\
-                    .add_attribute(Display(Name="Voltage", Group="Power Supply", Order=0, Collapsed=True))
-                TargetCellVoltageMargin = property(Double, 0.1)\
-                    .add_attribute(Display("Target Voltage Margin", "", "Cell", -1))\
-                    .add_attribute(Unit("V"))
-                ChargeType = property(Double, 0.0)\
-                    .add_attribute(Unit("s"))\
-                    .add_attribute(Display("Charge Time", "", "Output", 0))\
-                    .add_attribute(Output())
-                    
+            @attribute(DisplayAttribute, "Power Analyzer", "Simulated power analyzer instrument used for charge/discharge demo steps written in python.", "Python Example")
+            class PowerAnalyzer(Instrument):
+                CellSizeFactor = property(Double, 0.005)\
+                    .add_attribute(DisplayAttribute, "Cell Size Factor", "A larger cell size will result in faster charging and discharging.")
                 def __init__(self):
-                    super(ChargeStep, self).__init__() # The base class initializer must be invoked.
-                    
-                def Run(self):
-                    sw = Stopwatch.StartNew()
-                    self.PowerAnalyzer.Setup(self.Voltage, self.Current)
-                    self.PowerAnalyzer.EnableOutput()
-                    self.log.Info("Charging at: " + str(self.Current) + "A" + " Target Voltage: " + str(self.Voltage) + "V")
-                    super(ChargeStep, self).Run()
-                    self.PowerAnalyzer.DisableOutput()
-                    self.ChargeTime = sw.Elapsed.TotalSeconds
+                    super().__init__() # The base class initializer must be invoked.
+                    self._voltage = 1.0
+                    self._cellVoltage = 2.7
+                    self._current = 10
+                    self._currentLimit = 0.0
+                    self._sw = None
+                    self.Name = "PyPowerAnalyzer"
 
-                def WhileSampling(self):
-                    while math.fabs(self.PowerAnalyzer.MeasureVoltage() - self.Voltage) > self.TargetCellVoltageMargin:
-                        OpenTap.TapThread.Sleep(50)
+                def Open(self):
+                    super().Open()
+                    self._voltage = 0
+                    self._cellVoltage = 2.7
 
-                def OnSample(self, voltage, current, sampleNo):
-                    barVoltage = OpenTap.TraceBar()
-                    barVoltage.LowerLimit = 2
-                    barVoltage.UpperLimit = 4.7
-                    self.log.Info("Voltage: " + str(barVoltage.GetBar(voltage)))
-                    v = math.trunc(voltage * 100) / 100.0
-                    c = math.trunc(current * 100) / 100.0
-                    self.PublishResult("Charge", ["Sample Number", "Voltage", "Current"], [sampleNo, v, c])"""
+                def Close(self):
+                    if self._sw != None:
+                        self._sw.Stop()
+                    super().Close()
+                @method(Double)
+                def MeasureCurrent(self):
+                    self.UpdateCurrentAndVoltage()
+                    return self._current
+
+                @method(Double)
+                def MeasureVoltage(self):
+                    self.UpdateCurrentAndVoltage()
+                    return self._cellVoltage
+                @method(None, [Double, Double])
+                def Setup(self, voltage, current):
+                    self._voltage = voltage
+                    self._currentLimit = current
+                    self._current = current
+                @method()
+                def EnableOutput(self):
+                    if self._sw == None or self._sw.IsRunning == False:
+                        self._sw = Stopwatch.StartNew()
+                @method()
+                def DisableOutput(self):
+                    if self._sw != None:
+                        self._sw.Stop()
+
+                def UpdateCurrentAndVoltage(self):
+                    if self._sw == None or self._sw.IsRunning == False:
+                        return
+
+                    # Generates a somewhat random curve that gradually approaches the limit.
+                    self._current = self._currentLimit * ((self._voltage - self._cellVoltage) * 2) + Random().NextDouble() * self._currentLimit / 50.0;
+
+                    if self._current >= self._currentLimit:
+                        self._current = self._currentLimit;
+                    elif self._current < 0 - self._currentLimit:
+                        self._current = 0 - self._currentLimit;
+
+                    self._cellVoltage += self.CellSizeFactor * self._current * self._sw.Elapsed.TotalSeconds * 10;
+                    self._sw.Restart();
+                    """

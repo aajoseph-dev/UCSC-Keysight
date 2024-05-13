@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package Name="EDU36311A" xmlns="http://keysight.com/Schemas/tap" Version="$(GitVersion)" OS="Windows,Linux,MacOS">
 	<Description>
-		TEST
 		<Prerequisites> Python (&gt;3.7) </Prerequisites>
 	</Description>
 	<Dependencies>
 		<PackageDependency Package="OpenTAP" Version="^9.18.2"/>
-		<PackageDependency Package="Python" Version="^$(GitVersion)"/>
 	</Dependencies>
 	<Files>
-		<File Path="plugins/raw_files/EDU36311A">
+		<File Path="/*.py">
 			<ProjectFile/>
 		</File>
 	</Files>

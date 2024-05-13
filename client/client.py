@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore, uic
 import requests
 
 
@@ -6,10 +6,106 @@ class PluginGeneratorApp(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
-        # Initialize layout
-        self.main_layout = QtWidgets.QVBoxLayout(self)
+        # Main layout is horizontal: sidebar + content area
+        self.layout = QtWidgets.QHBoxLayout(self)
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.setGeometry(100, 100, 900, 200) # (x, y, width, height)
+        # Sidebar for navigation
+        self.sidebarWidget = QtWidgets.QWidget()  
+        self.sidebarLayout = QtWidgets.QVBoxLayout(self.sidebarWidget) 
+        self.sidebarLayout.setContentsMargins(0, 0, 0, 0)  
+
+        # Sidebar logo
+        self.logoLabel = QtWidgets.QLabel()
+        logoPixmap = QtGui.QPixmap("../assets/tap_icon.png") 
+        self.logoLabel.setPixmap(logoPixmap.scaled(80, 80, QtCore.Qt.KeepAspectRatio))  
+        self.logoLabel.setAlignment(QtCore.Qt.AlignLeft)
+        self.sidebarLayout.addWidget(self.logoLabel)
+
+        # Sidebar for navigation
+        self.sidebar = QtWidgets.QListWidget()
+        self.sidebar.insertItem(0, "Single")
+        self.sidebar.insertItem(1, "Batch")
+        self.sidebar.setMaximumWidth(100)
+        self.sidebarLayout.addWidget(self.sidebar)
+
+        # Stretch factors for sidebar and content area
+        self.layout.addWidget(self.sidebarWidget, 0)
+        self.layout.addStretch(1)
+
+        # Stack of widgets: one for "Single", one for "Batch"
+        self.stacked_widget = QtWidgets.QStackedWidget()
+        self.layout.addWidget(self.stacked_widget, 2)
+
+        # First page: Single Plugin Generation
+        self.single_page = QtWidgets.QWidget()
+        self.single_layout = QtWidgets.QVBoxLayout(self.single_page)
+        self.init_single_page()
+        self.stacked_widget.addWidget(self.single_page)
+
+        # Second page: Batch Plugin Generation (Placeholder)
+        self.batch_page = QtWidgets.QWidget()
+        self.batch_layout = QtWidgets.QVBoxLayout(self.batch_page)
+        self.init_batch_page()
+        self.stacked_widget.addWidget(self.batch_page)
+
+        # Connect sidebar navigation
+        self.sidebar.currentRowChanged.connect(self.display_page)
+
+        # Set window properties
+        self.setGeometry(100, 100, 1100, 600)
+        self.setWindowTitle("Plugin Generator")
+        self.show()
+
+    def display_page(self, index):
+        self.stacked_widget.setCurrentIndex(index)
+
+    def init_batch_page(self):
+        # Table to display data
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setHorizontalHeaderLabels(["Name", "Age"])
+        self.batch_layout.addWidget(self.tableWidget)
+
+        # Plus button to add data
+        self.plus_button = QtWidgets.QPushButton("+")
+        self.plus_button.clicked.connect(self.open_add_data_popup)
+        self.batch_layout.addWidget(self.plus_button)
+
+        # Minus button to remove selected item from table
+        self.minus_button = QtWidgets.QPushButton("-")
+        self.minus_button.clicked.connect(self.remove_selected_item)
+        self.batch_layout.addWidget(self.minus_button)
+
+        # Submit button
+        self.submit_button = QtWidgets.QPushButton("Submit")
+        self.submit_button.clicked.connect(self.submit_batch_info)
+        self.batch_layout.addWidget(self.submit_button)
+
+    def open_add_data_popup(self):
+        popup = AddDataPopup()
+        if popup.exec_():
+            device, type = popup.get_data()
+            self.add_data_to_table(device, type)
+
+    def add_data_to_table(self, device, type):
+        row_position = self.tableWidget.rowCount()
+        self.tableWidget.insertRow(row_position)
+        self.tableWidget.setItem(row_position, 0, QTableWidgetItem(device))
+        self.tableWidget.setItem(row_position, 1, QTableWidgetItem(type))
+
+    def remove_selected_item(self):
+        selected_row = self.tableWidget.currentRow()
+        if selected_row >= 0:
+            self.tableWidget.removeRow(selected_row)
+
+    def submit_batch_info(self):
+        # Implement submission logic here
+        pass
+
+        
+    def init_single_page(self):
+        self.setGeometry(100, 100, 356, 200) 
 
         # Add keysight logo
         self.photo_label = QtWidgets.QLabel()
@@ -17,17 +113,17 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         pixmap = pixmap.scaledToWidth(600)
         self.photo_label.setPixmap(pixmap)
         self.photo_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.main_layout.addWidget(self.photo_label)
+        self.single_layout.addWidget(self.photo_label)
 
         # Add title "AI-based..."
-        title_font = QtGui.QFont("Times New Roman", 25, QtGui.QFont.Bold)  
-        self.title_label = QtWidgets.QLabel("<h2 style='font-family: Times New Roman; font-size: 25px; font-weight: bold;'>AI-Based Plugin Generation</h2>")
+        title_font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)  
+        self.title_label = QtWidgets.QLabel("<h2 style='font-family: Arial; font-size: 25px; font-weight: bold;'>AI-Based Plugin Generation</h2>")
         self.title_label.setFont(title_font)  # Set the font for the title label
         self.title_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.main_layout.addWidget(self.title_label)
+        self.single_layout.addWidget(self.title_label)
 
-        font = QtGui.QFont("Times New Roman")
-        font.setPointSize(23)  # Set font size to 14
+        font = QtGui.QFont("Arial")
+        font.setPointSize(12)  # Set font size to 12
 
         # Create labels
         self.plugin_name_label = QtWidgets.QLabel("Plugin Name:")
@@ -72,7 +168,7 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         ])
 
         # Set font size for the combo box items
-        combo_font = QtGui.QFont("Times New Roman", 23)  # Set the font size to 16
+        combo_font = QtGui.QFont("Arial", 12)  # Set the font size to 12
         self.device_category_combo.setFont(combo_font)
 
         # Create radio buttons
@@ -86,42 +182,42 @@ class PluginGeneratorApp(QtWidgets.QWidget):
         self.python_button.setChecked(True)  # Set default selection to Python
 
         # Create submit button
-        font_generate = QtGui.QFont("Times New Roman")
-        font_generate.setPointSize(28)  # Set font size to 14
+        font_generate = QtGui.QFont("Arial")
+        font_generate.setPointSize(14)  # Set font size to 14
         self.submit_button = QtWidgets.QPushButton("Generate")
         self.submit_button.setFont(font_generate)
         self.submit_button.clicked.connect(self.submit_info)
         self.submit_button.setFixedSize(200, 80)
 
         # Add widgets to layout
-        self.main_layout.addWidget(self.plugin_name_label)
-        self.main_layout.addWidget(self.plugin_name_input)
-        self.main_layout.addWidget(self.device_name_label)
-        self.main_layout.addWidget(self.device_name_input)
-        self.main_layout.addWidget(self.zip_path_label)
-        self.main_layout.addWidget(self.zip_path_input)
+        self.single_layout.addWidget(self.plugin_name_label)
+        self.single_layout.addWidget(self.plugin_name_input)
+        self.single_layout.addWidget(self.device_name_label)
+        self.single_layout.addWidget(self.device_name_input)
+        self.single_layout.addWidget(self.zip_path_label)
+        self.single_layout.addWidget(self.zip_path_input)
 
         # Dictionary to hold the command name and its checkbox widget
         self.command_checkboxes = {}
 
-        self.main_layout.addWidget(self.commands_label)
+        self.single_layout.addWidget(self.commands_label)
         # Create a checkbox for each command
         for command_name, is_checked in self.commands:
             checkbox = QtWidgets.QCheckBox(command_name)
             checkbox.setFont(font)
             checkbox.setChecked(is_checked)
-            self.main_layout.addWidget(checkbox)
+            self.single_layout.addWidget(checkbox)
             self.command_checkboxes[command_name] = checkbox
 
-        self.main_layout.addWidget(self.device_category_label)
-        self.main_layout.addWidget(self.device_category_combo)
-        self.main_layout.addWidget(self.description_label)
-        self.main_layout.addWidget(self.description_input)
-        self.main_layout.addWidget(self.language_label)
-        self.main_layout.addWidget(self.csharp_button)
-        self.main_layout.addWidget(self.python_button)
-        # self.main_layout.addWidget(self.python_button)
-        self.main_layout.addWidget(self.submit_button, alignment=QtCore.Qt.AlignHCenter)
+        self.single_layout.addWidget(self.device_category_label)
+        self.single_layout.addWidget(self.device_category_combo)
+        self.single_layout.addWidget(self.description_label)
+        self.single_layout.addWidget(self.description_input)
+        self.single_layout.addWidget(self.language_label)
+        self.single_layout.addWidget(self.csharp_button)
+        self.single_layout.addWidget(self.python_button)
+        # self.single_layout.addWidget(self.python_button)
+        self.single_layout.addWidget(self.submit_button, alignment=QtCore.Qt.AlignHCenter)
 
         # Set window title
         self.setWindowTitle("Plugin Generator")
@@ -169,4 +265,5 @@ class PluginGeneratorApp(QtWidgets.QWidget):
 if __name__ == "__main__":
     app = QtWidgets.QApplication([])
     window = PluginGeneratorApp()
+    window.show()  # Add this line
     app.exec_()
