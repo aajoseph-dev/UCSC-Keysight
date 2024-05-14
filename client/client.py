@@ -17,7 +17,6 @@ class LoadingThread(QThread):
     progress_update = QtCore.pyqtSignal(int)
 
 class MainWindow(QMainWindow):
-class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -135,10 +134,9 @@ class MainWindow(QMainWindow):
     def generate_data(self):
             # Here you can implement the logic to process the user input
             # This method will be triggered when the "Generate" button is clicked
-    def generate_data(self):
-            # Here you can implement the logic to process the user input
-            # This method will be triggered when the "Generate" button is clicked
         pass
+
+    
     def setup_batch_screen(self):
         layout = QVBoxLayout(self.batch_screen)
 
