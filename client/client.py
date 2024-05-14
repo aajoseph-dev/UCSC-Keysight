@@ -17,6 +17,7 @@ class LoadingThread(QThread):
     progress_update = QtCore.pyqtSignal(int)
 
 class MainWindow(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -131,6 +132,9 @@ class MainWindow(QMainWindow):
 
 
 
+    def generate_data(self):
+            # Here you can implement the logic to process the user input
+            # This method will be triggered when the "Generate" button is clicked
     def generate_data(self):
             # Here you can implement the logic to process the user input
             # This method will be triggered when the "Generate" button is clicked
@@ -266,6 +270,10 @@ class MainWindow(QMainWindow):
         self.loading_dialog.exec()
 
 if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
