@@ -1,269 +1,272 @@
-from PyQt5 import QtWidgets, QtGui, QtCore, uic
-import requests
+import sys
+from PyQt6.QtWidgets import QRadioButton, QSizePolicy, QTableWidget, QTableWidgetItem, QPushButton, QComboBox, QApplication, QFileDialog, QStackedWidget, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QVBoxLayout, QWidget, QDialog, QProgressBar
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt, QThread
+from PyQt6 import QtCore
 
+class LoadingThread(QThread):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+    
+    def run(self):
+        # Simulate some time-consuming task
+        for i in range(101):
+            self.msleep(50)
+            self.progress_update.emit(i)
 
-class PluginGeneratorApp(QtWidgets.QWidget):
+    progress_update = QtCore.pyqtSignal(int)
+
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # Main layout is horizontal: sidebar + content area
-        self.layout = QtWidgets.QHBoxLayout(self)
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.setWindowTitle("OpenTap Plugin Generation")
+        self.setFixedSize(800, 600)  # Fixed screen size
 
-        # Sidebar for navigation
-        self.sidebarWidget = QtWidgets.QWidget()  
-        self.sidebarLayout = QtWidgets.QVBoxLayout(self.sidebarWidget) 
-        self.sidebarLayout.setContentsMargins(0, 0, 0, 0)  
+        logo_pixmap = QPixmap("../assets/tap_icon.png")
 
-        # Sidebar logo
-        self.logoLabel = QtWidgets.QLabel()
-        logoPixmap = QtGui.QPixmap("../assets/tap_icon.png") 
-        self.logoLabel.setPixmap(logoPixmap.scaled(80, 80, QtCore.Qt.KeepAspectRatio))  
-        self.logoLabel.setAlignment(QtCore.Qt.AlignLeft)
-        self.sidebarLayout.addWidget(self.logoLabel)
 
-        # Sidebar for navigation
-        self.sidebar = QtWidgets.QListWidget()
-        self.sidebar.insertItem(0, "Single")
-        self.sidebar.insertItem(1, "Batch")
-        self.sidebar.setMaximumWidth(100)
-        self.sidebarLayout.addWidget(self.sidebar)
+        self.setWindowIcon(QIcon(logo_pixmap))
 
-        # Stretch factors for sidebar and content area
-        self.layout.addWidget(self.sidebarWidget, 0)
-        self.layout.addStretch(1)
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
 
-        # Stack of widgets: one for "Single", one for "Batch"
-        self.stacked_widget = QtWidgets.QStackedWidget()
-        self.layout.addWidget(self.stacked_widget, 2)
+        self.layout = QHBoxLayout(self.central_widget)
 
-        # First page: Single Plugin Generation
-        self.single_page = QtWidgets.QWidget()
-        self.single_layout = QtWidgets.QVBoxLayout(self.single_page)
-        self.init_single_page()
-        self.stacked_widget.addWidget(self.single_page)
+        # Sidebar
+        self.sidebar_layout = QVBoxLayout()
+        self.sidebar_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+        self.sidebar_layout.setContentsMargins(0, 0, 0, 0)
 
-        # Second page: Batch Plugin Generation (Placeholder)
-        self.batch_page = QtWidgets.QWidget()
-        self.batch_layout = QtWidgets.QVBoxLayout(self.batch_page)
-        self.init_batch_page()
-        self.stacked_widget.addWidget(self.batch_page)
+        # Company logo
+        logo_label = QLabel()
+        logo_pixmap = QPixmap("../assets/tap_icon.png").scaledToWidth(100)
+        logo_label.setPixmap(logo_pixmap)
+        self.sidebar_layout.addWidget(logo_label)
 
-        # Connect sidebar navigation
-        self.sidebar.currentRowChanged.connect(self.display_page)
+        single_button = QPushButton("Single")
+        single_button.setFixedSize(100, 50)
+        single_button.clicked.connect(self.show_single_screen)
+        self.sidebar_layout.addWidget(single_button)
 
-        # Set window properties
-        self.setGeometry(100, 100, 1100, 600)
-        self.setWindowTitle("Plugin Generator")
-        self.show()
+        batch_button = QPushButton("Batch")
+        batch_button.setFixedSize(100, 50)
+        batch_button.clicked.connect(self.show_batch_screen)
+        self.sidebar_layout.addWidget(batch_button)
 
-    def display_page(self, index):
-        self.stacked_widget.setCurrentIndex(index)
+        self.layout.addLayout(self.sidebar_layout)
 
-    def init_batch_page(self):
-        # Table to display data
-        self.tableWidget = QtWidgets.QTableWidget()
-        self.tableWidget.setColumnCount(2)
-        self.tableWidget.setHorizontalHeaderLabels(["Name", "Age"])
-        self.batch_layout.addWidget(self.tableWidget)
+        # Container for the screens
+        self.screen_container = QStackedWidget()
+        self.layout.addWidget(self.screen_container)
 
-        # Plus button to add data
-        self.plus_button = QtWidgets.QPushButton("+")
-        self.plus_button.clicked.connect(self.open_add_data_popup)
-        self.batch_layout.addWidget(self.plus_button)
+        # Initialize screens
+        self.single_screen = QWidget()
+        self.batch_screen = QWidget()
 
-        # Minus button to remove selected item from table
-        self.minus_button = QtWidgets.QPushButton("-")
-        self.minus_button.clicked.connect(self.remove_selected_item)
-        self.batch_layout.addWidget(self.minus_button)
+        self.screen_container.addWidget(self.single_screen)
+        self.screen_container.addWidget(self.batch_screen)
 
-        # Submit button
-        self.submit_button = QtWidgets.QPushButton("Submit")
-        self.submit_button.clicked.connect(self.submit_batch_info)
-        self.batch_layout.addWidget(self.submit_button)
+        # Setup screens
+        self.setup_single_screen()
+        self.setup_batch_screen()
 
-    def open_add_data_popup(self):
-        popup = AddDataPopup()
-        if popup.exec_():
-            device, type = popup.get_data()
-            self.add_data_to_table(device, type)
+        # Show the Single screen by default
+        self.show_single_screen()
 
-    def add_data_to_table(self, device, type):
-        row_position = self.tableWidget.rowCount()
-        self.tableWidget.insertRow(row_position)
-        self.tableWidget.setItem(row_position, 0, QTableWidgetItem(device))
-        self.tableWidget.setItem(row_position, 1, QTableWidgetItem(type))
+    def setup_single_screen(self):
+        layout = QVBoxLayout(self.single_screen)
 
-    def remove_selected_item(self):
-        selected_row = self.tableWidget.currentRow()
-        if selected_row >= 0:
-            self.tableWidget.removeRow(selected_row)
+        single_label = QLabel("Plugin Generation")
+        single_label.setStyleSheet("color: white; font-size: 18px;")
+        layout.addWidget(single_label)
 
-    def submit_batch_info(self):
-        # Implement submission logic here
+        # Main vertical layout
+        main_layout = QVBoxLayout()
+
+        # First horizontal layout for the labels and text fields
+        horizontal_layout_1 = QHBoxLayout()
+
+        # Labels
+        left_labels = ["Instrument:", "Category:", "Interface:", "Role:"]
+        for label_text in left_labels:
+            label = QLabel(label_text)
+            label.setStyleSheet("color: white;")
+            horizontal_layout_1.addWidget(label)
+
+        # Text fields
+        text_fields = []
+        for _ in range(len(left_labels)):
+            text_field = QLineEdit()
+            text_field.setMaximumWidth(250)
+            text_fields.append(text_field)
+            horizontal_layout_1.addWidget(text_field)
+
+        main_layout.addLayout(horizontal_layout_1)
+
+        # Second horizontal layout for radio buttons
+        horizontal_layout_2 = QHBoxLayout()
+
+        # Add radio buttons
+        for _ in range(len(left_labels)):
+            radio_layout = QVBoxLayout()
+            radio_button1 = QRadioButton("Option 1")
+            radio_button2 = QRadioButton("Option 2")
+            radio_layout.addWidget(radio_button1)
+            radio_layout.addWidget(radio_button2)
+            horizontal_layout_2.addLayout(radio_layout)
+
+        main_layout.addLayout(horizontal_layout_2)
+
+        layout.addLayout(main_layout)
+
+        # Spacer
+        layout.addSpacing(20)
+
+        # Generate button
+        self.generate_button = QPushButton("Generate")
+        layout.addWidget(self.generate_button, alignment=Qt.AlignmentFlag.AlignCenter)
+
+
+
+
+
+    def generate_data(self):
+            # Here you can implement the logic to process the user input
+            # This method will be triggered when the "Generate" button is clicked
         pass
+    def setup_batch_screen(self):
+        layout = QVBoxLayout(self.batch_screen)
 
-        
-    def init_single_page(self):
-        self.setGeometry(100, 100, 356, 200) 
+        batch_label = QLabel("Batch Generation")
+        batch_label.setStyleSheet("color: white; font-size: 18px;")
+        layout.addWidget(batch_label)
 
-        # Add keysight logo
-        self.photo_label = QtWidgets.QLabel()
-        pixmap = QtGui.QPixmap("keysight_logo.png")
-        pixmap = pixmap.scaledToWidth(600)
-        self.photo_label.setPixmap(pixmap)
-        self.photo_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.single_layout.addWidget(self.photo_label)
+        # Table setup
+        table = QTableWidget()
+        table.setColumnCount(5)
+        table.setHorizontalHeaderLabels(["Instrument", "Category", "SCPI Subsystems", "Interface", "Role"])
 
-        # Add title "AI-based..."
-        title_font = QtGui.QFont("Arial", 25, QtGui.QFont.Bold)  
-        self.title_label = QtWidgets.QLabel("<h2 style='font-family: Arial; font-size: 25px; font-weight: bold;'>AI-Based Plugin Generation</h2>")
-        self.title_label.setFont(title_font)  # Set the font for the title label
-        self.title_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.single_layout.addWidget(self.title_label)
+        # Set table height
+        table.setFixedHeight(400)  # Adjust the height as needed
 
-        font = QtGui.QFont("Arial")
-        font.setPointSize(12)  # Set font size to 12
+        layout.addWidget(table)
 
-        # Create labels
-        self.plugin_name_label = QtWidgets.QLabel("Plugin Name:")
-        self.plugin_name_label.setFont(font)
-        self.device_name_label = QtWidgets.QLabel("Device Name(s):")
-        self.device_name_label.setFont(font)
-        self.device_category_label = QtWidgets.QLabel("Device Category:")
-        self.device_category_label.setFont(font)
-        self.commands_label = QtWidgets.QLabel("Prefilled Commands:")
-        self.commands_label.setFont(font)
-        self.description_label = QtWidgets.QLabel("Description:")
-        self.description_label.setFont(font)
-        self.language_label = QtWidgets.QLabel("Choose Language:")
-        self.language_label.setFont(font)
-        self.zip_path_label = QtWidgets.QLabel("Input path for zip file to save under:")
-        self.zip_path_label.setFont(font)
+        # Plus and minus buttons layout
+        buttons_layout = QHBoxLayout()
 
-        # Create entry fields
-        self.plugin_name_input = QtWidgets.QLineEdit()
-        self.plugin_name_input.setFont(font)
-        self.device_name_input = QtWidgets.QLineEdit()
-        self.device_name_input.setFont(font)
-        self.description_input = QtWidgets.QTextEdit()
-        self.description_input.setFont(font)
-        self.zip_path_input = QtWidgets.QLineEdit()
-        self.zip_path_input.setFont(font)
+        plus_button = QPushButton("+")
+        plus_button.clicked.connect(self.show_add_entry_dialog)
+        buttons_layout.addWidget(plus_button)
 
-        # Checkboxes for prefilled commands
-        self.commands = [
-            ("Startup", False), # All commands are off by default
-            ("Charge", False),  
-            ("Discharge", False),
-        ]
-        
-        # Create dropdown menu for device category
-        self.device_category_combo = QtWidgets.QComboBox()
-        self.device_category_combo.setFont(font)
-        self.device_category_combo.addItems([
-            "Generators", "Sources", "Power Products", "Oscilloscopes",
-            "Analyzer", "Meters", "Modular Instruments", "Software",
-            "Common Commands", "Power Supplies", "Other"
-        ])
+        minus_button = QPushButton("-")
+        minus_button.clicked.connect(self.delete_selected_entry)
+        buttons_layout.addWidget(minus_button)
 
-        # Set font size for the combo box items
-        combo_font = QtGui.QFont("Arial", 12)  # Set the font size to 12
-        self.device_category_combo.setFont(combo_font)
+        # Add stretch to push buttons to the right
+        buttons_layout.addStretch()
 
-        # Create radio buttons
-        self.csharp_button = QtWidgets.QRadioButton("C#")
-        self.csharp_button.setFont(font)
-        self.python_button = QtWidgets.QRadioButton("Python")
-        self.python_button.setFont(font)
-        self.button_group = QtWidgets.QButtonGroup()
-        self.button_group.addButton(self.csharp_button)
-        self.button_group.addButton(self.python_button)
-        self.python_button.setChecked(True)  # Set default selection to Python
+        layout.addLayout(buttons_layout)
 
-        # Create submit button
-        font_generate = QtGui.QFont("Arial")
-        font_generate.setPointSize(14)  # Set font size to 14
-        self.submit_button = QtWidgets.QPushButton("Generate")
-        self.submit_button.setFont(font_generate)
-        self.submit_button.clicked.connect(self.submit_info)
-        self.submit_button.setFixedSize(200, 80)
+        # Generate button
+        generate_button = QPushButton("Generate")
+        generate_button.clicked.connect(self.generate_data)
 
-        # Add widgets to layout
-        self.single_layout.addWidget(self.plugin_name_label)
-        self.single_layout.addWidget(self.plugin_name_input)
-        self.single_layout.addWidget(self.device_name_label)
-        self.single_layout.addWidget(self.device_name_input)
-        self.single_layout.addWidget(self.zip_path_label)
-        self.single_layout.addWidget(self.zip_path_input)
-
-        # Dictionary to hold the command name and its checkbox widget
-        self.command_checkboxes = {}
-
-        self.single_layout.addWidget(self.commands_label)
-        # Create a checkbox for each command
-        for command_name, is_checked in self.commands:
-            checkbox = QtWidgets.QCheckBox(command_name)
-            checkbox.setFont(font)
-            checkbox.setChecked(is_checked)
-            self.single_layout.addWidget(checkbox)
-            self.command_checkboxes[command_name] = checkbox
-
-        self.single_layout.addWidget(self.device_category_label)
-        self.single_layout.addWidget(self.device_category_combo)
-        self.single_layout.addWidget(self.description_label)
-        self.single_layout.addWidget(self.description_input)
-        self.single_layout.addWidget(self.language_label)
-        self.single_layout.addWidget(self.csharp_button)
-        self.single_layout.addWidget(self.python_button)
-        # self.single_layout.addWidget(self.python_button)
-        self.single_layout.addWidget(self.submit_button, alignment=QtCore.Qt.AlignHCenter)
-
-        # Set window title
-        self.setWindowTitle("Plugin Generator")
-
-        # Show the window
-        self.show()
-
-    # Retrieves user input from the form and displays a popup window
-    def submit_info(self):
-        selected_commands = [command for command, checkbox in self.command_checkboxes.items() if checkbox.isChecked()]
-
-        # to add: interface option on ui box, role option
-        payload = {"deviceName" : self.device_name_input.text(),
-                "category" : self.device_name_input.text(),  
-                "commands" : selected_commands,
-                "interface" : "none specified", 
-                "progLang" : "Python",
-                "role" : "As a test engineer, I want to create a plugin in Python to interface with this instrument",
-                "useCase" : "generate_plugin"}
+        # Add generate button to the right
+        generate_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)  # Set size policy
+        buttons_layout.addWidget(generate_button, alignment=Qt.AlignmentFlag.AlignRight)
 
 
-        api_url = "http://127.0.0.1:5000/generate_plugin" 
 
-        # Specify the timeout value in seconds
-        timeout_seconds = 180  # Adjust this value as needed
+    def show_add_entry_dialog(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Add Entry")
 
-        response = requests.post(api_url, json=payload, timeout=timeout_seconds)
+        layout = QVBoxLayout(dialog)
 
-        # Error handling 
-        if response.status_code == 200:
-            if response.headers.get('Content-Type') == 'application/json':
-                result = response.json()
-            else:
-                try:
-                    with open(f"{self.zip_path_input.text()}/{self.device_name_input.text()}.zip", 'wb') as f:
-                        f.write(response.content)
-                    print("Downloaded successfully.")
-                    self.close() # close the popup window
-                except Exception as e:
-                    print("error", e)
-        else:
-            print("Error:", response.status_code, response.text)
+        # Add input fields
+        instrument_label = QLabel("Instrument:")
+        instrument_input = QLineEdit()
+        layout.addWidget(instrument_label)
+        layout.addWidget(instrument_input)
 
+        category_label = QLabel("Category:")
+        category_input = QLineEdit()
+        layout.addWidget(category_label)
+        layout.addWidget(category_input)
+
+        scpi_label = QLabel("SCPI Subsystems:")
+        scpi_input = QLineEdit()
+        layout.addWidget(scpi_label)
+        layout.addWidget(scpi_input)
+
+        interface_label = QLabel("Interface:")
+        interface_input = QLineEdit()
+        layout.addWidget(interface_label)
+        layout.addWidget(interface_input)
+
+        role_label = QLabel("Role:")
+        role_input = QLineEdit()
+        layout.addWidget(role_label)
+        layout.addWidget(role_input)
+
+        # Add OK button to confirm entry
+        ok_button = QPushButton("OK")
+        ok_button.clicked.connect(lambda: self.add_entry_to_table(dialog, instrument_input.text(), category_input.text(), scpi_input.text(), interface_input.text(), role_input.text()))
+        layout.addWidget(ok_button)
+
+        dialog.exec()
+
+    def add_entry_to_table(self, dialog, instrument, category, scpi, interface, role):
+        # Assuming 'table' is accessible here as it is a member of the class
+        table = self.findChild(QTableWidget)
+        row_position = table.rowCount()
+        table.insertRow(row_position)
+        table.setItem(row_position, 0, QTableWidgetItem(instrument))
+        table.setItem(row_position, 1, QTableWidgetItem(category))
+        table.setItem(row_position, 2, QTableWidgetItem(scpi))
+        table.setItem(row_position, 3, QTableWidgetItem(interface))
+        table.setItem(row_position, 4, QTableWidgetItem(role))
+        dialog.close()
+
+    def delete_selected_entry(self):
+        # Assuming 'table' is accessible here as it is a member of the class
+        table = self.findChild(QTableWidget)
+        selected_row = table.currentRow()
+        if selected_row >= 0:
+            table.removeRow(selected_row)
+
+    def show_single_screen(self):
+        self.screen_container.setCurrentWidget(self.single_screen)
+
+    def show_batch_screen(self):
+        self.screen_container.setCurrentWidget(self.batch_screen)
+
+    def show_loading_dialog(self):
+        self.loading_dialog = QDialog(self)
+        self.loading_dialog.setWindowTitle("Loading...")
+        self.loading_dialog.setFixedSize(200, 100)
+
+        layout = QVBoxLayout(self.loading_dialog)
+        label = QLabel("Processing...")
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        progress = QProgressBar()
+        progress.setMinimum(0)
+        progress.setMaximum(100)
+
+        layout.addWidget(label)
+        layout.addWidget(progress)
+
+        # Start a thread to simulate loading
+        self.loading_thread = LoadingThread()
+        self.loading_thread.progress_update.connect(progress.setValue)
+        self.loading_thread.start()
+
+        self.loading_dialog.exec()
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication([])
-    window = PluginGeneratorApp()
-    window.show()  # Add this line
-    app.exec_()
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec())
