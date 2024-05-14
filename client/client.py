@@ -273,7 +273,14 @@ class MainWindow(QMainWindow):
 
        # Row 4
         form_layout.addWidget(QLabel("Role:"), 3, 0)
-        role_input = QLineEdit()
+        role_input = QComboBox()
+        role_input.addItems([
+            "Administrator",
+            "Developer",
+            "Tester/QA",
+            "End User",
+            "Contributor/Community Member"
+        ])
         form_layout.addWidget(role_input, 3, 1)
 
         form_layout.addWidget(QLabel("Device Category:"), 3, 2)
@@ -288,7 +295,7 @@ class MainWindow(QMainWindow):
 
         # Add button
         add_button = QPushButton("ADD")
-        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.text(), scpi_input.currentText(), device_name_input.text(), language_input.currentText(), save_path_input.text(), interface_input.currentText(), role_input.text(), device_category_input.currentText()))
+        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.text(), scpi_input.currentText(), device_name_input.text(), language_input.currentText(), save_path_input.text(), interface_input.currentText(), role_input.currentText(), device_category_input.currentText()))
         layout.addWidget(add_button)
 
         dialog.exec()
