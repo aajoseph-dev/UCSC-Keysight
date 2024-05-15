@@ -1,7 +1,7 @@
 # UCSC-Keysight
 Using generative AI to automate plugin generation to connect to Keysight's OpenTAP.
 
-## Get Started:
+## Getting Started:
 To utilize this automated plugin generation tool, follow these steps:
 
 1. Clone the repo.
