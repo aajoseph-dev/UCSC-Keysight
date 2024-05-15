@@ -1,6 +1,18 @@
 # UCSC-Keysight
 Using generative AI to automate plugin generation to connect to Keysight's OpenTAP.
 
+## Get Started:
+To utilize this automated plugin generation tool, follow these steps:
+
+1. Clone the repo.
+2. Open VS Code.
+3. In a VS Code terminal run: ```pip install -r requirements.txt```
+4. Run python3 app.py in one terminal to start the server.
+5. Run python3 client.py to start the client application to get the popup window to appear.
+6. Enter in your device specs into the popup window.
+7. Wait for the program to generate your plugin.
+8. Plugin gets saved into the location that you specified in the popup window.
+
 ## Terminology
 * **OpenTAP** - Keysight’s open source test automation project that automates standardized testing for devices, such as power supplies and batteries.
 * **Plugin** - Software used to communicate between OpenTAP and the instrument being tested. Need a different plugin to connect to OpenTAP for every instrument.
@@ -54,18 +66,6 @@ Using generative AI to automate plugin generation to connect to Keysight's OpenT
 * We were able to decrease development time so that test engineers can focus on testing their device rather than software development.
 * In the future, more time can be spent on fine tuning the prompt passed to the LLMs to produce the most accurate plugin.
 * Additionally, the database that the LLMs have access to can be expanded with more extensive documentation to increase the quality of plugins that are produced.
-
-## Get Started:
-To utilize this automated plugin generation tool, follow these steps:
-
-1. Clone the repo.
-2. Open VS Code.
-3. In a VS Code terminal run: ```pip install -r requirements.txt```
-4. Run python3 app.py in one terminal to start the server.
-5. Run python3 client.py to start the client application to get the popup window to appear.
-6. Enter in your device specs into the popup window.
-7. Wait for the program to generate your plugin.
-8. Plugin gets saved into the location that you specified in the popup window.
 
 ## Acknowledgements
 
