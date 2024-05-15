@@ -8,7 +8,99 @@ class PromptTemplates:
         self.role = data.get("role")
         self.context = context
 
-    def generate_plugin_prompt(self, command):
+
+    def generate_instrument_prompt(self):
+        return f"""
+        Generate an OpenTAP test instrument declaration in {self.prog_lang} for the following device: {self.category} {self.device_name}
+        Instructions:
+        - Along with the standard python libraries you have access to these:
+            -OpenTap
+            -opentap
+            -pythonnet==3.0.3
+            -numpy==1.26.4
+            -debugpy==1.8.1
+
+        Example code for guidance:
+            from opentap import *
+            from System import Double, String
+            import OpenTap
+            import time
+
+            @attribute(OpenTap.Display("Infiniium", "A basic example of a SCPI instrument driver.", "Infiniium"))
+            class Scope(OpenTap.ScpiInstrument):
+                
+                def __init__(self):
+                    super(Scope, self).__init__()
+                    self.log = Trace(self)
+                    self.Name = "Infiniium"
+                
+                def GetIdnString(self):
+                    a = self.ScpiQuery[String]("*IDN?")
+                    return a
+                
+                def reset(self):
+                    self.normalSCPI(":SYSTem:PRESet FACTory")
+
+                def Setup(self, WfmPosPath, WfmNegPath ):
+                    self.normalSCPI(":CHANnel1:DISPlay OFF")
+                    self.normalSCPI(f':DISK:LOAD "{{WfmPosPath}}", WMEMory1, INT16')
+                    self.normalSCPI(":WMEMory1:DISPlay ON")
+                    # self.normalSCPI(f':DISK:DELete "{{WfmPosPath}}"')
+                    self.normalSCPI(f':DISK:LOAD "{{WfmNegPath}}", WMEMory2, INT16')
+                    self.normalSCPI(":WMEMory2:DISPlay ON")
+                    # self.normalSCPI(f':DISK:DELete "{{WfmNegPath}}"')
+                    self.normalSCPI(":TIMebase:REFerence:PERCent 25")
+                    self.normalSCPI(":TIMebase:RANGe 1e-05")
+                    self.normalSCPI(":FUNCtion1:SUBTract WMEMory1, WMEMory2")
+                    self.normalSCPI(":DISPlay:MAIN OFF, WMEMory1")
+                    self.normalSCPI(":DISPlay:MAIN OFF, WMEMory2")
+                    self.normalSCPI(":FUNCtion1:DISPlay ON")
+
+                def eyediagram(self, bitrate):
+                    self.normalSCPI(':ANALyze:SIGNal:TYPE FUNC1, PAM4')
+                    self.normalSCPI(':MEASure:STATistics MEAN')
+                    self.normalSCPI(f':ANALyze:SIGNal:DATarate FUNCtion1, {{str(bitrate*1E+09)}}')
+                    self.normalSCPI(":DISPlay:MAIN OFF, FUNCtion1")
+                    self.normalSCPI(':MTESt:FOLDing On, FUNCtion1')
+                
+                def CTLE(self, symbolRate, dcGain, z1Freq, z2Freq, P1Freq, P2Freq, P3Freq):
+                    self.normalSCPI(":LANE1:SOURce Func1")
+                    self.normalSCPI(":LANE1:EQUalizer:CTLE:NUMPoles P3Z2")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:DCGain {{dcGain}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:Z1 {{z1Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:Z2 {{z2Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:P1 {{P1Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:P2 {{P2Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:P3 {{P3Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:RATE{{str(symbolRate*1E+09)}}")
+                    self.normalSCPI(':MTESt:FOLDing OFF, FUNCtion1')
+                    self.normalSCPI(":LANE1:EQUalizer:CTLE:STATe  ON")
+                    self.normalSCPI(":LANE1:STATe ON")
+                    self.normalSCPI(':ANALyze:SIGNal:TYPE EQUalized1, PAM4')
+                    self.normalSCPI(f':ANALyze:SIGNal:SYMBolrate EQUalized1, {{str(symbolRate*1E+09)}}')
+
+                    self.normalSCPI(":DISPlay:MAIN OFF, EQUalized")
+                    
+                    self.normalSCPI(':MTESt:FOLDing On, EQUalized')
+                    
+                def opc(self):
+                    complete = self.ScpiQuery[Double]('*OPC?')
+                    while complete != 1:
+                        complete = self.ScpiQuery[Double]('*OPC?')
+
+                def normalSCPI(self, SCPI):
+                    self.ScpiCommand(SCPI)
+                    self.opc()
+                
+                def querySCPI(self, format, SCPI):
+                    result = self.ScpiQuery[format](SCPI)
+                    self.opc()
+                    return result
+
+
+        """
+
+    def generate_steps_prompt(self, command):
         return f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
         Context:
         - Device Name: {self.device_name}
@@ -27,63 +119,9 @@ class PromptTemplates:
             -OpenTap
             -opentap
             -pythonnet==3.0.3
-            -PyVISA==1.14.1
-            -visa==2.21.0
             -numpy==1.26.4
             -debugpy==1.8.1
 
-        Example code for guidance:
-            import sys
-            import clr
-            import math
-            import opentap
-            from opentap import *
+            
 
-            from System import Array, Double, Byte, Int32
-            from System.Diagnostics import Stopwatch
-            import OpenTap
-            from OpenTap import Log, DisplayAttribute, Display, Output, Unit, OutputAttribute, UnitAttribute
-            from .SamplingStepBase import SamplingStepBase
-
-            #This is how attributes are used:
-            @attribute(Display(Name="Charge", Description="Simulated scenario of an emulated power analyzer charging a battery and measuring the voltage curve.", Groups= ["Python Example", "Battery Test"]))
-            class ChargeStep(SamplingStepBase):
-                # Properties
-                Current = property(Double, 10)\
-                    .add_attribute(Unit("A"))\
-                    .add_attribute(Display("Charge Current", "", "Power Supply", -1, True))
-                Voltage = property(Double, 0.1)\
-                    .add_attribute(Unit("V"))\
-                    .add_attribute(Display(Name="Voltage", Group="Power Supply", Order=0, Collapsed=True))
-                TargetCellVoltageMargin = property(Double, 0.1)\
-                    .add_attribute(Display("Target Voltage Margin", "", "Cell", -1))\
-                    .add_attribute(Unit("V"))
-                ChargeType = property(Double, 0.0)\
-                    .add_attribute(Unit("s"))\
-                    .add_attribute(Display("Charge Time", "", "Output", 0))\
-                    .add_attribute(Output())
-                    
-                def __init__(self):
-                    super(ChargeStep, self).__init__() # The base class initializer must be invoked.
-                    
-                def Run(self):
-                    sw = Stopwatch.StartNew()
-                    self.PowerAnalyzer.Setup(self.Voltage, self.Current)
-                    self.PowerAnalyzer.EnableOutput()
-                    self.log.Info("Charging at: " + str(self.Current) + "A" + " Target Voltage: " + str(self.Voltage) + "V")
-                    super(ChargeStep, self).Run()
-                    self.PowerAnalyzer.DisableOutput()
-                    self.ChargeTime = sw.Elapsed.TotalSeconds
-
-                def WhileSampling(self):
-                    while math.fabs(self.PowerAnalyzer.MeasureVoltage() - self.Voltage) > self.TargetCellVoltageMargin:
-                        OpenTap.TapThread.Sleep(50)
-
-                def OnSample(self, voltage, current, sampleNo):
-                    barVoltage = OpenTap.TraceBar()
-                    barVoltage.LowerLimit = 2
-                    barVoltage.UpperLimit = 4.7
-                    self.log.Info("Voltage: " + str(barVoltage.GetBar(voltage)))
-                    v = math.trunc(voltage * 100) / 100.0
-                    c = math.trunc(current * 100) / 100.0
-                    self.PublishResult("Charge", ["Sample Number", "Voltage", "Current"], [sampleNo, v, c])"""
+             """

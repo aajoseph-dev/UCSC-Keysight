@@ -21,7 +21,7 @@ from azure.search.documents import SearchClient
 from promptTemplates import *
 from app import *
 
-def llm_code_check(command, code, device_name):
+def llm_code_check(command, code, device_name, selection): # selction 0 for test step; selection 1 for instrument
     load_dotenv()
 
     sid = SentimentIntensityAnalyzer()
@@ -32,19 +32,37 @@ def llm_code_check(command, code, device_name):
             api_version="2024-02-15-preview"
     )
 
-    context = callAISearch(command)
+    prompt = ""
 
-    prompt = f"""Is the following code an acceptable file to be part of a Opentap plugin. This file is 
-                the {command} subsystem for the {device_name}:
-                
-                Here is some revelant documentation related to the device use it to verify the following code:
-                
-                documentation:
-                {context}
+    if selection == 0:
+        context = callAISearch(command)
+        
+        prompt = f"""Is the following code an acceptable file to be part of a Opentap plugin. This file is 
+                    the {command} subsystem for the {device_name}:
+                    
+                    Here is some revelant documentation related to the device use it to verify the following code:
+                    
+                    documentation:
+                    {context}
 
-                Verify this code:
-                {code}
-                """
+                    Verify this code:
+                    {code}
+                    """
+    elif selection == 1:
+        context = callAISearch(command)
+        
+        prompt = f"""Is the following code an acceptable file to be a test instrument declaration for an Opentap plugin. 
+                    This file is for the {device_name}.
+                    
+                    Here is some revelant documentation related to the device use it to verify the following code:
+                    
+                    documentation:
+                    {context}
+
+                    Verify this code:
+                    {code}
+                    """
+
     message_text = [{"role":"system", "content":"You are an AI assistant that helps people verify Opentap plugins."}, 
                     {"role": "user", "content": prompt}]
 
