@@ -1,5 +1,5 @@
 import sys
-from PyQt6.QtWidgets import QRadioButton, QSizePolicy, QTableWidget, QTableWidgetItem, QPushButton, QComboBox, QApplication, QFileDialog, QStackedWidget, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QVBoxLayout, QWidget, QDialog, QProgressBar
+from PyQt6.QtWidgets import QRadioButton, QSizePolicy, QTableWidget, QTableWidgetItem, QPushButton, QComboBox, QApplication, QFileDialog, QStackedWidget, QHBoxLayout, QLabel, QLineEdit, QMainWindow, QVBoxLayout, QWidget, QDialog, QProgressBar, QGridLayout
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, QThread
 from PyQt6 import QtCore
@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(self.single_screen)
 
         single_label = QLabel("Plugin Generation")
-        single_label.setStyleSheet("color: white; font-size: 18px;")
+        single_label.setStyleSheet("color: black; font-size: 18px;")
         layout.addWidget(single_label)
 
         # Main vertical layout
@@ -141,18 +141,18 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout(self.batch_screen)
 
         batch_label = QLabel("Batch Generation")
-        batch_label.setStyleSheet("color: white; font-size: 18px;")
+        batch_label.setStyleSheet("color: black; font-size: 18px;")
         layout.addWidget(batch_label)
 
         # Table setup
-        table = QTableWidget()
-        table.setColumnCount(5)
-        table.setHorizontalHeaderLabels(["Instrument", "Category", "SCPI Subsystems", "Interface", "Role"])
+        self.table = QTableWidget()
+        self.table.setColumnCount(8)
+        self.table.setHorizontalHeaderLabels(["Plugin Name", "SCPI Subsystems", "Device Name", "Language", "Path to Save File", "Interface", "Role", "Device Category"])
 
         # Set table height
-        table.setFixedHeight(400)  # Adjust the height as needed
+        self.table.setFixedHeight(400)
 
-        layout.addWidget(table)
+        layout.addWidget(self.table)
 
         # Plus and minus buttons layout
         buttons_layout = QHBoxLayout()
@@ -178,57 +178,98 @@ class MainWindow(QMainWindow):
         generate_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)  # Set size policy
         buttons_layout.addWidget(generate_button, alignment=Qt.AlignmentFlag.AlignRight)
 
-
-
     def show_add_entry_dialog(self):
         dialog = QDialog(self)
         dialog.setWindowTitle("Add Entry")
 
         layout = QVBoxLayout(dialog)
 
-        # Add input fields
-        instrument_label = QLabel("Instrument:")
-        instrument_input = QLineEdit()
-        layout.addWidget(instrument_label)
-        layout.addWidget(instrument_input)
+        form_layout = QGridLayout()
 
-        category_label = QLabel("Category:")
-        category_input = QLineEdit()
-        layout.addWidget(category_label)
-        layout.addWidget(category_input)
+        # Row 1
+        form_layout.addWidget(QLabel("Plugin Name:"), 0, 0)
+        plugin_name_input = QLineEdit()
+        form_layout.addWidget(plugin_name_input, 0, 1)
 
-        scpi_label = QLabel("SCPI Subsystems:")
-        scpi_input = QLineEdit()
-        layout.addWidget(scpi_label)
-        layout.addWidget(scpi_input)
+        form_layout.addWidget(QLabel("SCPI Subsystems:"), 0, 2)
+        scpi_input = QComboBox()
+        scpi_input.addItems(["Subsystem1", "Subsystem2", "Subsystem3"]) 
+        form_layout.addWidget(scpi_input, 0, 3)
 
-        interface_label = QLabel("Interface:")
-        interface_input = QLineEdit()
-        layout.addWidget(interface_label)
-        layout.addWidget(interface_input)
+        # Row 2
+        form_layout.addWidget(QLabel("Device Name:"), 1, 0)
+        device_name_input = QLineEdit()
+        form_layout.addWidget(device_name_input, 1, 1)
 
-        role_label = QLabel("Role:")
-        role_input = QLineEdit()
-        layout.addWidget(role_label)
-        layout.addWidget(role_input)
+        form_layout.addWidget(QLabel("Language:"), 1, 2)
+        language_input = QComboBox()
+        language_input.addItems(["Python", "C#"])
+        form_layout.addWidget(language_input, 1, 3)
 
-        # Add OK button to confirm entry
-        ok_button = QPushButton("OK")
-        ok_button.clicked.connect(lambda: self.add_entry_to_table(dialog, instrument_input.text(), category_input.text(), scpi_input.text(), interface_input.text(), role_input.text()))
-        layout.addWidget(ok_button)
+        # Row 3
+        form_layout.addWidget(QLabel("Path to Save File:"), 2, 0)
+        save_path_input = QLineEdit()
+        form_layout.addWidget(save_path_input, 2, 1)
+
+        form_layout.addWidget(QLabel("Interface:"), 2, 2)
+        interface_input = QComboBox()
+        interface_input.addItems([
+            "USB (Universal Serial Bus)",
+            "LAN (Local Area Network)",
+            "GPIB (General Purpose Interface Bus)",
+            "GPIB-USB or GPIB-to-USB Converters",
+            "RS-232 (Recommended Standard 232)",
+            "IEEE 802.11 (Wi-Fi)",
+            "PCI (Peripheral Component Interconnect)",
+            "PCIe (Peripheral Component Interconnect Express)",
+            "PXI (PCI eXtensions for Instrumentation)",
+            "VXI (VME eXtensions for Instrumentation)",
+            "Thunderbolt",
+            "Fiber Optic"])
+        form_layout.addWidget(interface_input, 2, 3)
+
+       # Row 4
+        form_layout.addWidget(QLabel("Role:"), 3, 0)
+        role_input = QComboBox()
+        role_input.addItems([
+            "Administrator",
+            "Developer",
+            "Tester/QA",
+            "End User",
+            "Contributor/Community Member"
+        ])
+        form_layout.addWidget(role_input, 3, 1)
+
+        form_layout.addWidget(QLabel("Device Category:"), 3, 2)
+        device_category_input = QComboBox()
+        device_category_input.addItems([
+            "Generator", "Power Source", "Power Products", "Oscilloscope",
+            "Analyzer", "Meter", "Modular Instrument", "Software",
+            "Common Command", "Power Supply", "Other"])
+        form_layout.addWidget(device_category_input, 3, 3)
+
+        layout.addLayout(form_layout)
+
+        # Add button
+        add_button = QPushButton("ADD")
+        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.text(), scpi_input.currentText(), device_name_input.text(), language_input.currentText(), save_path_input.text(), interface_input.currentText(), role_input.currentText(), device_category_input.currentText()))
+        layout.addWidget(add_button)
 
         dialog.exec()
 
-    def add_entry_to_table(self, dialog, instrument, category, scpi, interface, role):
+    def add_entry_to_table(self, dialog, plugin_name, scpi, device_name, language, save_path, interface, device_category, role):
         # Assuming 'table' is accessible here as it is a member of the class
         table = self.findChild(QTableWidget)
         row_position = table.rowCount()
         table.insertRow(row_position)
-        table.setItem(row_position, 0, QTableWidgetItem(instrument))
-        table.setItem(row_position, 1, QTableWidgetItem(category))
-        table.setItem(row_position, 2, QTableWidgetItem(scpi))
-        table.setItem(row_position, 3, QTableWidgetItem(interface))
-        table.setItem(row_position, 4, QTableWidgetItem(role))
+        table.setItem(row_position, 0, QTableWidgetItem(plugin_name))
+        table.setItem(row_position, 1, QTableWidgetItem(scpi))
+        table.setItem(row_position, 2, QTableWidgetItem(device_name))
+        table.setItem(row_position, 3, QTableWidgetItem(language))
+        table.setItem(row_position, 4, QTableWidgetItem(save_path))
+        table.setItem(row_position, 5, QTableWidgetItem(interface))
+        table.setItem(row_position, 6, QTableWidgetItem(role))
+        table.setItem(row_position, 7, QTableWidgetItem(device_category))
         dialog.close()
 
     def delete_selected_entry(self):
