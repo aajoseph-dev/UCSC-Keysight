@@ -81,54 +81,77 @@ class MainWindow(QMainWindow):
         single_label.setStyleSheet("color: black; font-size: 18px;")
         layout.addWidget(single_label)
 
-        # Main vertical layout
-        main_layout = QVBoxLayout()
+        form_layout = QGridLayout()
 
-        # First horizontal layout for the labels and text fields
-        horizontal_layout_1 = QHBoxLayout()
+        # Row 1
+        form_layout.addWidget(QLabel("Instrument:"), 0, 0)
+        instrument_input = QLineEdit()
+        form_layout.addWidget(instrument_input, 0, 1)
 
-        # Labels
-        left_labels = ["Instrument:", "Category:", "Interface:", "Role:"]
-        for label_text in left_labels:
-            label = QLabel(label_text)
-            label.setStyleSheet("color: white;")
-            horizontal_layout_1.addWidget(label)
+        form_layout.addWidget(QLabel("SCPI Subsystems:"), 0, 2)
+        scpi_input = QComboBox()
+        scpi_input.addItems(["Subsystem1", "Subsystem2", "Subsystem3"]) 
+        form_layout.addWidget(scpi_input, 0, 3)
 
-        # Text fields
-        text_fields = []
-        for _ in range(len(left_labels)):
-            text_field = QLineEdit()
-            text_field.setMaximumWidth(250)
-            text_fields.append(text_field)
-            horizontal_layout_1.addWidget(text_field)
+        # Row 2
+        form_layout.addWidget(QLabel("Device Name:"), 1, 0)
+        device_name_input = QLineEdit()
+        form_layout.addWidget(device_name_input, 1, 1)
 
-        main_layout.addLayout(horizontal_layout_1)
+        form_layout.addWidget(QLabel("Language:"), 1, 2)
+        language_input = QComboBox()
+        language_input.addItems(["Python", "C#"])
+        form_layout.addWidget(language_input, 1, 3)
 
-        # Second horizontal layout for radio buttons
-        horizontal_layout_2 = QHBoxLayout()
+        # Row 3
+        form_layout.addWidget(QLabel("Path to Save File:"), 2, 0)
+        save_path_input = QLineEdit()
+        form_layout.addWidget(save_path_input, 2, 1)
 
-        # Add radio buttons
-        for _ in range(len(left_labels)):
-            radio_layout = QVBoxLayout()
-            radio_button1 = QRadioButton("Option 1")
-            radio_button2 = QRadioButton("Option 2")
-            radio_layout.addWidget(radio_button1)
-            radio_layout.addWidget(radio_button2)
-            horizontal_layout_2.addLayout(radio_layout)
+        form_layout.addWidget(QLabel("Interface:"), 2, 2)
+        interface_input = QComboBox()
+        interface_input.addItems([
+            "USB (Universal Serial Bus)",
+            "LAN (Local Area Network)",
+            "GPIB (General Purpose Interface Bus)",
+            "GPIB-USB or GPIB-to-USB Converters",
+            "RS-232 (Recommended Standard 232)",
+            "IEEE 802.11 (Wi-Fi)",
+            "PCI (Peripheral Component Interconnect)",
+            "PCIe (Peripheral Component Interconnect Express)",
+            "PXI (PCI eXtensions for Instrumentation)",
+            "VXI (VME eXtensions for Instrumentation)",
+            "Thunderbolt",
+            "Fiber Optic"
+        ])
+        form_layout.addWidget(interface_input, 2, 3)
 
-        main_layout.addLayout(horizontal_layout_2)
+        # Row 4
+        form_layout.addWidget(QLabel("Role:"), 3, 0)
+        role_input = QComboBox()
+        role_input.addItems([
+            "Administrator",
+            "Developer",
+            "Tester/QA",
+            "End User",
+            "Contributor/Community Member"
+        ])
+        form_layout.addWidget(role_input, 3, 1)
 
-        layout.addLayout(main_layout)
+        form_layout.addWidget(QLabel("Device Category:"), 3, 2)
+        device_category_input = QComboBox()
+        device_category_input.addItems([
+            "Generator", "Power Source", "Power Products", "Oscilloscope",
+            "Analyzer", "Meter", "Modular Instrument", "Software",
+            "Common Command", "Power Supply", "Other"
+        ])
+        form_layout.addWidget(device_category_input, 3, 3)
 
-        # Spacer
-        layout.addSpacing(20)
+        layout.addLayout(form_layout)
 
         # Generate button
         self.generate_button = QPushButton("Generate")
         layout.addWidget(self.generate_button, alignment=Qt.AlignmentFlag.AlignCenter)
-
-
-
 
 
     def generate_data(self):
