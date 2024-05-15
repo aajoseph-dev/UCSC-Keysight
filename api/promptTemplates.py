@@ -1,4 +1,5 @@
-#update to focus on test steps not plugins
+#update to focus on plugins not test steps
+
 class PromptTemplates:
     def __init__(self, data, context):
         self.device_name = data.get("deviceName")

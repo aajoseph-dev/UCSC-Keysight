@@ -72,7 +72,7 @@ def handleRequest():
                 buildXML(deviceName, path)
                 packageFiles(path, path_to_zip)
                 # return send_file(path_to_zip, as_attachment=True)
-                # pass the 2nd llm's response to the 1st llm
+                # pass the 2nd llm's response to the 1st llm 
                 # 1st llm regenerates the plugin
             else: # response_dict["Sentiment"] == "Neutral" or "Positive":
                 print("Sentiment was Not Negative")
@@ -252,8 +252,6 @@ def buildXML(plugin_name, folder_path):
     # Create the description element with prerequisites
     description = doc.createElement('Description')
     package.appendChild(description)
-    description_text = doc.createTextNode('TEST')
-    description.appendChild(description_text)
 
     prerequisites = doc.createElement('Prerequisites')
     description.appendChild(prerequisites)
@@ -269,10 +267,10 @@ def buildXML(plugin_name, folder_path):
     opentap_dependency.setAttribute('Package', 'OpenTAP')
     opentap_dependency.setAttribute('Version', '^9.18.2')
 
-    python_dependency = doc.createElement('PackageDependency')
-    dependencies.appendChild(python_dependency)
-    python_dependency.setAttribute('Package', 'Python')
-    python_dependency.setAttribute('Version', '^$(GitVersion)')
+    # python_dependency = doc.createElement('PackageDependency')
+    # dependencies.appendChild(python_dependency)
+    # python_dependency.setAttribute('Package', 'Python')
+    # python_dependency.setAttribute('Version', '^$(GitVersion)')
 
     # Create the files section
     files = doc.createElement('Files')
@@ -280,7 +278,11 @@ def buildXML(plugin_name, folder_path):
 
     file_element = doc.createElement('File')
     files.appendChild(file_element)
-    file_element.setAttribute('Path', folder_path)
+    file_element.setAttribute('Path', "*.py")
+
+    file_element = doc.createElement('File')
+    files.appendChild(file_element)
+    file_element.setAttribute('Path', "requirements.txt")
 
     project_file = doc.createElement('ProjectFile')
     file_element.appendChild(project_file)

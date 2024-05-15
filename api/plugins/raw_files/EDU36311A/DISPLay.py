@@ -1,55 +1,62 @@
-
+import opentap
+from opentap import *
+from System import String, Int32
 import visa
 
-class PowerSupplyDisplay:
-    def __init__(self, resource_name):
-        # Establish connection to the instrument
-        self.rm = visa.ResourceManager()
-        self.instrument = self.rm.open_resource(resource_name)
+@attribute(OpenTap.DisplayAttribute, "EDU36311A Power Supply", "SCPI Plugin for controlling EDU36311A Power Supply", "Power Supply")
+class EDU36311APowerSupply(Instrument):
+    def __init__(self):
+        super().__init__()  # Initialize the base class
+        self._visa_resource_manager = visa.ResourceManager()
+        self._instrument = None
+        self.VisaAddress = property(String, "USB0::0x2A8D::0x1202::MY1234567::INSTR")  # Example VISA address
+        self.Channel = property(Int32, 1)  # Default channel number
 
-    def enable_display(self, enable=True):
-        """
-        Enable or disable the display of the power supply.
-        :param enable: True to enable the display, False to disable it.
-        """
-        state = 'ON' if enable else 'OFF'
-        self.instrument.write(f':DISPlay:ENABle {state}')
+    def Open(self):
+        super().Open()  # Call the base class Open method
+        self._instrument = self._visa_resource_manager.open_resource(self.VisaAddress)
 
-    def query_display_enabled(self):
+    def Close(self):
+        if self._instrument is not None:
+            self._instrument.close()
+        super().Close()  # Call the base class Close method
+
+    def SetChannelDisplay(self, channel, display_on):
         """
-        Query the current status of the display (enabled or disabled).
-        :return: True if the display is enabled, False if it is disabled.
+        Turns the display of the specified channel on or off.
+        :param channel: Channel number (1 to # analog channels)
+        :param display_on: True to turn on display, False to turn off
         """
-        response = self.instrument.query(':DISPlay:ENABle?')
+        display_value = 'ON' if display_on else 'OFF'
+        command = f":CHANnel{channel}:DISPlay {display_value}"
+        self._instrument.write(command)
+
+    def GetChannelDisplay(self, channel):
+        """
+        Returns the current display setting for the specified channel.
+        :param channel: Channel number (1 to # analog channels)
+        :return: True if display is on, False if off
+        """
+        response = self._instrument.query(f":CHANnel{channel}:DISPlay?")
         return True if response.strip() == '1' else False
 
-    def set_display_layout(self, layout):
+    def SetDigitalChannelDisplay(self, channel, display_on):
         """
-        Set the display layout of the power supply.
-        :param layout: The desired layout mode ('V-V', 'I-I', or 'V-I').
+        Turns the digital display on or off for the specified channel.
+        This command is only valid for the MSO models.
+        :param channel: Channel number (0 to # digital channels - 1)
+        :param display_on: True to turn on digital display, False to turn off
         """
-        valid_layouts = ['V-V', 'I-I', 'V-I']
-        if layout not in valid_layouts:
-            raise ValueError(f"Invalid layout mode. Choose from {valid_layouts}")
-        self.instrument.write(f':DISPlay:LAYout {layout}')
+        display_value = 'ON' if display_on else 'OFF'
+        command = f":DIGital{channel}:DISPlay {display_value}"
+        self._instrument.write(command)
 
-    def close(self):
-        # Close the connection to the instrument
-        self.instrument.close()
-
-# Example Usage:
-if __name__ == "__main__":
-    # Replace with the actual resource name of your instrument
-    resource_name = 'USB0::0x2A8D::0x1202::MY1234567::INSTR'
-    ps_display = PowerSupplyDisplay(resource_name)
-    
-    try:
-        # Enable the display
-        ps_display.enable_display(True)
-        # Query the display status
-        is_enabled = ps_display.query_display_enabled()
-        print(f"Display Enabled: {is_enabled}")
-        # Set the display layout to V-I
-        ps_display.set_display_layout('V-I')
-    finally:
-        ps_display.close()
+    def GetDigitalChannelDisplay(self, channel):
+        """
+        Returns the current digital display setting for the specified channel.
+        This command is only valid for the MSO models.
+        :param channel: Channel number (0 to # digital channels - 1)
+        :return: True if digital display is on, False if off
+        """
+        response = self._instrument.query(f":DIGital{channel}:DISPlay?")
+        return True if response.strip() == '1' else False
