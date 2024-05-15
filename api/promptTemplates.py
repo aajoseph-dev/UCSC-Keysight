@@ -9,17 +9,99 @@ class PromptTemplates:
         self.role = data.get("role")
         self.context = context
 
-    def generate_plugin_prompt(self, command):
-        print(f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
-        Context:
-        - Device Name: {self.device_name}
-        - Category: {self.category}
-        - Command: {command}
-        - Interface: {self.interface}
-        - Programming Language: {self.prog_lang}
-        - Role: {self.role}
-        """)
 
+    def generate_instrument_prompt(self):
+        return f"""
+        Generate an OpenTAP test instrument declaration in {self.prog_lang} for the following device: {self.category} {self.device_name}
+        Instructions:
+        - Along with the standard python libraries you have access to these:
+            -OpenTap
+            -opentap
+            -pythonnet==3.0.3
+            -numpy==1.26.4
+            -debugpy==1.8.1
+
+        Example code for guidance:
+            from opentap import *
+            from System import Double, String
+            import OpenTap
+            import time
+
+            @attribute(OpenTap.Display("Infiniium", "A basic example of a SCPI instrument driver.", "Infiniium"))
+            class Scope(OpenTap.ScpiInstrument):
+                
+                def __init__(self):
+                    super(Scope, self).__init__()
+                    self.log = Trace(self)
+                    self.Name = "Infiniium"
+                
+                def GetIdnString(self):
+                    a = self.ScpiQuery[String]("*IDN?")
+                    return a
+                
+                def reset(self):
+                    self.normalSCPI(":SYSTem:PRESet FACTory")
+
+                def Setup(self, WfmPosPath, WfmNegPath ):
+                    self.normalSCPI(":CHANnel1:DISPlay OFF")
+                    self.normalSCPI(f':DISK:LOAD "{{WfmPosPath}}", WMEMory1, INT16')
+                    self.normalSCPI(":WMEMory1:DISPlay ON")
+                    # self.normalSCPI(f':DISK:DELete "{{WfmPosPath}}"')
+                    self.normalSCPI(f':DISK:LOAD "{{WfmNegPath}}", WMEMory2, INT16')
+                    self.normalSCPI(":WMEMory2:DISPlay ON")
+                    # self.normalSCPI(f':DISK:DELete "{{WfmNegPath}}"')
+                    self.normalSCPI(":TIMebase:REFerence:PERCent 25")
+                    self.normalSCPI(":TIMebase:RANGe 1e-05")
+                    self.normalSCPI(":FUNCtion1:SUBTract WMEMory1, WMEMory2")
+                    self.normalSCPI(":DISPlay:MAIN OFF, WMEMory1")
+                    self.normalSCPI(":DISPlay:MAIN OFF, WMEMory2")
+                    self.normalSCPI(":FUNCtion1:DISPlay ON")
+
+                def eyediagram(self, bitrate):
+                    self.normalSCPI(':ANALyze:SIGNal:TYPE FUNC1, PAM4')
+                    self.normalSCPI(':MEASure:STATistics MEAN')
+                    self.normalSCPI(f':ANALyze:SIGNal:DATarate FUNCtion1, {{str(bitrate*1E+09)}}')
+                    self.normalSCPI(":DISPlay:MAIN OFF, FUNCtion1")
+                    self.normalSCPI(':MTESt:FOLDing On, FUNCtion1')
+                
+                def CTLE(self, symbolRate, dcGain, z1Freq, z2Freq, P1Freq, P2Freq, P3Freq):
+                    self.normalSCPI(":LANE1:SOURce Func1")
+                    self.normalSCPI(":LANE1:EQUalizer:CTLE:NUMPoles P3Z2")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:DCGain {{dcGain}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:Z1 {{z1Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:Z2 {{z2Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:P1 {{P1Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:P2 {{P2Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:P3 {{P3Freq}}")
+                    self.normalSCPI(f":LANE1:EQUalizer:CTLE:RATE{{str(symbolRate*1E+09)}}")
+                    self.normalSCPI(':MTESt:FOLDing OFF, FUNCtion1')
+                    self.normalSCPI(":LANE1:EQUalizer:CTLE:STATe  ON")
+                    self.normalSCPI(":LANE1:STATe ON")
+                    self.normalSCPI(':ANALyze:SIGNal:TYPE EQUalized1, PAM4')
+                    self.normalSCPI(f':ANALyze:SIGNal:SYMBolrate EQUalized1, {{str(symbolRate*1E+09)}}')
+
+                    self.normalSCPI(":DISPlay:MAIN OFF, EQUalized")
+                    
+                    self.normalSCPI(':MTESt:FOLDing On, EQUalized')
+                    
+                def opc(self):
+                    complete = self.ScpiQuery[Double]('*OPC?')
+                    while complete != 1:
+                        complete = self.ScpiQuery[Double]('*OPC?')
+
+                def normalSCPI(self, SCPI):
+                    self.ScpiCommand(SCPI)
+                    self.opc()
+                
+                def querySCPI(self, format, SCPI):
+                    result = self.ScpiQuery[format](SCPI)
+                    self.opc()
+                    return result
+
+
+        """
+
+    def generate_steps_prompt(self, command):
         return f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
         Context:
         - Device Name: {self.device_name}
@@ -38,83 +120,9 @@ class PromptTemplates:
             -OpenTap
             -opentap
             -pythonnet==3.0.3
-            -PyVISA==1.14.1
-            -visa==2.21.0
             -numpy==1.26.4
             -debugpy==1.8.1
 
-        Example code for guidance:
+            
 
-            Simulated Power Analyzer example.
-
-            This power analyzer simulation simulates charging and discharging a battery and measuring the voltage meanwhile.
-
-            The instrument plugin created by this example is accessible from a .NET API by referencing the built example directly.
-            From a .NET point of view, the assembly is called Python.PluginExample.dll and the instrument is named Python.PluginExample.PowerAnalyzer.
-            import opentap
-            from opentap import *
-            from System import Double, Random #Import types to reference for generic methods
-            from System.Diagnostics import Stopwatch
-            import OpenTap
-            from OpenTap import DisplayAttribute
-
-            @attribute(DisplayAttribute, "Power Analyzer", "Simulated power analyzer instrument used for charge/discharge demo steps written in python.", "Python Example")
-            class PowerAnalyzer(Instrument):
-                CellSizeFactor = property(Double, 0.005)\
-                    .add_attribute(DisplayAttribute, "Cell Size Factor", "A larger cell size will result in faster charging and discharging.")
-                def __init__(self):
-                    super().__init__() # The base class initializer must be invoked.
-                    self._voltage = 1.0
-                    self._cellVoltage = 2.7
-                    self._current = 10
-                    self._currentLimit = 0.0
-                    self._sw = None
-                    self.Name = "PyPowerAnalyzer"
-
-                def Open(self):
-                    super().Open()
-                    self._voltage = 0
-                    self._cellVoltage = 2.7
-
-                def Close(self):
-                    if self._sw != None:
-                        self._sw.Stop()
-                    super().Close()
-                @method(Double)
-                def MeasureCurrent(self):
-                    self.UpdateCurrentAndVoltage()
-                    return self._current
-
-                @method(Double)
-                def MeasureVoltage(self):
-                    self.UpdateCurrentAndVoltage()
-                    return self._cellVoltage
-                @method(None, [Double, Double])
-                def Setup(self, voltage, current):
-                    self._voltage = voltage
-                    self._currentLimit = current
-                    self._current = current
-                @method()
-                def EnableOutput(self):
-                    if self._sw == None or self._sw.IsRunning == False:
-                        self._sw = Stopwatch.StartNew()
-                @method()
-                def DisableOutput(self):
-                    if self._sw != None:
-                        self._sw.Stop()
-
-                def UpdateCurrentAndVoltage(self):
-                    if self._sw == None or self._sw.IsRunning == False:
-                        return
-
-                    # Generates a somewhat random curve that gradually approaches the limit.
-                    self._current = self._currentLimit * ((self._voltage - self._cellVoltage) * 2) + Random().NextDouble() * self._currentLimit / 50.0;
-
-                    if self._current >= self._currentLimit:
-                        self._current = self._currentLimit;
-                    elif self._current < 0 - self._currentLimit:
-                        self._current = 0 - self._currentLimit;
-
-                    self._cellVoltage += self.CellSizeFactor * self._current * self._sw.Elapsed.TotalSeconds * 10;
-                    self._sw.Restart();
-                    """
+             """

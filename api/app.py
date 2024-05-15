@@ -37,11 +37,12 @@ def handleRequest():
 
     if not os.path.exists(path):
         os.makedirs(path)  
+        createInstrument(data, path)
         for command in data.get("commands"):
             context = callAISearch(f"{deviceName}: {command}")
-            prompt = createPrompt(data, command, context)
-            pattern = r'```python(.*?)```'
-            response = callLLM(prompt, command, data)
+            prompt = createStepsPrompt(data, command, context)
+            # pattern = r'```python(.*?)```'
+            response = callLLM(prompt)
             # match = re.findall(pattern, response, re.DOTALL)
             # response = match[0]
             response = extract_python_code(response)
@@ -51,35 +52,30 @@ def handleRequest():
             result, verified_code = verify_code(response)
             print(f"result: {result}")
             print(f"verified_code: {verified_code}")
-            response_dict = llm_code_check(command, response, deviceName) # go ask the 2nd llm's response yet
+            response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
             # {"Sentiment" : "Positive", "Response" : content}
-            if response_dict["Sentiment"] == "Positive":
-                print("Sentiment was Positive")
-                buildXML(deviceName, path)
-                packageFiles(path, path_to_zip)
-                # return send_file(path_to_zip, as_attachment=True)
-            elif response_dict["Sentiment"] == "Negative":
+            if response_dict["Sentiment"] == "Negative":
                 # already tried, this is the second time
                 print("Sentiment was Negative, trying one more time")
                 prompt += f'''
                     \nThe plugin that was generated was incorrect, please try again by using the following feedback:
                     {response_dict["Response"]}
                     '''
-                response = callLLM(prompt, command, data) # pass the 2nd llm's response to the 1st llm
+                response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
                 response = extract_python_code(response)
                 # match = re.findall(pattern, response, re.DOTALL)
                 # response = match[0]
                 buildPy(path, command, response)
                 result, verified_code = verify_code(response)
-                response_dict = llm_code_check(command, response, deviceName) # go ask the 2nd llm's response yet
+                response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
                 print("Asked the 2nd LLM again")
                 buildXML(deviceName, path)
                 packageFiles(path, path_to_zip)
                 # return send_file(path_to_zip, as_attachment=True)
                 # pass the 2nd llm's response to the 1st llm 
                 # 1st llm regenerates the plugin
-            else: # response_dict["Sentiment"] == "Neutral":
-                print("Sentiment was Neutral")
+            else: # response_dict["Sentiment"] == "Neutral" or "Positive":
+                print("Sentiment was Not Negative")
                 buildXML(deviceName, path)
                 packageFiles(path, path_to_zip)
     return send_file(path_to_zip, as_attachment=True)
@@ -121,11 +117,11 @@ def verify_code(code):
     return verification_result, code
 
 
-def createPrompt(data, command, context):
+def createStepsPrompt(data, command, context):
     prompt_templates = PromptTemplates(data, context)
     
     if data.get("useCase") == "generate_plugin":
-        prompt = prompt_templates.generate_plugin_prompt(command)
+        prompt = prompt_templates.generate_steps_prompt(command)
     # elif data.get("useCase") == "Power_supply_plugin":
     #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
     # elif data.get("useCase") == "Oscilloscopes_plugin":
@@ -136,7 +132,39 @@ def createPrompt(data, command, context):
 
     return prompt
 
-def callLLM(prompt, command, data):
+def createInstrument(data, path):
+    deviceName = data.get("deviceName")
+    context = callAISearch(f"{deviceName}")
+    
+    prompt_templates = PromptTemplates(data, context)
+    prompt = prompt_templates.generate_instrument_prompt()
+    response = callLLM(prompt)
+    response = extract_python_code(response)
+
+    result, verified_code = verify_code(response)
+    response_dict = llm_code_check("", response, deviceName, 1)
+
+    buildPy(path, deviceName, response)
+
+    if response_dict["Sentiment"] == "Negative":
+        # already tried, this is the second time
+        print("Sentiment was Negative, trying one more time")
+        prompt += f'''
+            \nThe plugin that was generated was incorrect, please try again by using the following feedback:
+            {response_dict["Response"]}'''
+        response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
+        response = extract_python_code(response)
+        buildPy(path, deviceName, response)
+        result, verified_code = verify_code(response)
+        print(f"result: {result}")
+        print(f"verified_code: {verified_code}")
+        response_dict = llm_code_check("", response, deviceName, 0) # go ask the 2nd llm's response yet
+        print("Asked the 2nd LLM again")
+    else: # response_dict["Sentiment"] == "Neutral" or "Positive":
+        print("Sentiment was Not Negative")
+
+
+def callLLM(prompt):
 
     print("about to call LLM")
 
