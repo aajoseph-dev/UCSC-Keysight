@@ -37,10 +37,10 @@ def handleRequest():
 
     if not os.path.exists(path):
         os.makedirs(path)  
-        createInstrument(data, path)
+        response = createInstrument(data, path)
         for command in data.get("commands"):
             context = callAISearch(f"{deviceName}: {command}")
-            prompt = createStepsPrompt(data, command, context)
+            prompt = createStepsPrompt(data, command, context, response)
             # pattern = r'```python(.*?)```'
             response = callLLM(prompt)
             # match = re.findall(pattern, response, re.DOTALL)
@@ -117,18 +117,19 @@ def verify_code(code):
     return verification_result, code
 
 
-def createStepsPrompt(data, command, context):
+def createStepsPrompt(data, command, context, instrument):
     prompt_templates = PromptTemplates(data, context)
     
-    if data.get("useCase") == "generate_plugin":
-        prompt = prompt_templates.generate_steps_prompt(command)
+    # if data.get("useCase") == "generate_plugin":
+    prompt = prompt_templates.generate_steps_prompt(command, instrument)
+    print(f"TEST STEP PROMPT: {prompt}")
     # elif data.get("useCase") == "Power_supply_plugin":
     #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
     # elif data.get("useCase") == "Oscilloscopes_plugin":
     #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
     # etc..
-    else:
-        raise ValueError("Unknown use case")
+    # else:
+    #     raise ValueError("Unknown use case")
 
     return prompt
 
@@ -162,6 +163,8 @@ def createInstrument(data, path):
         print("Asked the 2nd LLM again")
     else: # response_dict["Sentiment"] == "Neutral" or "Positive":
         print("Sentiment was Not Negative")
+
+    return response
 
 
 def callLLM(prompt):
@@ -246,7 +249,8 @@ def buildXML(plugin_name, folder_path):
     doc.appendChild(package)
     package.setAttribute('Name', plugin_name)
     package.setAttribute('xmlns', "http://keysight.com/Schemas/tap")
-    package.setAttribute('Version', "$(GitVersion)")
+    # package.setAttribute('Version', "$(GitVersion)")
+    package.setAttribute('Version', "1.0.0")
     package.setAttribute('OS', "Windows,Linux,MacOS")
 
     # Create the description element with prerequisites
@@ -303,7 +307,7 @@ def packageFiles(source, destination):
         pass
 
     shutil.copyfile("plugins/plugin_components/requirements.txt", f"{source}/requirements.txt")
-
+ 
     with ZipFile(destination, 'w') as zip_object:
         for file_name in os.listdir(source):
             file_path = os.path.join(source, file_name)

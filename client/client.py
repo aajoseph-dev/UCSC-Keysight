@@ -649,7 +649,7 @@ class PluginGeneratorThread(QThread):
             "useCase": ""  # Assuming useCase is not used in this example
         }
 
-        api_url = "http://127.0.0.1:5001/generate_plugin"
+        api_url = "http://127.0.0.1:5000/generate_plugin"
         try:
             response = requests.post(api_url, json=payload, stream=True)
             total_length = response.headers.get('content-length')
@@ -694,7 +694,7 @@ class BatchGenerationThread(QThread):
                 "role": role,
                 "useCase": ""  # Assuming useCase is not used in this example
             }
-            api_url = "http://127.0.0.1:5001/generate_plugin"
+            api_url = "http://127.0.0.1:5000/generate_plugin"
             try:
                 response = requests.post(api_url, json=payload, stream=True)
                 total_length = response.headers.get('content-length')
