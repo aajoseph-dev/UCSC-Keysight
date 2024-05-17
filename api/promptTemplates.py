@@ -101,7 +101,7 @@ class PromptTemplates:
 
         """
 
-    def generate_steps_prompt(self, command):
+    def generate_steps_prompt(self, command, instrument):
         return f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
         Context:
         - Device Name: {self.device_name}
@@ -115,6 +115,7 @@ class PromptTemplates:
         Instructions:
         - In {self.prog_lang} generate code for this subset of SCPI commands.
         - Include functions that utilize the provided SCPI commands.
+        - Use the following Instrument Code to provide the appropriate test step code: {instrument}
         - Follow best practices for the specified programming language and role.
         - Along with the standard python libraries you have access to these:
             -OpenTap
@@ -123,6 +124,84 @@ class PromptTemplates:
             -numpy==1.26.4
             -debugpy==1.8.1
 
-            
+        Example code for guidance:
+            import sys
+            import opentap
+            import clr
+            clr.AddReference("System.Collections")
+            from System.Collections.Generic import List
+            from opentap import *
+
+            import OpenTap 
+            import math
+            from OpenTap import Log, AvailableValues, EnabledIfAttribute
+
+            ## Import necessary .net APIs
+            # These represents themselves as regular Python modules but they actually reflect
+            # .NET libraries.
+            import System
+            from System import Array, Double, Byte, Int32, String, Boolean # Import types to reference for generic methods
+            from System.ComponentModel import Browsable # BrowsableAttribute can be used to hide things from the user.
+            import System.Xml
+            from System.Xml.Serialization import XmlIgnore
+
+            from .Infiniium import Scope
+            from .ADS_setup import ADS_setting
+            from enum import Enum
+            import json
+
+            # Here is how a test step plugin is defined: 
+
+            #Use the Display attribute to define how the test step should be presented to the user.
+            @attribute(OpenTap.Display("4. IDN", "A IDN to check the connection.", "InfiniiumAutomation", Order=1))
+            #AllowAnyChildAttribute is attribute that allows any child step to attached to this step
+            @attribute(OpenTap.AllowAnyChild())
+            class BasicFunctionality(TestStep): # Inheriting from opentap.TestStep causes it to be a test step plugin.
+                # Add properties (name, value, C# type)
+                
+                Instrument = property(Scope, None)\
+                    .add_attribute(OpenTap.Display("Instrument", "The instrument to use in the step.", "Resources"))
+                    
+
+                def __init__(self):
+                    super(BasicFunctionality, self).__init__() # The base class initializer must be invoked.
+
+                
+                def Run(self):
+                    super().Run() ## 3.0: Required for debugging to work. 
+                    
+                    
+                    idn = self.Instrument.GetIdnString()
+                    self.log.Info(idn)
+                    
+                    # Set verdict
+                    self.UpgradeVerdict(OpenTap.Verdict.Pass)
+                    
+
+            @attribute(OpenTap.Display("1. Initial Setting", "Inintial setup.", "InfiniiumAutomation", Order=2))
+            class InitalSetting(TestStep): # Inheriting from opentap.TestStep causes it to be a test step plugin.
+                # Add properties (name, value, C# type)
+                
+                Instrument = property(Scope, None)\
+                    .add_attribute(OpenTap.Display("Instrument", "The instrument to use in the step.", "Resources"))
+                WfmPosPath = property(String, r"C:\EPScan\EDA\AutomationWorkflow\FlexDCA_Probe_example_wrk\data\ADS_Waveform1.csv")\
+                    .add_attribute(OpenTap.Display("Positive Waveform", "Positive signal waveform Path", "Parameter", 2))\
+                    .add_attribute(OpenTap.FilePath(fileExtension="CSV|*.csv"))    
+                WfmNegPath = property(String, r"C:\EPScan\EDA\AutomationWorkflow\FlexDCA_Probe_example_wrk\data\ADS_Waveform2.csv")\
+                    .add_attribute(OpenTap.Display("Negative Waveform", "Negative signal waveform Path", "Parameter", 3))\
+                    .add_attribute(OpenTap.FilePath(fileExtension="CSV|*.csv"))    
+
+                def __init__(self):
+                    super(InitalSetting, self).__init__() # The base class initializer must be invoked.
+
+                
+                def Run(self):
+                    super().Run() ## 3.0: Required for debugging to work. 
+                    
+                    self.Instrument.reset()
+                    self.Instrument.Setup(self.WfmPosPath, self.WfmNegPath)
+                    
+                    # Set verdict
+                    self.UpgradeVerdict(OpenTap.Verdict.Pass)
 
              """
