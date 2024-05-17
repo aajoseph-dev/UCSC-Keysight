@@ -6,12 +6,13 @@ To utilize this automated plugin generation tool, follow these steps:
 
 1. Clone the repo.
 2. Open VS Code.
-3. In a VS Code terminal run: ```pip install -r requirements.txt```
-4. Run python3 app.py in one terminal to start the server.
-5. Run python3 client.py to start the client application to get the popup window to appear.
-6. Enter in your device specs into the popup window.
-7. Wait for the program to generate your plugin.
-8. Plugin gets saved into the location that you specified in the popup window.
+3. In two separate VS Code terminal create and activate a virutal environment by running: ```python3 -m venv .venv``` and then ```source .venv/bin/activate```.
+5. In a VS Code terminal run: ```pip install -r requirements.txt```
+6. Run python3 app.py in one terminal to start the server.
+7. Run python3 client.py to start the client application to get the popup window to appear.
+8. Enter in your device specs into the popup window.
+9. Wait for the program to generate your plugin.
+10. Plugin gets saved into the location that you specified in the popup window.
 
 ## Terminology
 * **OpenTAP** - Keysight’s open source test automation project that automates standardized testing for devices, such as power supplies and batteries.
