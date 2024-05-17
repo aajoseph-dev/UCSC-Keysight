@@ -1,13 +1,13 @@
 import sys
 from PyQt6.QtWidgets import *
-from PyQt6.QtGui import QPixmap, QIcon, QCursor
-from PyQt6.QtCore import Qt, QThread, QObject, pyqtSlot
+from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtCore import Qt, QThread
 from PyQt6 import QtCore
 
-import requests
 
-from test_steps import test_steps
-from multiDropDown import MultiSelectDropdown
+from menu_data import *
+from singe_page_controller import SingleScreenController
+from generation_thread import GenerationThread
 
 class LoadingThread(QThread):
     def __init__(self, parent=None):
@@ -120,28 +120,18 @@ class MainWindow(QMainWindow):
 
         form_layout.addWidget(QLabel("Language:"), 1, 2)
         self.language_input = QComboBox()  # Make it a class attribute
-        self.language_input.addItems(["Python", "C#"])
+        self.language_input.addItems(language)
         form_layout.addWidget(self.language_input, 1, 3)
 
         # Row 3
         form_layout.addWidget(QLabel("Category:"), 2, 0)
         self.category_input = QComboBox()  # Make it a class attribute
-        self.category_input.addItems([
-            "Generator", "Power Source", "Power Products", "Oscilloscope",
-            "Analyzer", "Meter", "Modular Instrument", "Software",
-            "Common Command", "Power Supply", "Other"
-        ])
+        self.category_input.addItems(category)
         form_layout.addWidget(self.category_input, 2, 1)
 
         self.role_input = QComboBox()  # Make it a class attribute
         form_layout.addWidget(QLabel("Role:"), 2, 2)
-        self.role_input.addItems([
-            "Administrator",
-            "Developer",
-            "Tester/QA",
-            "End User",
-            "Contributor/Community Member"
-        ])
+        self.role_input.addItems(role)
         form_layout.addWidget(self.role_input, 2, 3)
 
         layout.addLayout(form_layout)
@@ -328,10 +318,7 @@ class MainWindow(QMainWindow):
 
         label3 = QLabel("Category:")
         category_input = QComboBox()
-        category_input.addItems([
-            "Generator", "Power Source", "Power Products", "Oscilloscope",
-            "Analyzer", "Meter", "Modular Instrument", "Software",
-            "Common Command", "Power Supply", "Other"])
+        category_input.addItems(category)
         label3.setFixedWidth(100)  # Adjust the width of the label
         row_layout.addWidget(label3)
         row_layout.addWidget(category_input)
@@ -343,19 +330,7 @@ class MainWindow(QMainWindow):
 
         label4 = QLabel("Interface:")
         interface_input = QComboBox()
-        interface_input.addItems([
-            "USB (Universal Serial Bus)",
-            "LAN (Local Area Network)",
-            "GPIB (General Purpose Interface Bus)",
-            "GPIB-USB or GPIB-to-USB Converters",
-            "RS-232 (Recommended Standard 232)",
-            "IEEE 802.11 (Wi-Fi)",
-            "PCI (Peripheral Component Interconnect)",
-            "PCIe (Peripheral Component Interconnect Express)",
-            "PXI (PCI eXtensions for Instrumentation)",
-            "VXI (VME eXtensions for Instrumentation)",
-            "Thunderbolt",
-            "Fiber Optic"])
+        interface_input.addItems(interface)
         label4.setFixedWidth(100)  # Adjust the width of the label
         row_layout.addWidget(label4)
         row_layout.addWidget(interface_input)
@@ -367,7 +342,7 @@ class MainWindow(QMainWindow):
 
         label5 = QLabel("Language:")
         language_input = QComboBox()
-        language_input.addItems(["Python", "C#"])
+        language_input.addItems(language)
         label5.setFixedWidth(100)  # Adjust the width of the label
         row_layout.addWidget(label5)
         row_layout.addWidget(language_input)
@@ -379,13 +354,7 @@ class MainWindow(QMainWindow):
 
         label6 = QLabel("Role:")
         role_input = QComboBox()
-        role_input.addItems([
-            "Administrator",
-            "Developer",
-            "Tester/QA",
-            "End User",
-            "Contributor/Community Member"
-        ])
+        role_input.addItems(role)
         label6.setFixedWidth(100)  # Adjust the width of the label
         row_layout.addWidget(label6)
         row_layout.addWidget(role_input)
@@ -479,92 +448,6 @@ class MainWindow(QMainWindow):
         self.loading_thread.start()
 
         self.loading_dialog.exec()
-
-class SingleScreenController(QObject):
-    def __init__(self, category_input, radio_layout):
-        super().__init__()
-        self.category_input = category_input
-        self.radio_layout = radio_layout
-
-        # Connect the category input's currentIndexChanged signal to the update_checkboxes slot
-        self.category_input.currentIndexChanged.connect(self.update_checkboxes)
-
-        # Set default checkboxes
-        self.update_checkboxes(0)  # Pass 0 to simulate the default index
-
-    @pyqtSlot(int)
-    def update_checkboxes(self, index):
-        # Get the selected category
-        selected_category = self.category_input.currentText()
-
-        # Clear existing checkboxes
-        for i in reversed(range(self.radio_layout.count())):
-            widget = self.radio_layout.itemAt(i).widget()
-            if widget:
-                widget.setParent(None)
-
-        # Add new checkboxes based on the selected category
-        test_steps = self.get_test_steps(selected_category)
-        row = 0
-        col = 0
-        for i, option in enumerate(test_steps):
-            checkbox = QCheckBox(option)
-            checkbox.setStyleSheet("QCheckBox { padding: 5px; }")
-            self.radio_layout.addWidget(checkbox, row, col)
-            col += 1
-            if col == 3:  # Three items per row
-                col = 0
-                row += 1
-
-    def get_test_steps(self, category):
-        # Define the test steps for each category
-        return test_steps.get(category, ["Default Test Step 1", "Default Test Step 2"])
-
-class GenerationThread(QThread):
-    progress_update = QtCore.pyqtSignal(int)
-
-    def __init__(self, plugin_data, directory):
-        super().__init__()
-        self.plugin_data = plugin_data
-        self.directory = directory
-
-    def run(self):
-        total_plugins = len(self.plugin_data)
-        for idx, plugin_info in enumerate(self.plugin_data):
-            plugin_name, device_name, category, interface, scpi, language, role = plugin_info
-            payload = {
-                "deviceName": device_name,
-                "category": category,
-                "commands": scpi,
-                "interface": interface,
-                "progLang": language,
-                "role": role,
-                "useCase": ""  # Assuming useCase is not used in this example
-            }
-            api_url = "http://127.0.0.1:5003/generate_plugin"
-            try:
-                response = requests.post(api_url, json=payload, stream=True)
-                total_length = response.headers.get('content-length')
-
-                if total_length is None:
-                    print("Error: Unable to determine total length for plugin:", plugin_name)
-                    continue
-                
-                # Progress tracking variables
-                downloaded = 0
-                chunk_size = 1024  # Adjust chunk size as needed
-
-                with open(f"{self.directory}/{device_name}.zip", 'wb') as f:
-                    for data in response.iter_content(chunk_size=chunk_size):
-                        f.write(data)
-                        downloaded += len(data)
-                        progress = int((downloaded / int(total_length)) * 100)
-                        self.progress_update.emit(progress)
-
-                print(f"Plugin {plugin_name} downloaded successfully")
-            except Exception as e:
-                print(f"Error downloading plugin {plugin_name}:", e)
-
 
 
 if __name__ == "__main__":

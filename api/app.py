@@ -28,6 +28,7 @@ app = Flask(__name__)
 def handleRequest():
     
     data = request.get_json()
+    print(data)
     deviceName = data.get("deviceName")
     path = f"plugins/raw_files/{deviceName}"
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
@@ -213,7 +214,7 @@ def callAISearch(query, TOKEN_LIMIT=1500):
         context = ""
         token_count = 0
 
-        tokenizer = tiktoken.encoding_for_model("gpt-3.5-turbo")
+        tokenizer = tiktoken.encoding_for_model("gpt-4")
 
         for result in results:
             content = result['content']
