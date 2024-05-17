@@ -7,6 +7,8 @@ from collections import defaultdict
 
 from bs4 import BeautifulSoup
 import pdfkit
+from PyPDF2 import PdfReader
+
 from dotenv import load_dotenv
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
@@ -107,9 +109,9 @@ class DataFetch:
                     print(f"Not a zipfile: key {key}, {dict[key]}")
             else:
                 print(f"Failed to download file: key {key}, {dict[key]}. Status code: {response.status_code}")
-                
+
     def uploadFile(self, pathToFile):
-        
+            
         load_dotenv()
         azure_endpoint: str = os.getenv("OPENAI_ENDPOINT")
         azure_openai_api_key: str = os.getenv("OPENAI_KEY1")
@@ -135,26 +137,44 @@ class DataFetch:
         )
 
         print("about to chunk/split the doc")
-        # Chunk/split the doc
+
+        # Calculate average chunk size
+        average_chunk_size = self.calculate_average_chunk_size(pathToFile)
+
         loader = PyPDFLoader(pathToFile, extract_images=False)
-        print("done with PyPDFLoader(pathToFile, extract_images=False)")
         data = loader.load_and_split()
 
-        print("done with loader.load_and_split()")
-
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size = 5000,
-            chunk_overlap  = 300,
-            length_function = len
+            chunk_size=average_chunk_size,
+            chunk_overlap=0.15 * average_chunk_size,  # 15% overlap
+            length_function=len
         )
 
-        print("done with RecursiveCharacterTextSplitter")
-
         chunks = text_splitter.split_documents(data)
-        print("done with chunks = text_splitter.split_documents(data)")
+
         vector_store.add_documents(documents=chunks)
+
         print("DONE!")
 
+    def calculate_average_chunk_size(self, pathToFile):
+        total_characters = 0
+        total_pages = 0
+
+        # Calculate total character count and total page count
+        with open(pathToFile, 'rb') as file:
+            pdf_reader = PdfReader(file)
+            for page_num in range(len(pdf_reader.pages)):
+                total_characters += len(pdf_reader.pages[page_num].extract_text())
+            total_pages += len(pdf_reader.pages)
+
+        # Calculate average character count per page
+        average_character_count_per_page = total_characters / total_pages
+
+        # Consider overlap (e.g., 15% overlap)
+        overlap_percentage = 0.15
+        average_chunk_size = average_character_count_per_page / (1 - overlap_percentage)
+
+        return average_chunk_size
 
 if __name__ == "__main__":
     print("Select an option")
