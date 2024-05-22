@@ -28,11 +28,11 @@ app = Flask(__name__)
 def handleRequest():
     
     data = request.get_json()
-    print(data)
     deviceName = data.get("deviceName")
     path = f"plugins/raw_files/{deviceName}"
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
 
+    #update this
     if os.path.exists(path):
         shutil.rmtree(path)
 
@@ -47,36 +47,26 @@ def handleRequest():
             # match = re.findall(pattern, response, re.DOTALL)
             # response = match[0]
             response = extract_python_code(response)
-            print(f"response: {response}")
             buildPy(path, command, response)
-            print("done buildPy()")
-            result, verified_code = verify_code(response)
-            print(f"result: {result}")
-            print(f"verified_code: {verified_code}")
+
             response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
             # {"Sentiment" : "Positive", "Response" : content}
             if response_dict["Sentiment"] == "Negative":
-                # already tried, this is the second time
-                print("Sentiment was Negative, trying one more time")
+
                 prompt += f'''
                     \nThe plugin that was generated was incorrect, please try again by using the following feedback:
                     {response_dict["Response"]}
                     '''
                 response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
                 response = extract_python_code(response)
-                # match = re.findall(pattern, response, re.DOTALL)
-                # response = match[0]
+
                 buildPy(path, command, response)
                 result, verified_code = verify_code(response)
                 response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
-                print("Asked the 2nd LLM again")
                 buildXML(deviceName, path)
                 packageFiles(path, path_to_zip)
-                # return send_file(path_to_zip, as_attachment=True)
-                # pass the 2nd llm's response to the 1st llm 
-                # 1st llm regenerates the plugin
+  
             else: # response_dict["Sentiment"] == "Neutral" or "Positive":
-                print("Sentiment was Not Negative")
                 buildXML(deviceName, path)
                 packageFiles(path, path_to_zip)
     return send_file(path_to_zip, as_attachment=True)
@@ -121,16 +111,7 @@ def verify_code(code):
 def createStepsPrompt(data, command, context, instrument):
     prompt_templates = PromptTemplates(data, context)
     
-    # if data.get("useCase") == "generate_plugin":
     prompt = prompt_templates.generate_steps_prompt(command, instrument)
-    print(f"TEST STEP PROMPT: {prompt}")
-    # elif data.get("useCase") == "Power_supply_plugin":
-    #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
-    # elif data.get("useCase") == "Oscilloscopes_plugin":
-    #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
-    # etc..
-    # else:
-    #     raise ValueError("Unknown use case")
 
     return prompt
 
@@ -143,34 +124,25 @@ def createInstrument(data, path):
     response = callLLM(prompt)
     response = extract_python_code(response)
 
-    result, verified_code = verify_code(response)
     response_dict = llm_code_check("", response, deviceName, 1)
 
     buildPy(path, deviceName, response)
 
     if response_dict["Sentiment"] == "Negative":
         # already tried, this is the second time
-        print("Sentiment was Negative, trying one more time")
         prompt += f'''
             \nThe plugin that was generated was incorrect, please try again by using the following feedback:
             {response_dict["Response"]}'''
         response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
         response = extract_python_code(response)
         buildPy(path, deviceName, response)
-        result, verified_code = verify_code(response)
-        print(f"result: {result}")
-        print(f"verified_code: {verified_code}")
         response_dict = llm_code_check("", response, deviceName, 0) # go ask the 2nd llm's response yet
-        print("Asked the 2nd LLM again")
-    else: # response_dict["Sentiment"] == "Neutral" or "Positive":
-        print("Sentiment was Not Negative")
+
 
     return response
 
 
 def callLLM(prompt):
-
-    print("about to call LLM")
 
     client = AzureOpenAI(
             azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
@@ -192,12 +164,8 @@ def callLLM(prompt):
         stop=None
     )
 
-    print("done with client.chat.completions")
-
     content = completion.choices[0].message.content
-    # pattern = r'```python(.*?)```'
-    # match = re.findall(pattern, content, re.DOTALL)
-    # content = match[0]
+
     return content
 
 def callAISearch(query, TOKEN_LIMIT=1500):
@@ -272,12 +240,6 @@ def buildXML(plugin_name, folder_path):
     opentap_dependency.setAttribute('Package', 'OpenTAP')
     opentap_dependency.setAttribute('Version', '^9.18.2')
 
-    # python_dependency = doc.createElement('PackageDependency')
-    # dependencies.appendChild(python_dependency)
-    # python_dependency.setAttribute('Package', 'Python')
-    # python_dependency.setAttribute('Version', '^$(GitVersion)')
-
-    # Create the files section
     files = doc.createElement('Files')
     package.appendChild(files)
 

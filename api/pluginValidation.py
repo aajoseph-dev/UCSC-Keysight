@@ -21,6 +21,9 @@ from azure.search.documents import SearchClient
 from promptTemplates import *
 from app import *
 
+
+
+
 def llm_code_check(command, code, device_name, selection): # selction 0 for test step; selection 1 for instrument
     load_dotenv()
 

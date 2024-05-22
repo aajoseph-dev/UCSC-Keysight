@@ -2,24 +2,9 @@ import sys
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import QPixmap, QIcon
 from PyQt6.QtCore import Qt, QThread
-from PyQt6 import QtCore
-
-
 from menu_data import *
 from singe_page_controller import SingleScreenController
 from generation_thread import GenerationThread
-
-class LoadingThread(QThread):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-    
-    def run(self):
-        # Simulate some time-consuming task
-        for i in range(101):
-            self.msleep(50)
-            self.progress_update.emit(i)
-
-    progress_update = QtCore.pyqtSignal(int)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -29,9 +14,9 @@ class MainWindow(QMainWindow):
         self.setFixedSize(800, 600)  # Fixed screen size
 
         logo_pixmap = QPixmap("../assets/tap_icon.png")
-
-
         self.setWindowIcon(QIcon(logo_pixmap))
+
+        self.spinner = None  
 
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -79,8 +64,19 @@ class MainWindow(QMainWindow):
         # Show the Single screen by default
         self.show_single_screen()
 
-        # Inside the MainWindow class, modify the setup_single_screen method
-        
+        self.thread = None
+
+        self.faded_background = QLabel(self.central_widget)
+        self.faded_background.setStyleSheet("background-color: rgba(0, 0, 0, 0.7);")  # Adjusted alpha value for a darker background
+        self.faded_background.setGeometry(0, 0, self.width(), self.height())
+        self.faded_background.hide()
+
+        # Progress box
+        self.progress_box = QProgressBar(self.central_widget)
+        self.progress_box.setRange(0, 0)
+        self.progress_box.setGeometry(300, 200, 200, 25)
+        self.progress_box.hide()
+
     def setup_single_screen(self):
         layout = QVBoxLayout(self.single_screen)
 
@@ -91,26 +87,14 @@ class MainWindow(QMainWindow):
         form_layout = QGridLayout()
 
         # Row 1
-        form_layout.addWidget(QLabel("Plugin Name:"), 0, 0)
-        self.instrument_input = QLineEdit()  # Make it a class attribute
+        form_layout.addWidget(QLabel("Manufacturer:"), 0, 0)
+        self.instrument_input = QComboBox()  # Make it a class attribute
+        self.instrument_input.addItems(manufacturer)
         form_layout.addWidget(self.instrument_input, 0, 1)
 
         form_layout.addWidget(QLabel("Interface:"), 0, 2)
         self.interface_input = QComboBox()  # Make it a class attribute
-        self.interface_input.addItems([
-            "USB (Universal Serial Bus)",
-            "LAN (Local Area Network)",
-            "GPIB (General Purpose Interface Bus)",
-            "GPIB-USB or GPIB-to-USB Converters",
-            "RS-232 (Recommended Standard 232)",
-            "IEEE 802.11 (Wi-Fi)",
-            "PCI (Peripheral Component Interconnect)",
-            "PCIe (Peripheral Component Interconnect Express)",
-            "PXI (PCI eXtensions for Instrumentation)",
-            "VXI (VME eXtensions for Instrumentation)",
-            "Thunderbolt",
-            "Fiber Optic"
-        ])
+        self.interface_input.addItems(interface)
         form_layout.addWidget(self.interface_input, 0, 3)
 
         # Row 2
@@ -151,7 +135,6 @@ class MainWindow(QMainWindow):
         self.generate_button.clicked.connect(self.generate_button_clicked)
         layout.addWidget(self.generate_button, alignment=Qt.AlignmentFlag.AlignCenter)
 
-
     def generate_button_clicked(self):
         if self.screen_container.currentWidget() == self.single_screen:
             data = self.get_single_data()
@@ -164,22 +147,22 @@ class MainWindow(QMainWindow):
         directory = QFileDialog.getExistingDirectory(self, "Select Directory to Save Plugin")
 
         if directory:
-            # Create and show the progress dialog
-            progress_dialog = QProgressDialog("Generating Plugin...", None, 0, 0, self)
-            progress_dialog.setWindowTitle("Generating Plugin")
-            progress_dialog.setWindowModality(Qt.WindowModality.WindowModal)
-            progress_dialog.setAutoClose(True)
-            progress_dialog.setMinimumDuration(0)
-            progress_dialog.show()
-
-            # Start the thread
+            self.show_spinner()  # Show spinner before starting the thread
             self.thread = GenerationThread(data, directory)
-            self.thread.progress_update.connect(progress_dialog.setValue)  # Connect to update progress
-            self.thread.finished.connect(progress_dialog.close)  # Close the dialog when thread finishes
+            self.thread.finished_signal.connect(self.hide_spinner)  # Connect signal to hide spinner
             self.thread.start()
 
+    def show_spinner(self):
+        self.faded_background.show()
+        self.progress_box.show()
+
+    def hide_spinner(self):
+        self.faded_background.hide()
+        self.progress_box.hide()
+        self.thread = None
+
     def get_single_data(self):
-        plugin_name = self.instrument_input.text()
+        plugin_name = self.instrument_input.currentText()
         interface = self.interface_input.currentText()
         device_name = self.device_name_input.text()
         language = self.language_input.currentText()
@@ -195,51 +178,46 @@ class MainWindow(QMainWindow):
         if not all([plugin_name, interface, device_name, language, category, role, selected_test_steps]):
             return None
 
-        return [(plugin_name, interface, device_name, language, category, role, selected_test_steps)]
+        return [{
+            "deviceName": device_name,
+            "category": category,
+            "commands": selected_test_steps,
+            "interface": interface,
+            "progLang": language.lower(),
+            "role": role.lower(),
+            "useCase": ""
+        }]
 
     def get_batch_data(self):
-        # Get batch data
         batch_data = []
-
-        # Assuming 'table' is accessible here as it is a member of the class
         table = self.batch_screen.findChild(QTableWidget)
 
         if table:
             for row in range(table.rowCount()):
                 plugin_name = table.item(row, 0).text()
-                interface = table.item(row, 1).text()
-                device_name = table.item(row, 2).text()
-                language = table.item(row, 3).text()
-                category = table.item(row, 4).text()
-                role = table.item(row, 5).text()
+                device_name = table.item(row, 1).text()
+                category = table.item(row, 2).text()
+                interface = table.item(row, 3).text()
+                scpi = table.item(row, 4).text()  # Corrected to get SCPI data
+                language = table.item(row, 5).text()
+                role = table.item(row, 6).text()
 
-                selected_test_steps = []
-                for col in range(6, table.columnCount()):
-                    checkbox = table.cellWidget(row, col)
-                    if checkbox and isinstance(checkbox, QCheckBox) and checkbox.isChecked():
-                        selected_test_steps.append(checkbox.text())
+                if all([plugin_name, device_name, category, interface, scpi, language, role]):
+                    batch_data.append({
+                        "deviceName": device_name,
+                        "category": category,
+                        "commands": scpi,  # Added subsystem (SCPI) correctly
+                        "interface": interface,
+                        "progLang": language.lower(),
+                        "role": role.lower(),
+                        "useCase": ""  # Assuming useCase is blank, as not specified
+                    })
 
-                if all([plugin_name, interface, device_name, language, category, role]):
-                    batch_data.append((plugin_name, interface, device_name, language, category, role, selected_test_steps))
-        print(batch_data)
         return batch_data
 
-
-
-    def thread_finished(self):
-        # Handle thread cleanup and deletion
+    def on_thread_finished(self):
         self.thread.deleteLater()
-
-    def show_message_dialog(self, title, message):
-        dialog = QDialog(self)
-        dialog.setWindowTitle(title)
-
-        layout = QVBoxLayout(dialog)
-
-        label = QLabel(message)
-        layout.addWidget(label)
-
-        dialog.exec()
+        self.thread = None
 
     def setup_batch_screen(self):
         layout = QVBoxLayout(self.batch_screen)
@@ -255,7 +233,6 @@ class MainWindow(QMainWindow):
 
         # Set table height
         self.table.setFixedHeight(400)
-
         layout.addWidget(self.table)
 
         # Plus and minus buttons layout
@@ -271,14 +248,11 @@ class MainWindow(QMainWindow):
 
         # Add stretch to push buttons to the right
         buttons_layout.addStretch()
-
         layout.addLayout(buttons_layout)
 
         # Generate button
         generate_button = QPushButton("Generate")
         generate_button.clicked.connect(self.generate_button_clicked)
-
-        # Add generate button to the right
         generate_button.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)  # Set size policy
         buttons_layout.addWidget(generate_button, alignment=Qt.AlignmentFlag.AlignRight)
 
@@ -291,164 +265,76 @@ class MainWindow(QMainWindow):
         # Labels and inputs vertically arranged
         labels_inputs_layout = QVBoxLayout()
 
-        # Row 1
-        row_layout = QHBoxLayout()
+        def create_row(label_text, input_widget):
+            row_layout = QHBoxLayout()
+            label = QLabel(label_text)
+            label.setFixedWidth(100)
+            row_layout.addWidget(label)
+            row_layout.addWidget(input_widget)
+            labels_inputs_layout.addLayout(row_layout)
+            return input_widget
 
-        label1 = QLabel("Plugin Name:")
-        plugin_name_input = QLineEdit()
-        label1.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label1)
-        row_layout.addWidget(plugin_name_input)
+        plugin_name_input = create_row("Plugin Name:", QLineEdit())
+        device_name_input = create_row("Device Name:", QLineEdit())
+        category_input = create_row("Category:", QComboBox())
+        interface_input = create_row("Interface:", QComboBox())
+        scpi_input = create_row("SCPI:", QLineEdit())  # Assuming SCPI is a line edit
+        language_input = create_row("Language:", QComboBox())
+        role_input = create_row("Role:", QComboBox())
 
-        labels_inputs_layout.addLayout(row_layout)
-
-        # Row 2
-        row_layout = QHBoxLayout()
-
-        label2 = QLabel("Device Name:")
-        device_name_input = QLineEdit()
-        label2.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label2)
-        row_layout.addWidget(device_name_input)
-
-        labels_inputs_layout.addLayout(row_layout)
-
-        # Row 3
-        row_layout = QHBoxLayout()
-
-        label3 = QLabel("Category:")
-        category_input = QComboBox()
         category_input.addItems(category)
-        label3.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label3)
-        row_layout.addWidget(category_input)
-
-        labels_inputs_layout.addLayout(row_layout)
-
-        # Row 4
-        row_layout = QHBoxLayout()
-
-        label4 = QLabel("Interface:")
-        interface_input = QComboBox()
         interface_input.addItems(interface)
-        label4.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label4)
-        row_layout.addWidget(interface_input)
-
-        labels_inputs_layout.addLayout(row_layout)
-
-        # Row 5
-        row_layout = QHBoxLayout()
-
-        label5 = QLabel("Language:")
-        language_input = QComboBox()
         language_input.addItems(language)
-        label5.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label5)
-        row_layout.addWidget(language_input)
-
-        labels_inputs_layout.addLayout(row_layout)
-
-        # Row 6
-        row_layout = QHBoxLayout()
-
-        label6 = QLabel("Role:")
-        role_input = QComboBox()
         role_input.addItems(role)
-        label6.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label6)
-        row_layout.addWidget(role_input)
 
-        labels_inputs_layout.addLayout(row_layout)
+        # Update subsystems based on category selection
+        category_input.currentIndexChanged.connect(lambda index: self.update_subsystems(scpi_input, category_input.currentText()))
 
-        # Row 7
-        row_layout = QHBoxLayout()
-
-        label7 = QLabel("Test Steps:")
-        subsystem_input = QComboBox()  # ComboBox for subsystems
-        label7.setFixedWidth(100)  # Adjust the width of the label
-        row_layout.addWidget(label7)
-        row_layout.addWidget(subsystem_input)
-
-        labels_inputs_layout.addLayout(row_layout)
-                # Update subsystems based on category selection
-        category_input.currentIndexChanged.connect(lambda index: self.update_subsystems(subsystem_input, category_input.currentText()))
-
-        # Add button
         add_button = QPushButton("ADD")
-        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.text(), subsystem_input.currentText(), device_name_input.text(), language_input.currentText(), role_input.currentText(), category_input.currentText(), subsystem_input.currentText()))
+        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.text(), device_name_input.text(), category_input.currentText(), interface_input.currentText(), scpi_input.text(), language_input.currentText(), role_input.currentText()))
 
         layout.addLayout(labels_inputs_layout)
         layout.addWidget(add_button)
 
         dialog.exec()
 
+    def add_entry_to_table(self, dialog, plugin_name, device_name, category, interface, scpi, language, role):
+        row_position = self.table.rowCount()
+        self.table.insertRow(row_position)
+        self.table.setItem(row_position, 0, QTableWidgetItem(plugin_name))
+        self.table.setItem(row_position, 1, QTableWidgetItem(device_name))
+        self.table.setItem(row_position, 2, QTableWidgetItem(category))
+        self.table.setItem(row_position, 3, QTableWidgetItem(interface))
+        self.table.setItem(row_position, 4, QTableWidgetItem(scpi))
+        self.table.setItem(row_position, 5, QTableWidgetItem(language))
+        self.table.setItem(row_position, 6, QTableWidgetItem(role))
+        dialog.accept()
 
     def update_subsystems(self, subsystem_input, category):
         # Clear existing items
-            subsystem_input.clear()
+        subsystem_input.clear()
 
-            # Get subsystems based on category
-            subsystems = self.get_subsystems(category)
+        # Get subsystems based on category
+        subsystems = self.get_subsystems(category)
 
-            # Add new subsystems
-            subsystem_input.addItems(subsystems)
+        # Add new subsystems
+        subsystem_input.addItems(subsystems)
 
     def get_subsystems(self, category):
-            # Define subsystems for each category
-            return test_steps.get(category, [])
-
-
-    def add_entry_to_table(self, dialog, plugin_name, scpi, device_name, language, interface, role, device_category):
-        # Assuming 'table' is accessible here as it is a member of the class
-        table = self.findChild(QTableWidget)
-        row_position = table.rowCount()
-        table.insertRow(row_position)
-        table.setItem(row_position, 0, QTableWidgetItem(plugin_name))
-        table.setItem(row_position, 1, QTableWidgetItem(device_name))
-        table.setItem(row_position, 2, QTableWidgetItem(device_category))
-        table.setItem(row_position, 3, QTableWidgetItem(interface))
-        table.setItem(row_position, 4, QTableWidgetItem(scpi))
-        table.setItem(row_position, 5, QTableWidgetItem(language))
-        table.setItem(row_position, 6, QTableWidgetItem(role))
-        dialog.close()
+        # Define subsystems for each category
+        return test_steps.get(category, [])
 
     def delete_selected_entry(self):
         # Assuming 'table' is accessible here as it is a member of the class
-        table = self.findChild(QTableWidget)
-        selected_row = table.currentRow()
+        selected_row = self.table.currentRow()
         if selected_row >= 0:
-            table.removeRow(selected_row)
+            self.table.removeRow(selected_row)
 
     def show_single_screen(self):
         self.screen_container.setCurrentWidget(self.single_screen)
 
     def show_batch_screen(self):
         self.screen_container.setCurrentWidget(self.batch_screen)
-
-    def show_loading_dialog(self):
-        self.loading_dialog = QDialog(self)
-        self.loading_dialog.setWindowTitle("Loading...")
-        self.loading_dialog.setFixedSize(200, 100)
-
-        layout = QVBoxLayout(self.loading_dialog)
-        label = QLabel("Processing...")
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        progress = QProgressBar()
-        progress.setMinimum(0)
-        progress.setMaximum(100)
-
-        layout.addWidget(label)
-        layout.addWidget(progress)
-
-        # Start a thread to simulate loading
-        self.loading_thread = LoadingThread()
-        self.loading_thread.progress_update.connect(progress.setValue)
-        self.loading_thread.start()
-
-        self.loading_dialog.exec()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
