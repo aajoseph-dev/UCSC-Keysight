@@ -1,7 +1,7 @@
 ## About The Project
 
 <p align="center">
-    <img src="/assets/project-screenshot.png" alt="Alt text" width="300" />
+    <img src="/assets/project-screenshot.png" alt="Alt text" width="500" />
 </p>
 
 
