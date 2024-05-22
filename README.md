@@ -1,6 +1,9 @@
 ## About The Project
 
-<img src="/assets/project-screenshot.png" alt="Alt text" width="300" />
+<p align="center">
+    <img src="/assets/project-screenshot.png" alt="Alt text" width="300" />
+</p>
+
 
 This project leverages Azure AI Search and Large Language Models (LLMs) to automate the creation of OpenTAP plugins, ensuring they meet specific requirements and standards. By integrating advanced AI capabilities, the tool helps reduce development time while maintaining adherence to OpenTAP standards.
 
