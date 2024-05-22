@@ -58,7 +58,7 @@ To utilize this automated plugin generation tool, follow these steps:
     In the UI, enter the required device information.
 
 8. **Generate the plugin:**
-    Click the "Generate" button and wait for the program to generate your plugin.
+    Click the "Generate" button and wait for the program to create your plugin.
 
 9. **Unzip the plugin:**
     Once generated, the plugin will be returned as a zip folder. Unzip the file.
