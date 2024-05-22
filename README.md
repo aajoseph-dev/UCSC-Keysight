@@ -42,27 +42,28 @@ To utilize this automated plugin generation tool, follow these steps:
     pip install -r requirements.txt
     ```
 
-4. **Start the server:**
-    ```bash
+4. **Start the server:** 
+    In the api directory run
+   ```bash
     python app.py
     ```
 
-5. **Start the client:**
-    Open another terminal window and run:
+6. **Start the client:**
+    In the client directory run
     ```bash
     python client.py
     ```
 
-6. **Enter device information:**
+7. **Enter device information:**
     In the UI, enter the required device information.
 
-7. **Generate the plugin:**
+8. **Generate the plugin:**
     Click the "Generate" button and wait for the program to generate your plugin.
 
-8. **Unzip the plugin:**
+9. **Unzip the plugin:**
     Once generated, the plugin will be returned as a zip folder. Unzip the file.
 
-9. **Create package.xml:**
+10. **Create package.xml:**
     Run the following command to create the package.xml file:
     ```bash
     tap package create package.xml
