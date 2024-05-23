@@ -202,7 +202,7 @@ class MainWindow(QMainWindow):
                 language = table.item(row, 5).text()
                 role = table.item(row, 6).text()
 
-                if all([plugin_name, device_name, category, interface, scpi, language, role]):
+                if all([plugin_name, device_name, category, interface, test_steps, language, role]):
                     batch_data.append({
                         "deviceName": device_name,
                         "category": category,
@@ -233,6 +233,7 @@ class MainWindow(QMainWindow):
 
         # Set table height
         self.table.setFixedHeight(400)
+        self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         layout.addWidget(self.table)
 
         # Plus and minus buttons layout

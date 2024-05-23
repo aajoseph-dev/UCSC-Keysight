@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+load_dotenv(override=True)
 
 from openai import AzureOpenAI
 from azure.core.credentials import AzureKeyCredential
@@ -9,42 +10,43 @@ import tiktoken
 
 from code_parser import sentiment_analysis
 
-load_dotenv()
-
-
 def callLLM(prompt):
+    
+    try: 
+        client = AzureOpenAI(
+            azure_endpoint=os.environ["Forum_GPT4_ENDPOINT"], 
+            api_key=os.environ["Forum_GPT4_KEY"],  
+            api_version=os.environ["Forum_GPT4_API_VERSION"]
+        )
 
-    client = AzureOpenAI(
-            azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
-            api_key=os.getenv("Forum-GPT4_KEY1"),  
-            api_version="2024-02-15-preview"
-    )
+        message_text = [{"role":"system", "content":"You are an AI assistant that helps people Opentap plugins using SCPI commands in Python."}, 
+                        {"role": "user", "content": prompt}]
 
-    message_text = [{"role":"system", "content":"You are an AI assistant that helps people Opentap plugins using SCPI commands in Python."}, 
-                    {"role": "user", "content": prompt}]
+        completion = client.chat.completions.create(
+            model="gpt-4-1106-Preview",
+            messages = message_text,
+            temperature=0.7,
+            max_tokens=800,
+            top_p=0.95,
+            frequency_penalty=0,
+            presence_penalty=0,
+            stop=None
+        )
 
-    completion = client.chat.completions.create(
-        model="gpt-4-1106-Preview",
-        messages = message_text,
-        temperature=0.7,
-        max_tokens=800,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None
-    )
+        content = completion.choices[0].message.content
 
-    content = completion.choices[0].message.content
-
-    return content
+        return content
+    
+    except Exception as e:
+        print(f"Error during callLLM: {e}")
 
 def callAISearch(query, TOKEN_LIMIT=1500):
 
-    service_endpoint = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
-    index_name = "plugin-pdf-vector"
-    key = os.getenv("AZURE_AI_SEARCH_API_KEY")
-
     try:
+        service_endpoint=os.environ["AZURE_AI_SEARCH_ENDPOINT"]
+        index_name=os.environ["AZURE_AI_INDEX_NAME"]
+        key=os.environ["AZURE_AI_SEARCH_API_KEY"]
+
         search_client = SearchClient(service_endpoint, index_name, AzureKeyCredential(key))
 
         results = search_client.search(search_text=query)
@@ -71,28 +73,33 @@ def callAISearch(query, TOKEN_LIMIT=1500):
         print(f"Error during AI search: {e}")
 
 
-def llm_code_check(prompt): 
+def llm_code_check(prompt):
+    try:
+        client = AzureOpenAI(
+            azure_endpoint=os.environ["Forum_GPT4_ENDPOINT"], 
+            api_key=os.environ["Forum_GPT4_KEY"],  
+            api_version=os.environ["Forum_GPT4_API_VERSION"]
+        )    
+            
+        message_text = [{"role":"system", "content":"You are an AI assistant that helps people verify Opentap plugins."}, 
+                        {"role": "user", "content": prompt}]
 
-    client = AzureOpenAI(
-            azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
-            api_key=os.getenv("Forum-GPT4_KEY1"),  
-            api_version="2024-02-15-preview"
-    )        
+        completion = client.chat.completions.create(
+            model="gpt-4-1106-Preview",
+            messages = message_text,
+            temperature=0.7,
+            max_tokens=800,
+            top_p=0.95,
+            frequency_penalty=0,
+            presence_penalty=0,
+            stop=None
+        )
+
+        content = completion.choices[0].message.content
         
-    message_text = [{"role":"system", "content":"You are an AI assistant that helps people verify Opentap plugins."}, 
-                    {"role": "user", "content": prompt}]
-
-    completion = client.chat.completions.create(
-        model="gpt-4-1106-Preview",
-        messages = message_text,
-        temperature=0.7,
-        max_tokens=800,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None
-    )
-
-    content = completion.choices[0].message.content
+        return sentiment_analysis(content)
     
-    return sentiment_analysis(content)
+    except Exception as e:
+        print(f"Error during llm_code_check: {e}")
+
+   

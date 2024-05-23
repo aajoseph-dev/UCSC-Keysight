@@ -52,7 +52,7 @@ def createInstrument(data, path):
 
     python_code = extract_python_code(LLM_response)
 
-    validation_results = instrument_validation(python_code)
+    validation_results, python_code = instrument_validation(python_code)
     print(validation_results)
 
     if (len(validation_results) != 0):
@@ -80,7 +80,7 @@ def createStep(data, test_step, instrument_code, allowed_attempts=1):
     response = callLLM(prompt)
     python_code = extract_python_code(response)
 
-    verification_results = test_step_validation(python_code)
+    verification_results, python_code = test_step_validation(python_code)
     validation_prompt = pt.generate_step_validation(python_code, test_step, instrument_code, context)
     llm_check = llm_code_check(validation_prompt)
     print(verification_results)

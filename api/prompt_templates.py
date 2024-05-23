@@ -10,9 +10,13 @@ class PromptTemplates:
 
     def generate_instrument_prompt(self, context):
         return f"""
-        Generate an OpenTAP test instrument declaration in {self.prog_lang} for the following device: {self.category} {self.device_name}
+        Generate an OpenTAP test instrument declaration in {self.prog_lang} for the following device: {self.device_name} {self.category}
         Instructions:
+        - Name your class: {self.device_name}{self.category}
         - Do not import visa or pyvisa
+        - Import the following: 
+            from opentap import *
+            import OpenTap
         - Along with the standard python libraries you have access to these:
             -OpenTap
             -opentap
@@ -109,10 +113,13 @@ class PromptTemplates:
         {command} test step.
         
         Instructions:
+        - Import the following: 
+            from opentap import *
+            import OpenTap
         - The code should be in {self.prog_lang}
         - do not add code that already exists in instrument declaration
         - the instrument can be imported using
-            from .{self.device_name}{self.category} import Scope
+            from .{self.device_name} import {self.device_name}{self.category}
         - Include functions that utilize the provided SCPI commands.
         - Do not import visa or pyvisa
         - Along with the standard Python libraries you have access to these:

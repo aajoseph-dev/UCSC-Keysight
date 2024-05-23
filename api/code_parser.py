@@ -58,8 +58,10 @@ def instrument_validation(code):
 
     if not has_opentap_import:
         verification_results += "The import 'from opentap import *' is not present.\n"
+        code = "from opentap import *\n" + code 
     if not has_OpenTap_import:
         verification_results += "The import 'import OpenTap' is not present.\n"
+        code = "import OpenTap\n" + code
     if not has_correct_inheritance:
         verification_results += "No class inherits from 'OpenTap.ScpiInstrument' or 'ScpiInstrument'.\n"
     if not has_correct_decorator:
@@ -69,7 +71,7 @@ def instrument_validation(code):
     if not has_super_call:
         verification_results += "No call to super(<classname>, self).__init__() found in the __init__ method.\n"
 
-    return verification_results
+    return verification_results, code
 
 
 def test_step_validation(code):
@@ -123,8 +125,10 @@ def test_step_validation(code):
 
     if not has_opentap_import:
         verification_results += "The import 'from opentap import *' is not present.\n"
+        code = "from opentap import *\n" + code 
     if not has_OpenTap_import:
         verification_results += "The import 'import OpenTap' is not present.\n"
+        code = "import OpenTap\n" + code
     if not has_correct_inheritance:
         verification_results += "No class inherits 'TestStep'.\n"
     if not has_init_method:
@@ -134,7 +138,7 @@ def test_step_validation(code):
     if not has_super_call:
         verification_results += "No call to 'super().Run()' found within the 'Run' method.\n"
 
-    return verification_results
+    return verification_results, code
 
 
 def extract_python_code(text):
