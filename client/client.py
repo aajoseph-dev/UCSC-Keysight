@@ -198,7 +198,7 @@ class MainWindow(QMainWindow):
                 device_name = table.item(row, 1).text()
                 category = table.item(row, 2).text()
                 interface = table.item(row, 3).text()
-                scpi = table.item(row, 4).text()  # Corrected to get SCPI data
+                test_steps = [table.item(row, 4).text()]  # Corrected to get SCPI data
                 language = table.item(row, 5).text()
                 role = table.item(row, 6).text()
 
@@ -206,7 +206,7 @@ class MainWindow(QMainWindow):
                     batch_data.append({
                         "deviceName": device_name,
                         "category": category,
-                        "commands": scpi,  # Added subsystem (SCPI) correctly
+                        "commands": test_steps,  # Added subsystem (SCPI) correctly
                         "interface": interface,
                         "progLang": language.lower(),
                         "role": role.lower(),
@@ -274,14 +274,16 @@ class MainWindow(QMainWindow):
             labels_inputs_layout.addLayout(row_layout)
             return input_widget
 
-        plugin_name_input = create_row("Plugin Name:", QLineEdit())
+        plugin_name_input = create_row("Manufacturer:", QComboBox())
         device_name_input = create_row("Device Name:", QLineEdit())
         category_input = create_row("Category:", QComboBox())
         interface_input = create_row("Interface:", QComboBox())
-        scpi_input = create_row("SCPI:", QLineEdit())  # Assuming SCPI is a line edit
+        scpi_input = create_row("SCPI:", QComboBox())  # Assuming SCPI is a line edit
         language_input = create_row("Language:", QComboBox())
         role_input = create_row("Role:", QComboBox())
 
+        #update naming
+        plugin_name_input.addItems(manufacturer)
         category_input.addItems(category)
         interface_input.addItems(interface)
         language_input.addItems(language)
@@ -291,7 +293,7 @@ class MainWindow(QMainWindow):
         category_input.currentIndexChanged.connect(lambda index: self.update_subsystems(scpi_input, category_input.currentText()))
 
         add_button = QPushButton("ADD")
-        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.text(), device_name_input.text(), category_input.currentText(), interface_input.currentText(), scpi_input.text(), language_input.currentText(), role_input.currentText()))
+        add_button.clicked.connect(lambda: self.add_entry_to_table(dialog, plugin_name_input.currentText(), device_name_input.text(), category_input.currentText(), interface_input.currentText(), scpi_input.currentText(), language_input.currentText(), role_input.currentText()))
 
         layout.addLayout(labels_inputs_layout)
         layout.addWidget(add_button)

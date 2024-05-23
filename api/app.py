@@ -1,12 +1,7 @@
 from flask import Flask, jsonify, request, send_file
 from xml.dom import minidom
-import requests
-from io import BytesIO
 from zipfile import ZipFile
-from pathlib import Path
 from dotenv import load_dotenv
-import re
-import importlib.metadata as metadata
 import shutil
 import os
 from datetime import datetime
@@ -20,6 +15,7 @@ import tiktoken
 
 from promptTemplates import PromptTemplates
 from pluginValidation import *
+from code_parser import *
 
 load_dotenv()
 app = Flask(__name__)
@@ -28,118 +24,82 @@ app = Flask(__name__)
 def handleRequest():
     
     data = request.get_json()
+    print(data)
     deviceName = data.get("deviceName")
-    path = f"plugins/raw_files/{deviceName}"
+    dir = f"plugins/raw_files/{deviceName}"
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
 
-    #update this
-    if os.path.exists(path):
-        shutil.rmtree(path)
+    allowed_attempts = 1
 
-    if not os.path.exists(path):
-        os.makedirs(path)  
-        response = createInstrument(data, path)
-        for command in data.get("commands"):
-            context = callAISearch(f"{deviceName}: {command}")
-            prompt = createStepsPrompt(data, command, context, response)
-            # pattern = r'```python(.*?)```'
-            response = callLLM(prompt)
-            # match = re.findall(pattern, response, re.DOTALL)
-            # response = match[0]
-            response = extract_python_code(response)
-            buildPy(path, command, response)
+    pt = PromptTemplates(data)
 
-            response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
-            # {"Sentiment" : "Positive", "Response" : content}
-            if response_dict["Sentiment"] == "Negative":
+    if os.path.exists(dir):
+        dir += "_"
+        now = datetime.now()
+        formatted_date_time = now.strftime("%m.%d.%y.%H.%M")
+        dir += formatted_date_time
 
-                prompt += f'''
-                    \nThe plugin that was generated was incorrect, please try again by using the following feedback:
-                    {response_dict["Response"]}
-                    '''
-                response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
-                response = extract_python_code(response)
+    os.makedirs(dir)
 
-                buildPy(path, command, response)
-                result, verified_code = verify_code(response)
-                response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
-                buildXML(deviceName, path)
-                packageFiles(path, path_to_zip)
-  
-            else: # response_dict["Sentiment"] == "Neutral" or "Positive":
-                buildXML(deviceName, path)
-                packageFiles(path, path_to_zip)
+    instrument_code = createInstrument(data, dir)
+
+    for command in data.get("commands"):
+
+        context = callAISearch(f"{deviceName}: {command}")
+        prompt = pt.generate_steps_prompt(command, instrument_code, context)
+        response = callLLM(prompt)
+        python_code = extract_python_code(response)
+
+        verification_results = test_step_validation(python_code)
+        validation_prompt = pt.generate_step_validation(python_code, command, instrument_code, context)
+        llm_check = llm_code_check(validation_prompt)
+        print(verification_results)
+
+        count = 0
+        while llm_check["Sentiment"] == "Negative" and count < allowed_attempts:
+
+            prompt = pt.failed_test_step(python_code, command, context, llm_check["Response"], verification_results)
+            response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
+            python_code = extract_python_code(response)
+
+            validation_prompt = pt.generate_step_validation(python_code, command, instrument_code, context)
+            llm_check = llm_code_check(prompt) # go ask the 2nd llm's response yet
+            
+            count += 1
+
+        buildPy(dir, command, response)
+
+    buildXML(deviceName, dir)
+    packageFiles(dir, path_to_zip)
     return send_file(path_to_zip, as_attachment=True)
-    #     buildXML(deviceName, path)
-    #     packageFiles(path, path_to_zip, requirements)
-
-    # return send_file(path_to_zip, as_attachment=True)
-
-# Remove comments before and after the Python code
-def extract_python_code(text):
-    start_index = text.find("```python")
-    end_index = text.find("```", start_index + 1)
-    if start_index != -1 and end_index != -1:
-        return text[start_index + 9:end_index].strip()
-    else:
-        return text
-
-def verify_code(code):
-    # checking for certain keywords
-    if 'def' in code and 'class' in code:
-        verification_result = 'Found class and function definitions.'
-    else:
-        verification_result = 'Unable to find class and function definitions.'
-
-    # checking for OpenTAP import
-    if 'import OpenTAP' not in code:
-        # Adding OpenTAP import if not present
-        code = '\nimport OpenTAP\n' + code
-
-    if 'import opentap' not in code:
-        code = '\n import opentap\n' + code
-
-    # checking for @attribute
-    if '@attribute' in code:
-        verification_result += ' Found @attribute.'
-    else:
-        verification_result += ' @attribute not found.'
-
-    return verification_result, code
-
-
-def createStepsPrompt(data, command, context, instrument):
-    prompt_templates = PromptTemplates(data, context)
-    
-    prompt = prompt_templates.generate_steps_prompt(command, instrument)
-
-    return prompt
 
 def createInstrument(data, path):
-    deviceName = data.get("deviceName")
-    context = callAISearch(f"{deviceName}")
+    pt = PromptTemplates(data)
     
-    prompt_templates = PromptTemplates(data, context)
-    prompt = prompt_templates.generate_instrument_prompt()
-    response = callLLM(prompt)
-    response = extract_python_code(response)
+    deviceName = data.get("deviceName")
 
-    response_dict = llm_code_check("", response, deviceName, 1)
+    context = callAISearch(f"{deviceName}")
 
-    buildPy(path, deviceName, response)
+    prompt = pt.generate_instrument_prompt(context)
+    LLM_response = callLLM(prompt)
 
-    if response_dict["Sentiment"] == "Negative":
-        # already tried, this is the second time
-        prompt += f'''
-            \nThe plugin that was generated was incorrect, please try again by using the following feedback:
-            {response_dict["Response"]}'''
-        response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
-        response = extract_python_code(response)
-        buildPy(path, deviceName, response)
-        response_dict = llm_code_check("", response, deviceName, 0) # go ask the 2nd llm's response yet
+    python_code = extract_python_code(LLM_response)
 
+    validation_results = instrument_validation(python_code)
+    print(validation_results)
 
-    return response
+    if (len(validation_results) != 0):
+
+        callAISearch(f"{deviceName}")
+        validation_prompt = pt.generate_instrument_validation(python_code, context)
+        llm_check = llm_code_check(validation_prompt)
+
+        prompt = pt.failed_insturment(python_code, context, llm_check["Response"], validation_results)
+        LLM_response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
+        python_code = extract_python_code(LLM_response)
+
+    buildPy(path, deviceName, python_code)
+    return python_code
 
 
 def callLLM(prompt):
@@ -202,7 +162,7 @@ def callAISearch(query, TOKEN_LIMIT=1500):
 
 
 def buildPy(path, command, code):
-    name = "".join( x for x in command if (x.isalnum() or x in "._- "))
+    name = command.replace(" ", "_")
 
     pyFile = f"{path}/{name}.py"
     with open(pyFile, 'w') as file:
@@ -218,7 +178,6 @@ def buildXML(plugin_name, folder_path):
     doc.appendChild(package)
     package.setAttribute('Name', plugin_name)
     package.setAttribute('xmlns', "http://keysight.com/Schemas/tap")
-    # package.setAttribute('Version', "$(GitVersion)")
     package.setAttribute('Version', "1.0.0")
     package.setAttribute('OS', "Windows,Linux,MacOS")
 

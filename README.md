@@ -30,7 +30,7 @@ To utilize this automated plugin generation tool, follow these steps:
 
 2. **Set up a virtual environment:**
     ```bash
-    python3 -m venv .venv
+    python -m venv .venv
     source .venv/bin/activate
     ```
 
@@ -44,8 +44,7 @@ To utilize this automated plugin generation tool, follow these steps:
     python app.py
     ```
 
-5. **Start the client:**
-    Open another terminal window and run:
+5. **Start the client in another terminal window:**
     ```bash
     python client.py
     ```
@@ -64,11 +63,7 @@ To utilize this automated plugin generation tool, follow these steps:
     ```bash
     tap package create package.xml
     ```
-
-## Usage
-
-
-
+    
 ## Acknowledgements
 
 Developed in collaboration with the University of California, Santa Cruz (UCSC) and Keysight Technologies through the Corporate Sponspored Senior Projects Program (CSSPP).

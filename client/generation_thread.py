@@ -12,8 +12,8 @@ class GenerationThread(QThread):
         self.directory = directory
 
     def run(self):
-        start_time = time.time()
         for plugin_info in self.plugin_data:
+            start_time = time.time()
             payload = {
                 "deviceName": plugin_info["deviceName"],
                 "category": plugin_info["category"],
@@ -32,6 +32,9 @@ class GenerationThread(QThread):
                 print(f"Plugin {device} downloaded successfully")
             except Exception as e:
                 print(f"Error downloading plugin {device}:", e)
-
+            commands = plugin_info["commands"]
+            end = time.time() - start_time
+            with open("output.txt", "a+") as f:
+                f.write(f"{device} with these {commands} complete: {end}\n")
         self.finished_signal.emit()
-        print("time to complete:", time.time() - start_time())
+
