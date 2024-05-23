@@ -1,5 +1,5 @@
 import ast
-import re
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #code_parser defines functions used within app.py to help vaidalte code 
 #primiarly throught the use of abstract sytnax tree
@@ -137,35 +137,23 @@ def test_step_validation(code):
     return verification_results
 
 
-
 def extract_python_code(text):
+
     start_index = text.find("```python")
     end_index = text.find("```", start_index + 1)
+
     if start_index != -1 and end_index != -1:
-        return text[start_index + 9:end_index].strip()
-    else:
-        return text
+        text = text[start_index + 9:end_index].strip()
 
+    return text
 
-def verify_code(code):
-    # checking for certain keywords
-    if 'def' in code and 'class' in code:
-        verification_result = 'Found class and function definitions.'
-    else:
-        verification_result = 'Unable to find class and function definitions.'
+def sentiment_analysis(content):
 
-    # checking for OpenTAP import
-    if 'import OpenTAP' not in code:
-        # Adding OpenTAP import if not present
-        code = '\nimport OpenTAP\n' + code
+    sid = SentimentIntensityAnalyzer()
 
-    if 'import opentap' not in code:
-        code = '\n import opentap\n' + code
+    scores = sid.polarity_scores(content)
 
-    # checking for @attribute
-    if '@attribute' in code:
-        verification_result += ' Found @attribute.'
-    else:
-        verification_result += ' @attribute not found.'
-
-    return verification_result, code
+    if scores['compound'] <= -0.25: 
+        return {"Sentiment" : "Negative", "Response" : content}
+    
+    return {"Sentiment" : "Positive", "Response" : content}

@@ -1,37 +1,24 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, request, send_file
 from xml.dom import minidom
 from zipfile import ZipFile
-from dotenv import load_dotenv
 import shutil
 import os
 from datetime import datetime
-
-from openai import AzureOpenAI
-
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-
 import tiktoken
 
-from promptTemplates import PromptTemplates
-from pluginValidation import *
+from prompt_templates import PromptTemplates
+from azure_services import *
 from code_parser import *
 
-load_dotenv()
 app = Flask(__name__)
 
 @app.route('/generate_plugin', methods=['POST'])
 def handleRequest():
     
     data = request.get_json()
-    print(data)
     deviceName = data.get("deviceName")
     dir = f"plugins/raw_files/{deviceName}"
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
-
-    allowed_attempts = 1
-
-    pt = PromptTemplates(data)
 
     if os.path.exists(dir):
         dir += "_"
@@ -43,35 +30,15 @@ def handleRequest():
 
     instrument_code = createInstrument(data, dir)
 
-    for command in data.get("commands"):
+    for test_step in data.get("commands"):
 
-        context = callAISearch(f"{deviceName}: {command}")
-        prompt = pt.generate_steps_prompt(command, instrument_code, context)
-        response = callLLM(prompt)
-        python_code = extract_python_code(response)
-
-        verification_results = test_step_validation(python_code)
-        validation_prompt = pt.generate_step_validation(python_code, command, instrument_code, context)
-        llm_check = llm_code_check(validation_prompt)
-        print(verification_results)
-
-        count = 0
-        while llm_check["Sentiment"] == "Negative" and count < allowed_attempts:
-
-            prompt = pt.failed_test_step(python_code, command, context, llm_check["Response"], verification_results)
-            response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
-            python_code = extract_python_code(response)
-
-            validation_prompt = pt.generate_step_validation(python_code, command, instrument_code, context)
-            llm_check = llm_code_check(prompt) # go ask the 2nd llm's response yet
-            
-            count += 1
-
-        buildPy(dir, command, response)
+        python_code = createStep(data, test_step, instrument_code)
+        buildPy(dir, test_step, python_code)
 
     buildXML(deviceName, dir)
     packageFiles(dir, path_to_zip)
     return send_file(path_to_zip, as_attachment=True)
+
 
 def createInstrument(data, path):
     pt = PromptTemplates(data)
@@ -101,64 +68,36 @@ def createInstrument(data, path):
     buildPy(path, deviceName, python_code)
     return python_code
 
+def createStep(data, test_step, instrument_code, allowed_attempts=1):
 
-def callLLM(prompt):
+    pt = PromptTemplates(data)
 
-    client = AzureOpenAI(
-            azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
-            api_key=os.getenv("Forum-GPT4_KEY1"),  
-            api_version="2024-02-15-preview"
-    )
+    deviceName = data.get("deviceName")
 
-    message_text = [{"role":"system", "content":"You are an AI assistant that helps people Opentap plugins using SCPI commands in Python."}, 
-                    {"role": "user", "content": prompt}]
+    context = callAISearch(f"{deviceName}: {test_step}")
+    prompt = pt.generate_steps_prompt(test_step, instrument_code, context)
 
-    completion = client.chat.completions.create(
-        model="gpt-4-1106-Preview",
-        messages = message_text,
-        temperature=0.7,
-        max_tokens=800,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None
-    )
+    response = callLLM(prompt)
+    python_code = extract_python_code(response)
 
-    content = completion.choices[0].message.content
+    verification_results = test_step_validation(python_code)
+    validation_prompt = pt.generate_step_validation(python_code, test_step, instrument_code, context)
+    llm_check = llm_code_check(validation_prompt)
+    print(verification_results)
 
-    return content
+    count = 0
+    while llm_check["Sentiment"] == "Negative" and count < allowed_attempts:
 
-def callAISearch(query, TOKEN_LIMIT=1500):
+        prompt = pt.failed_test_step(python_code, test_step, context, llm_check["Response"], verification_results)
+        response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
+        python_code = extract_python_code(response)
 
-    service_endpoint = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
-    index_name = "plugin-pdf-vector"
-    key = os.getenv("AZURE_AI_SEARCH_API_KEY")
-
-    try:
-        search_client = SearchClient(service_endpoint, index_name, AzureKeyCredential(key))
-
-        results = search_client.search(search_text=query)
-
-        context = ""
-        token_count = 0
-
-        tokenizer = tiktoken.encoding_for_model("gpt-4")
-
-        for result in results:
-            content = result['content']
-            tokens = tokenizer.encode(content)
-            if token_count + len(tokens) <= TOKEN_LIMIT:
-                context += content
-                token_count += len(tokens)
-            else:
-                remaining_tokens = TOKEN_LIMIT - token_count
-                truncated_content = tokenizer.decode(tokens[:remaining_tokens])
-                context += truncated_content
-                break
-        return context
+        validation_prompt = pt.generate_step_validation(python_code, test_step, instrument_code, context)
+        llm_check = llm_code_check(prompt) # go ask the 2nd llm's response yet
+        
+        count += 1
     
-    except Exception as e:
-        print(f"Error during AI search: {e}")
+    return python_code
 
 
 def buildPy(path, command, code):
