@@ -1,25 +1,31 @@
 #update to focus on plugins not test steps
 
 class PromptTemplates:
-    def __init__(self, data, context):
+    def __init__(self, data):
         self.device_name = data.get("deviceName")
         self.category = data.get("category")
         self.interface = data.get("interface")
         self.prog_lang = data.get("progLang")
         self.role = data.get("role")
-        self.context = context
 
-
-    def generate_instrument_prompt(self):
+    def generate_instrument_prompt(self, context):
         return f"""
-        Generate an OpenTAP test instrument declaration in {self.prog_lang} for the following device: {self.category} {self.device_name}
+        Generate an OpenTAP test instrument declaration in {self.prog_lang} for the following device: {self.device_name} {self.category}
         Instructions:
+        - Name your class: {self.device_name}{self.category}
+        - Do not import visa or pyvisa
+        - Import the following: 
+            from opentap import *
+            import OpenTap
         - Along with the standard python libraries you have access to these:
             -OpenTap
             -opentap
             -pythonnet==3.0.3
             -numpy==1.26.4
             -debugpy==1.8.1
+
+        Context from Ai search: 
+            {context}
 
         Example code for guidance:
             from opentap import *
@@ -101,28 +107,33 @@ class PromptTemplates:
 
         """
 
-    def generate_steps_prompt(self, command, instrument):
-        return f"""Generate an OpenTAP plugin class for a subset of scpi commands for the given device.
-        Context:
-        - Device Name: {self.device_name}
-        - Category: {self.category}
-        - Command: {command}
-        - Interface: {self.interface}
-        - Programming Language: {self.prog_lang}
-        - Role: {self.role}
-        - Documentation: {self.context}
+    def generate_steps_prompt(self, command, instrument, context):
+        return f"""
+        Using the instrument declaration code for {self.device_name} {self.category} please generate a 
+        {command} test step.
         
         Instructions:
-        - In {self.prog_lang} generate code for this subset of SCPI commands.
+        - Import the following: 
+            from opentap import *
+            import OpenTap
+        - The code should be in {self.prog_lang}
+        - do not add code that already exists in instrument declaration
+        - the instrument can be imported using
+            from .{self.device_name} import {self.device_name}{self.category}
         - Include functions that utilize the provided SCPI commands.
-        - Use the following Instrument Code to provide the appropriate test step code: {instrument}
-        - Follow best practices for the specified programming language and role.
-        - Along with the standard python libraries you have access to these:
+        - Do not import visa or pyvisa
+        - Along with the standard Python libraries you have access to these:
             -OpenTap
             -opentap
             -pythonnet==3.0.3
             -numpy==1.26.4
             -debugpy==1.8.1
+        
+        Context from AI search: 
+            {context}
+
+        Insturment declaration used to connect to the {self.device_name} {self.category}:
+            {instrument}
 
         Example code for guidance:
             import sys
@@ -205,3 +216,67 @@ class PromptTemplates:
                     self.UpgradeVerdict(OpenTap.Verdict.Pass)
 
              """
+    
+    def generate_instrument_validation(self, code, context):
+        return f"""
+        Is the following code an acceptable file to be an test instrument declaration for an OpenTAP plugin. 
+        This file is for the {self.device_name} instrument.
+
+        Context from AI search: 
+            {context}
+                    
+        Verify this code:
+            {code}
+        """
+
+    def generate_step_validation(self, code, command, plugin, context):
+        return f"""
+        Is the following code an acceptable file to be part of an OpenTAP plugin. 
+        This file is a {command} test step for {self.device_name}.
+
+        It should refernce SCPI commands, OpenTAP and utilize this instrument plugin 
+        when creating test steps:
+            {plugin}
+
+        Context from AI Search: 
+            {context}
+
+        Verify this test step code:
+            {code}
+        """
+    
+    def failed_insturment(self, code, context, LLM_response, parser_results):
+        return f"""
+
+        The OpenTAP plugin instrument declaration for {self.device_name} was not generated properly.
+        Please generate a fixed declaration
+
+        Here's the response from another LLM: 
+            {LLM_response}
+
+        Here are some errors the code parser found:
+            {parser_results}
+        
+        Context from AI Search: 
+            {context}
+
+        Update this code to address these issues:
+            {code}
+        """
+    
+    def failed_test_step(self, code, command, context, LLM_response, parser_results):
+        return f"""
+        The {command} test step for the {self.device_name} was not generated properly.
+
+        Here's the response from another LLM: 
+            {LLM_response}
+
+        Here are some errors the code parser found:
+            {parser_results}
+        
+        Context from AI Search: 
+            {context}
+
+        Update this code to address these issues:
+            {code}
+        """

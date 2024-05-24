@@ -1,240 +1,107 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, request, send_file
 from xml.dom import minidom
-import requests
-from io import BytesIO
 from zipfile import ZipFile
-from pathlib import Path
-from dotenv import load_dotenv
-import re
-import importlib.metadata as metadata
 import shutil
 import os
 from datetime import datetime
-
-from openai import AzureOpenAI
-
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-
 import tiktoken
 
-from promptTemplates import PromptTemplates
-from pluginValidation import *
+from prompt_templates import PromptTemplates
+from azure_services import *
+from code_parser import *
 
-load_dotenv()
 app = Flask(__name__)
 
 @app.route('/generate_plugin', methods=['POST'])
 def handleRequest():
     
     data = request.get_json()
-    print(data)
     deviceName = data.get("deviceName")
-    path = f"plugins/raw_files/{deviceName}"
+    dir = f"plugins/raw_files/{deviceName}"
     path_to_zip = f"plugins/zip_files/{deviceName}.zip"
 
-    if os.path.exists(path):
-        shutil.rmtree(path)
+    if os.path.exists(dir):
+        dir += "_"
+        now = datetime.now()
+        formatted_date_time = now.strftime("%m.%d.%y.%H.%M")
+        dir += formatted_date_time
 
-    if not os.path.exists(path):
-        os.makedirs(path)  
-        response = createInstrument(data, path)
-        for command in data.get("commands"):
-            context = callAISearch(f"{deviceName}: {command}")
-            prompt = createStepsPrompt(data, command, context, response)
-            # pattern = r'```python(.*?)```'
-            response = callLLM(prompt)
-            # match = re.findall(pattern, response, re.DOTALL)
-            # response = match[0]
-            response = extract_python_code(response)
-            print(f"response: {response}")
-            buildPy(path, command, response)
-            print("done buildPy()")
-            result, verified_code = verify_code(response)
-            print(f"result: {result}")
-            print(f"verified_code: {verified_code}")
-            response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
-            # {"Sentiment" : "Positive", "Response" : content}
-            if response_dict["Sentiment"] == "Negative":
-                # already tried, this is the second time
-                print("Sentiment was Negative, trying one more time")
-                prompt += f'''
-                    \nThe plugin that was generated was incorrect, please try again by using the following feedback:
-                    {response_dict["Response"]}
-                    '''
-                response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
-                response = extract_python_code(response)
-                # match = re.findall(pattern, response, re.DOTALL)
-                # response = match[0]
-                buildPy(path, command, response)
-                result, verified_code = verify_code(response)
-                response_dict = llm_code_check(command, response, deviceName, 0) # go ask the 2nd llm's response yet
-                print("Asked the 2nd LLM again")
-                buildXML(deviceName, path)
-                packageFiles(path, path_to_zip)
-                # return send_file(path_to_zip, as_attachment=True)
-                # pass the 2nd llm's response to the 1st llm 
-                # 1st llm regenerates the plugin
-            else: # response_dict["Sentiment"] == "Neutral" or "Positive":
-                print("Sentiment was Not Negative")
-                buildXML(deviceName, path)
-                packageFiles(path, path_to_zip)
+    os.makedirs(dir)
+
+    instrument_code = createInstrument(data, dir)
+
+    for test_step in data.get("commands"):
+
+        python_code = createStep(data, test_step, instrument_code)
+        buildPy(dir, test_step, python_code)
+
+    buildXML(deviceName, dir)
+    packageFiles(dir, path_to_zip)
     return send_file(path_to_zip, as_attachment=True)
-    #     buildXML(deviceName, path)
-    #     packageFiles(path, path_to_zip, requirements)
 
-    # return send_file(path_to_zip, as_attachment=True)
-
-# Remove comments before and after the Python code
-def extract_python_code(text):
-    start_index = text.find("```python")
-    end_index = text.find("```", start_index + 1)
-    if start_index != -1 and end_index != -1:
-        return text[start_index + 9:end_index].strip()
-    else:
-        return text
-
-def verify_code(code):
-    # checking for certain keywords
-    if 'def' in code and 'class' in code:
-        verification_result = 'Found class and function definitions.'
-    else:
-        verification_result = 'Unable to find class and function definitions.'
-
-    # checking for OpenTAP import
-    if 'import OpenTAP' not in code:
-        # Adding OpenTAP import if not present
-        code = '\nimport OpenTAP\n' + code
-
-    if 'import opentap' not in code:
-        code = '\n import opentap\n' + code
-
-    # checking for @attribute
-    if '@attribute' in code:
-        verification_result += ' Found @attribute.'
-    else:
-        verification_result += ' @attribute not found.'
-
-    return verification_result, code
-
-
-def createStepsPrompt(data, command, context, instrument):
-    prompt_templates = PromptTemplates(data, context)
-    
-    # if data.get("useCase") == "generate_plugin":
-    prompt = prompt_templates.generate_steps_prompt(command, instrument)
-    print(f"TEST STEP PROMPT: {prompt}")
-    # elif data.get("useCase") == "Power_supply_plugin":
-    #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
-    # elif data.get("useCase") == "Oscilloscopes_plugin":
-    #     prompt = prompt_templates.test_plugin_prompt(scpi_commands)
-    # etc..
-    # else:
-    #     raise ValueError("Unknown use case")
-
-    return prompt
 
 def createInstrument(data, path):
+    pt = PromptTemplates(data)
+    
     deviceName = data.get("deviceName")
+
     context = callAISearch(f"{deviceName}")
-    
-    prompt_templates = PromptTemplates(data, context)
-    prompt = prompt_templates.generate_instrument_prompt()
+
+    prompt = pt.generate_instrument_prompt(context)
+    LLM_response = callLLM(prompt)
+
+    python_code = extract_python_code(LLM_response)
+
+    validation_results, python_code = instrument_validation(python_code)
+    print(validation_results)
+
+    if (len(validation_results) != 0):
+
+        callAISearch(f"{deviceName}")
+        validation_prompt = pt.generate_instrument_validation(python_code, context)
+        llm_check = llm_code_check(validation_prompt)
+
+        prompt = pt.failed_insturment(python_code, context, llm_check["Response"], validation_results)
+        LLM_response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
+        python_code = extract_python_code(LLM_response)
+
+    buildPy(path, deviceName, python_code)
+    return python_code
+
+def createStep(data, test_step, instrument_code, allowed_attempts=1):
+
+    pt = PromptTemplates(data)
+
+    deviceName = data.get("deviceName")
+
+    context = callAISearch(f"{deviceName}: {test_step}")
+    prompt = pt.generate_steps_prompt(test_step, instrument_code, context)
+
     response = callLLM(prompt)
-    response = extract_python_code(response)
+    python_code = extract_python_code(response)
 
-    result, verified_code = verify_code(response)
-    response_dict = llm_code_check("", response, deviceName, 1)
+    verification_results, python_code = test_step_validation(python_code)
+    validation_prompt = pt.generate_step_validation(python_code, test_step, instrument_code, context)
+    llm_check = llm_code_check(validation_prompt)
+    print(verification_results)
 
-    buildPy(path, deviceName, response)
+    count = 0
+    while llm_check["Sentiment"] == "Negative" and count < allowed_attempts:
 
-    if response_dict["Sentiment"] == "Negative":
-        # already tried, this is the second time
-        print("Sentiment was Negative, trying one more time")
-        prompt += f'''
-            \nThe plugin that was generated was incorrect, please try again by using the following feedback:
-            {response_dict["Response"]}'''
+        prompt = pt.failed_test_step(python_code, test_step, context, llm_check["Response"], verification_results)
         response = callLLM(prompt) # pass the 2nd llm's response to the 1st llm
-        response = extract_python_code(response)
-        buildPy(path, deviceName, response)
-        result, verified_code = verify_code(response)
-        print(f"result: {result}")
-        print(f"verified_code: {verified_code}")
-        response_dict = llm_code_check("", response, deviceName, 0) # go ask the 2nd llm's response yet
-        print("Asked the 2nd LLM again")
-    else: # response_dict["Sentiment"] == "Neutral" or "Positive":
-        print("Sentiment was Not Negative")
+        python_code = extract_python_code(response)
 
-    return response
-
-
-def callLLM(prompt):
-
-    print("about to call LLM")
-
-    client = AzureOpenAI(
-            azure_endpoint = "https://opentap-forum-openai.openai.azure.com/", 
-            api_key=os.getenv("Forum-GPT4_KEY1"),  
-            api_version="2024-02-15-preview"
-    )
-
-    message_text = [{"role":"system", "content":"You are an AI assistant that helps people Opentap plugins using SCPI commands in Python."}, 
-                    {"role": "user", "content": prompt}]
-
-    completion = client.chat.completions.create(
-        model="gpt-4-1106-Preview",
-        messages = message_text,
-        temperature=0.7,
-        max_tokens=800,
-        top_p=0.95,
-        frequency_penalty=0,
-        presence_penalty=0,
-        stop=None
-    )
-
-    print("done with client.chat.completions")
-
-    content = completion.choices[0].message.content
-    # pattern = r'```python(.*?)```'
-    # match = re.findall(pattern, content, re.DOTALL)
-    # content = match[0]
-    return content
-
-def callAISearch(query, TOKEN_LIMIT=1500):
-
-    service_endpoint = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
-    index_name = "plugin-pdf-vector"
-    key = os.getenv("AZURE_AI_SEARCH_API_KEY")
-
-    try:
-        search_client = SearchClient(service_endpoint, index_name, AzureKeyCredential(key))
-
-        results = search_client.search(search_text=query)
-
-        context = ""
-        token_count = 0
-
-        tokenizer = tiktoken.encoding_for_model("gpt-4")
-
-        for result in results:
-            content = result['content']
-            tokens = tokenizer.encode(content)
-            if token_count + len(tokens) <= TOKEN_LIMIT:
-                context += content
-                token_count += len(tokens)
-            else:
-                remaining_tokens = TOKEN_LIMIT - token_count
-                truncated_content = tokenizer.decode(tokens[:remaining_tokens])
-                context += truncated_content
-                break
-        return context
+        validation_prompt = pt.generate_step_validation(python_code, test_step, instrument_code, context)
+        llm_check = llm_code_check(prompt) # go ask the 2nd llm's response yet
+        
+        count += 1
     
-    except Exception as e:
-        print(f"Error during AI search: {e}")
+    return python_code
 
 
 def buildPy(path, command, code):
-    name = "".join( x for x in command if (x.isalnum() or x in "._- "))
+    name = command.replace(" ", "_")
 
     pyFile = f"{path}/{name}.py"
     with open(pyFile, 'w') as file:
@@ -250,7 +117,6 @@ def buildXML(plugin_name, folder_path):
     doc.appendChild(package)
     package.setAttribute('Name', plugin_name)
     package.setAttribute('xmlns', "http://keysight.com/Schemas/tap")
-    # package.setAttribute('Version', "$(GitVersion)")
     package.setAttribute('Version', "1.0.0")
     package.setAttribute('OS', "Windows,Linux,MacOS")
 
@@ -272,12 +138,6 @@ def buildXML(plugin_name, folder_path):
     opentap_dependency.setAttribute('Package', 'OpenTAP')
     opentap_dependency.setAttribute('Version', '^9.18.2')
 
-    # python_dependency = doc.createElement('PackageDependency')
-    # dependencies.appendChild(python_dependency)
-    # python_dependency.setAttribute('Package', 'Python')
-    # python_dependency.setAttribute('Version', '^$(GitVersion)')
-
-    # Create the files section
     files = doc.createElement('Files')
     package.appendChild(files)
 

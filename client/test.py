@@ -1,15 +1,16 @@
 import requests
 
 def run_test(deviceName, category, commands, interface, progLang, role, useCase):
-    payload = {"deviceName" : deviceName,
-                "category" : category,  
-                "commands" : commands,
-                "interface" : interface,
-                "progLang" : progLang,
-                "role" : role,
-                "useCase" : useCase}
+    # payload = {"deviceName" : deviceName,
+    #             "category" : category,  
+    #             "commands" : commands,
+    #             "interface" : interface,
+    #             "progLang" : progLang,
+    #             "role" : role,
+    #             "useCase" : useCase}
+    payload = {'deviceName': 'EDU36311', 'category': 'Power Supply', 'commands': ['Set output voltage level', 'Disable display'], 'interface': 'USB (Universal Serial Bus)', 'progLang': 'python', 'role': 'developer'}
 
-    api_url = "http://127.0.0.1:5000/generate_plugin" 
+    api_url = "http://127.0.0.1:5003/generate_plugin" 
     response = requests.post(api_url, json=payload)
 
     # Error handling

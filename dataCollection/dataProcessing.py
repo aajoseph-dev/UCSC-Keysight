@@ -112,49 +112,55 @@ class DataFetch:
 
     def uploadFile(self, pathToFile):
             
-        load_dotenv()
-        azure_endpoint: str = os.getenv("OPENAI_ENDPOINT")
-        azure_openai_api_key: str = os.getenv("OPENAI_KEY1")
-        azure_openai_api_version: str = "2023-05-15"
-        azure_deployment: str = "OpenTap-Plugin-Embedding-Model"
+        load_dotenv(override=True)
 
-        vector_store_address: str = os.getenv("AZURE_AI_SEARCH_ENDPOINT")
-        vector_store_password: str =  os.getenv("AZURE_AI_SEARCH_API_KEY")
+        try:
+            azure_endpoint: str = os.environ["Forum_GPT4_ENDPOINT"]
+            azure_openai_api_key: str = os.environ["Forum_GPT4_KEY"]
+            azure_openai_api_version: str = os.environ["Forum_GPT4_API_VERSION"]
+            azure_deployment: str = "OpenTap-Plugin-Embedding-Model"
 
-        embeddings: AzureOpenAIEmbeddings = AzureOpenAIEmbeddings(
-            azure_deployment=azure_deployment,
-            openai_api_version=azure_openai_api_version,
-            azure_endpoint=azure_endpoint,
-            api_key=azure_openai_api_key,
-        )
+            vector_store_address: str = os.environ["AZURE_AI_SEARCH_ENDPOINT"]
+            vector_store_password: str =  os.environ["AZURE_AI_SEARCH_API_KEY"]
 
-        index_name: str = "plugin-pdf-vector"
-        vector_store: AzureSearch = AzureSearch(
-            azure_search_endpoint=vector_store_address,
-            azure_search_key=vector_store_password,
-            index_name=index_name,
-            embedding_function=embeddings.embed_query,
-        )
+            embeddings: AzureOpenAIEmbeddings = AzureOpenAIEmbeddings(
+                azure_deployment=azure_deployment,
+                openai_api_version=azure_openai_api_version,
+                azure_endpoint=azure_endpoint,
+                api_key=azure_openai_api_key,
+            )
 
-        print("about to chunk/split the doc")
+            index_name: str = os.environ["AZURE_AI_INDEX_NAME"]
+            vector_store: AzureSearch = AzureSearch(
+                azure_search_endpoint=vector_store_address,
+                azure_search_key=vector_store_password,
+                index_name=index_name,
+                embedding_function=embeddings.embed_query,
+            )
 
-        # Calculate average chunk size
-        average_chunk_size = self.calculate_average_chunk_size(pathToFile)
+            print("about to chunk/split the doc")
 
-        loader = PyPDFLoader(pathToFile, extract_images=False)
-        data = loader.load_and_split()
+            # Calculate average chunk size
+            average_chunk_size = self.calculate_average_chunk_size(pathToFile)
 
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=average_chunk_size,
-            chunk_overlap=0.15 * average_chunk_size,  # 15% overlap
-            length_function=len
-        )
+            loader = PyPDFLoader(pathToFile, extract_images=False)
+            data = loader.load_and_split()
 
-        chunks = text_splitter.split_documents(data)
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=average_chunk_size,
+                chunk_overlap=0.15 * average_chunk_size,  # 15% overlap
+                length_function=len
+            )
 
-        vector_store.add_documents(documents=chunks)
+            chunks = text_splitter.split_documents(data)
 
-        print("DONE!")
+            vector_store.add_documents(documents=chunks)
+
+            print("DONE!")
+
+        except Exception as e:
+            print(f"Error during uploadFile(): {e}")
+
 
     def calculate_average_chunk_size(self, pathToFile):
         total_characters = 0

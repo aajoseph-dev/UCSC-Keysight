@@ -77,7 +77,9 @@ test_steps = {
                 "Enable output",
                 "Verify output voltage",
                 "Verify output current",
-                "Perform load regulation testing"
+                "Perform load regulation testing",
+                "Enable display",
+                "Disable display",
             ],
             "Other": [
                 "Perform custom test steps",
@@ -119,3 +121,7 @@ interface = [
             "Fiber Optic"]
 
 language = ["Python", "C#"]
+
+manufacturer = [
+    "Keysight Technologies"
+]

@@ -1,0 +1,19 @@
+EDU36311A with these Set output current limit complete: 274.78951025009155
+E8363B with these Configure frequency range complete: 81.08158493041992
+EDU36311A with these ['Analyze test results'] complete: 0.004168033599853516
+EDU36311A with these ['Set output frequency', 'Enable output'] complete: 0.014475822448730469
+EDU36311A with these ['Set output frequency', 'Enable output'] complete: 0.90447998046875
+EDU36311A with these ['Set output frequency', 'Enable output'] complete: 41.26588201522827
+EDU36311A with these ['Set output frequency', 'Enable output'] complete: 142.27144598960876
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 30.626986026763916
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 35.86406707763672
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 182.34005618095398
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 154.7618191242218
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 187.0060110092163
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 165.69323182106018
+EDU36311A with these ['Verify output voltage', 'Enable display'] complete: 149.86614084243774
+E8363B with these ['Configure frequency range', 'Perform signal integrity analysis'] complete: 192.15186500549316
+E8363B with these ['Configure frequency range', 'Perform signal integrity analysis'] complete: 207.18968224525452
+E8363B with these ['Configure frequency range', 'Perform signal integrity analysis'] complete: 118.49009585380554
+EDU36311A with these ['Verify output voltage', 'Verify output current'] complete: 106.75795197486877
+EDU36311A with these ['Verify output voltage', 'Verify output current'] complete: 145.87054109573364
